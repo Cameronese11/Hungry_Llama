@@ -78,4 +78,8 @@ public class Player {
 	public Character getCharacter(){
 		return character;
 	}
+	
+	public int getNum(){
+		return num;
+	}
 }

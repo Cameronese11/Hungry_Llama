@@ -23,7 +23,7 @@ public class Game {
 	private List<Player.Character> characters;
 	private Board board;
 	private TextClient textClient;
-	private Character currentTurn;
+	private int currentTurn;
 	
 	/**
 	 * Constructs a new Game of Cluedo
@@ -36,8 +36,8 @@ public class Game {
 		charactersLeft = new ArrayList<>();
 		characters = new ArrayList<>();
 		initialiseCharacters();
+		currentTurn = 1;
 		textClient = new TextClient(this, board);
-		textClient.initialiseGame();
 		textClient.Run();
 	}
 	
@@ -48,6 +48,12 @@ public class Game {
 		charactersLeft.add(Player.Character.THE_REVERAND_GREEN);
 		charactersLeft.add(Player.Character.MRS_PEACOCK);
 		charactersLeft.add(Player.Character.PROFESSOR_PLUM);
+		characters.add(Player.Character.MISS_SCARLETT);
+		characters.add(Player.Character.COLONEL_MUSTARD);
+		characters.add(Player.Character.MRS_WHITE);
+		characters.add(Player.Character.THE_REVERAND_GREEN);
+		characters.add(Player.Character.MRS_PEACOCK);
+		characters.add(Player.Character.PROFESSOR_PLUM);
 
 	}
 
@@ -69,7 +75,6 @@ public class Game {
 		Character character = generateCharacter();
 		players.add(new Player(this, board, i, character));
 		charactersLeft.remove(character);
-		characters.add(character);
 		return character;
 	}
 	
@@ -80,7 +85,6 @@ public class Game {
 	public Character addPlayer(int i, Character character){
 		players.add(new Player(this, board, i, character));
 		charactersLeft.remove(character);
-		characters.add(character);
 		return character;
 	}
 	
@@ -120,7 +124,22 @@ public class Game {
 	public void setNumPlayers(int num){
 		this.numPlayers = num;
 	}
+	
+	public Player getPlayer(Character character){
+		for(Player p: players)
+			if(p.getCharacter().equals(character))
+				return p;
+		return null;
+	}
+	
+	public Player getPlayer(int num){
+		for(Player p: players)
+			if(p.getNum() == num)
+				return p;
+		return null;
+	}
 
+	
 		
 		
 	

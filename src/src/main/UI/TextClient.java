@@ -18,6 +18,7 @@ public class TextClient {
 	private Game game;
 	private Board board;
 	
+	
 	/**
 	 * Constructs a new text Client opject
 	 * @param g - Current Game
@@ -40,14 +41,19 @@ public class TextClient {
 		while(!done){
 			
 			// Determine the number of players
-			System.out.println("How many people are playing(Max 6)");
+			System.out.println("How many people are playing(3-6)");
 			numPlayers = scan.nextInt();
 			
 			// keep asking until correct value is entered
-			if(numPlayers <= 6 && numPlayers >= 1){
+			if(numPlayers <= 6 && numPlayers >= 3){
 				done = true;
 			}else{
 				game.clearConsole();
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
 				System.out.println("Must be between 1 and 6 players");
 				System.out.println();
 				numPlayers = 0;
@@ -72,11 +78,13 @@ public class TextClient {
 			System.out.println("Type the integer representing the Character you would like to use,"); 
 			System.out.println("type 'r' for a random character");
 			System.out.println();
-			int k = game.getCharactersLeft().size();
+			int k = game.getCharacters().size();
 			
-			List<Player.Character> p = game.getCharactersLeft();
+			List<Player.Character> a = game.getCharacters();
+			List<Player.Character> b = game.getCharactersLeft();
 			for(int j = 0; j < k; j++)
-				System.out.println(j + ". " + p.get(j));
+				if(b.contains(a.get(j)))
+					System.out.println((j + 1) + ". " + a.get(j));
 			System.out.println();
 			
 			String answer = scan.next();
@@ -84,26 +92,33 @@ public class TextClient {
 			Player.Character character = null;
 			if(answer.equalsIgnoreCase("r")){
 				character = game.generatePlayer(i);
-				System.out.println("Player " + i + " is assigned " + character);
-			}else if(answer.equalsIgnoreCase("Miss Scarlett") || answer.equalsIgnoreCase("Miss_Scarlet"))
+			}else if(answer.equals("1"))
 				character = game.addPlayer(i, Player.Character.MISS_SCARLETT);
-			else if(answer.equalsIgnoreCase("Colonel Mustard") || answer.equalsIgnoreCase("Colonel_Mustard"))
+			else if(answer.equals("2"))
 				character = game.addPlayer(i, Player.Character.COLONEL_MUSTARD);
-			else if(answer.equalsIgnoreCase("Mrs White") || answer.equalsIgnoreCase("Mrs_White"))
+			else if(answer.equals("3"))
 				character = game.addPlayer(i, Player.Character.MRS_WHITE);
-			else if(answer.equalsIgnoreCase("The Reverand Green") || answer.equalsIgnoreCase("The Reverand_Green"))
+			else if(answer.equals("4"))
 				character = game.addPlayer(i, Player.Character.THE_REVERAND_GREEN);
-			else if(answer.equalsIgnoreCase("Mrs Peacock") || answer.equalsIgnoreCase("Mrs_Peacock"))
+			else if(answer.equals("5"))
 				character = game.addPlayer(i, Player.Character.MRS_PEACOCK);
-			else if(answer.equalsIgnoreCase("Professor Plum") || answer.equalsIgnoreCase("Professor_Plum"))
+			else if(answer.equals("6"))
 				character = game.addPlayer(i, Player.Character.PROFESSOR_PLUM);
 			else{ 
 				System.out.println("invalid response, please try again");
 				System.out.println();
 				i--;
 			}
-			if(character != null)
+			if(character != null){
 				System.out.println("Player " + i + " is assigned " + character);
+				
+				try {
+					Thread.sleep(3000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				
+			}
 			i++;
 		}
 		scan.close();
@@ -113,7 +128,12 @@ public class TextClient {
 	 * Run the Game
 	 */
 	public void Run(){
+		initialiseGame();
 		
+		while(true)
+			board.printBoard();
+			
+			
 		
 	}
 }
