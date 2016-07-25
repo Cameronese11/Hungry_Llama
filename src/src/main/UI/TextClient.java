@@ -26,6 +26,7 @@ public class TextClient {
 	public TextClient(Game g, Board b){
 		this.game = g;
 		this.board = b;
+		//chet was here
 	}
 	
 	/**
