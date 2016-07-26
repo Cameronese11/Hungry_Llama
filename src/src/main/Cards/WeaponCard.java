@@ -13,4 +13,9 @@ public class WeaponCard implements Card{
 	public Weapon getWeapon(){
 		return weapon;
 	}
+	
+	public String toString(){
+		return "Weapon Card: " + weapon.getName();
+	}
+	
 }

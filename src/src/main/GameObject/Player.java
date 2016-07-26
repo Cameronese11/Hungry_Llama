@@ -2,7 +2,9 @@ package src.main.GameObject;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
+import src.main.Cards.Card;
 import src.main.Cluedo.Board;
 import src.main.Cluedo.Game;
 import src.main.Cluedo.StartingTile;
@@ -22,6 +24,7 @@ public class Player {
 	private Board board;
 	private int num;
 	private Tile point;
+	private List<Card> hand;
 	
 	/**
 	 * Characters players can be in the game
@@ -49,6 +52,7 @@ public class Player {
 		this.board = b;
 		this.num = n;
 		this.character = c;
+		hand = new ArrayList<>();
 	}	
 	
 	/**
@@ -81,5 +85,13 @@ public class Player {
 	
 	public int getNum(){
 		return num;
+	}
+	
+	public void addCard(Card c){
+		hand.add(c);
+	}
+	
+	public List<Card> getHand(){
+		return hand;
 	}
 }

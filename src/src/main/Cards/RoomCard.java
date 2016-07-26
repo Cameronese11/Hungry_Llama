@@ -12,4 +12,8 @@ public class RoomCard implements Card{
 	public Room getRoom(){
 		return room;
 	}
+	
+	public String toString(){
+		return "Room Card: " + room.getName();
+	}
 }

@@ -5,6 +5,9 @@ import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 
+import javax.xml.stream.events.Characters;
+
+import src.main.Cards.Card;
 import src.main.Cluedo.Board;
 import src.main.Cluedo.Game;
 import src.main.GameObject.Player;
@@ -19,6 +22,7 @@ public class TextClient {
 	
 	private Game game;
 	private Board board;
+	Scanner scan;
 	
 	
 	/**
@@ -37,28 +41,28 @@ public class TextClient {
 	public void initialiseGame(){
 		System.out.println("Welcome to Cluedo");
 		System.out.println();
-		Scanner scan = new Scanner(System.in);
+		scan = new Scanner(System.in);
 		boolean done = false;
+		String answer = "";
 		int numPlayers = 0;
-		numPlayers = 0;
 		while(!done){
-			
-			numPlayers = 0;
-			
+						
 			// Determine the number of players
 			System.out.println("How many people are playing(3-6)");
-			
-			
-			try {
-				numPlayers = scan.nextInt();
-			} catch (InputMismatchException e) {
-			    numPlayers = 7;
-			}
+			answer = scan.next();
 			
 			// keep asking until correct value is entered
-			if(numPlayers <= 6 && numPlayers >= 3){
+			if(answer.equals("3")){
+				numPlayers = 3;
 				done = true;
-			}else{
+			}else if(answer.equals("4")){
+				numPlayers = 4;
+				done = true;
+			}else if(answer.equals("5")){
+				numPlayers = 6;
+				done = true;
+			}
+			else{
 				game.clearConsole();
 				try {
 					Thread.sleep(1000);
@@ -96,24 +100,45 @@ public class TextClient {
 					System.out.println((j + 1) + ". " + a.get(j));
 			System.out.println();
 			
-			String answer = scan.next();
-			
+			done = true;
+			answer = scan.next();
 			Player.Character character = null;
+			
 			if(answer.equalsIgnoreCase("r")){
 				character = game.generatePlayer(i);
-			}else if(answer.equals("1"))
-				character = game.addPlayer(i, Player.Character.MISS_SCARLETT);
-			else if(answer.equals("2"))
-				character = game.addPlayer(i, Player.Character.COLONEL_MUSTARD);
-			else if(answer.equals("3"))
-				character = game.addPlayer(i, Player.Character.MRS_WHITE);
-			else if(answer.equals("4"))
-				character = game.addPlayer(i, Player.Character.THE_REVERAND_GREEN);
-			else if(answer.equals("5"))
-				character = game.addPlayer(i, Player.Character.MRS_PEACOCK);
-			else if(answer.equals("6"))
-				character = game.addPlayer(i, Player.Character.PROFESSOR_PLUM);
-			else{ 
+			}else if(answer.equals("1")){
+				if(b.contains(Player.Character.MISS_SCARLETT))
+					character = game.addPlayer(i, Player.Character.MISS_SCARLETT);
+				else
+					done = false;
+			}else if(answer.equals("2")){
+				if(b.contains(Player.Character.COLONEL_MUSTARD))
+					character = game.addPlayer(i, Player.Character.COLONEL_MUSTARD);
+				else
+					done = false;
+			}else if(answer.equals("3")){
+				if(b.contains(Player.Character.MRS_WHITE))
+					character = game.addPlayer(i, Player.Character.MRS_WHITE);
+				else
+					done = false;
+			}else if(answer.equals("4")){
+				if(b.contains(Player.Character.THE_REVERAND_GREEN))
+					character = game.addPlayer(i, Player.Character.THE_REVERAND_GREEN);
+				else
+					done = false;
+			}else if(answer.equals("5")){
+				if(b.contains(Player.Character.MRS_PEACOCK))
+					character = game.addPlayer(i, Player.Character.MRS_PEACOCK);
+				else
+					done = false;
+			}else if(answer.equals("6")){
+				if(b.contains(Player.Character.PROFESSOR_PLUM))
+					character = game.addPlayer(i, Player.Character.PROFESSOR_PLUM);
+				else
+					done = false;
+			}else
+				done = false;
+			if(done == false){ 
 				System.out.println("invalid response, please try again");
 				System.out.println();
 				i--;
@@ -130,6 +155,7 @@ public class TextClient {
 			}
 			i++;
 		}
+		game.dealCards();
 		
 	}
 	
@@ -154,16 +180,13 @@ public class TextClient {
 				
 				System.out.println(game.nextTurn().getCharacter() + " It is your turn");
 				System.out.println();
-				System.out.println("What would you like to do?");
+				System.out.println("Type 'r' when you are Ready");
 				System.out.println();
-				System.out.println("1. Roll Dice");
-				System.out.println("2. Accusation");
-				System.out.println("3. Give up");
-				
+			
 				String input = scan.next();
 				
-				if(input.equals("1"))
-					rollDice();
+				if(input.equals("r"))
+					startTurn();
 			}
 			
 				
@@ -176,19 +199,65 @@ public class TextClient {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-	
-		System.out.println("You rolled a " + roll);
 		return roll;
-	
-	
-	
-	
-	
-	
-	
 	}
+	
+	public void startTurn(){
+		game.clearConsole();
+		
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		
+		showTurnInfo();
 
-
+		System.out.println();
+		System.out.println("What would you like to do?");
+		System.out.println();
+		System.out.println("1. Roll the Dice");
+		System.out.println();
+		String input = scan.next();
+		
+		int roll = 0;
+		if(input.equals("1")){
+			roll = rollDice();
+			showTurnInfo();
+			System.out.println();
+			System.out.println("You rolled a " + roll);
+			System.out.println();
+			System.out.println();
+		
+			String input2 = scan.next();
+		
+		
+		
+		
+		}
+		
+		
+		
+	}
+	
+	public void showTurnInfo(){
+		board.printBoard();
+		System.out.println("//////////     Your Hand     //////////");
+		System.out.println();
+		for(Card c: game.getCurrentPlayer().getHand())
+			System.out.println(c.toString());
+		System.out.println();
+		if(!game.getCards().isEmpty()){
+			System.out.println("//////////  Left Over Cards  //////////");
+			System.out.println();
+			for(Card c: game.getCards())
+				System.out.println(c.toString());
+			System.out.println();
+		}
+		System.out.println("///////////////////////////////////////");
+		
+		
+	}
 
 }
 
