@@ -21,6 +21,7 @@ public class Game {
 	private List<Player> players;
 	private List<Player.Character> charactersLeft;
 	private List<Player.Character> characters;
+	
 	private Board board;
 	private TextClient textClient;
 	private Player currentPlayer;
@@ -53,7 +54,6 @@ public class Game {
 		characters.add(Player.Character.THE_REVERAND_GREEN);
 		characters.add(Player.Character.MRS_PEACOCK);
 		characters.add(Player.Character.PROFESSOR_PLUM);
-
 	}
 
 	
@@ -132,6 +132,10 @@ public class Game {
 	public List<Player.Character> getCharactersLeft(){
 		return charactersLeft;
 	}
+	
+	
+			
+		
 	
 	
 	public void setNumPlayers(int num){
