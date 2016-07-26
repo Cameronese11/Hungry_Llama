@@ -23,7 +23,7 @@ public class Game {
 	private List<Player.Character> characters;
 	private Board board;
 	private TextClient textClient;
-	private int currentTurn;
+	private Player currentPlayer;
 	
 	/**
 	 * Constructs a new Game of Cluedo
@@ -36,7 +36,6 @@ public class Game {
 		charactersLeft = new ArrayList<>();
 		characters = new ArrayList<>();
 		initialiseCharacters();
-		currentTurn = 1;
 		textClient = new TextClient(this, board);
 		textClient.Run();
 	}
@@ -57,6 +56,7 @@ public class Game {
 
 	}
 
+	
 	/**
 	 * To clear the console an updated board can be
 	 * printed
@@ -100,6 +100,19 @@ public class Game {
 		return(notInUse.get(0));
 	}
 	
+	public Player nextTurn(){
+		if(currentPlayer == null)
+			currentPlayer = getPlayer(2);
+		if(currentPlayer.getNum() < numPlayers)
+			return getPlayer(currentPlayer.getNum() + 1);
+		else
+			return getPlayer(1);
+	}
+	
+	public int rollDice(){
+		return (int) (Math.random() * 6);
+	}
+	
 	
 	public static void main(String[] args) {
 		new Game(args[0]);
@@ -139,6 +152,10 @@ public class Game {
 		return null;
 	}
 
+	public Player getCurrentPlayer(){
+		return currentPlayer;
+	}
+	
 	
 		
 		

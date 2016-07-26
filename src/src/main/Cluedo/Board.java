@@ -106,19 +106,36 @@ public class Board {
 	 */
 	public void printBoard(){
 		
-		// print top border line
-		for(int i = 0; i < 72; i++)
-			System.out.print("_");
+		System.out.print("   ");
+		// print x coordinates
+		for(int i = 0; i < 24; i++)
+			if(i < 9)
+				System.out.print(" " + (i+1) + " ");
+			else if(i == 8)
+				System.out.print(" " + (i+1));
+			else
+				System.out.print(i+1 + " ");
+	
+		
 		System.out.println();
 		
 		// loop through 2D array
 		for(int y = 0; y < board2D[0].length; y++){
+			if(y < 9)
+				System.out.print(" ");
+			System.out.print(y + 1);
+			System.out.print("|");
 			for(int x = 0; x < board2D.length; x++){
 				// draw tile if it exists
 				if(board2D[x][y] != null)
 					board2D[x][y].print();
 				else // draw empty space for null tiles
-					System.out.print("   ");
+					if(y == 0){
+						System.out.print('"');
+						System.out.print('"');
+						System.out.print('"');
+					}else
+						System.out.print("   ");
 			// modify x according to the Room name added
 			x = roomNames(x,y);	
 			}
@@ -126,6 +143,7 @@ public class Board {
 		}	
 		
 	// print bottom border line
+	System.out.print("  ");
 	for(int i = 0; i < 73; i++)
 		System.out.print('"');
 		

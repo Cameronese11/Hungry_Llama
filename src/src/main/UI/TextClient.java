@@ -1,6 +1,7 @@
 
 package src.main.UI;
 
+import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 
@@ -39,11 +40,20 @@ public class TextClient {
 		Scanner scan = new Scanner(System.in);
 		boolean done = false;
 		int numPlayers = 0;
+		numPlayers = 0;
 		while(!done){
+			
+			numPlayers = 0;
 			
 			// Determine the number of players
 			System.out.println("How many people are playing(3-6)");
-			numPlayers = scan.nextInt();
+			
+			
+			try {
+				numPlayers = scan.nextInt();
+			} catch (InputMismatchException e) {
+			    numPlayers = 7;
+			}
 			
 			// keep asking until correct value is entered
 			if(numPlayers <= 6 && numPlayers >= 3){
@@ -57,7 +67,6 @@ public class TextClient {
 				}
 				System.out.println("Must be between 1 and 6 players");
 				System.out.println();
-				numPlayers = 0;
 			}
 		}
 		game.setNumPlayers(numPlayers);
@@ -68,7 +77,6 @@ public class TextClient {
 			try {
 				Thread.sleep(1000);
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			
@@ -114,7 +122,7 @@ public class TextClient {
 				System.out.println("Player " + i + " is assigned " + character);
 				
 				try {
-					Thread.sleep(3000);
+					Thread.sleep(0000); // 3000
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
@@ -122,7 +130,7 @@ public class TextClient {
 			}
 			i++;
 		}
-		scan.close();
+		
 	}
 	
 	/**
@@ -130,12 +138,57 @@ public class TextClient {
 	 */
 	public void Run(){
 		initialiseGame();
-		
-		while(true)
-			board.printBoard();
+		Scanner scan = new Scanner(System.in);
+
+			while(true){
+				
+				game.clearConsole();
+				
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				
+				board.printBoard();
+				
+				System.out.println(game.nextTurn().getCharacter() + " It is your turn");
+				System.out.println();
+				System.out.println("What would you like to do?");
+				System.out.println();
+				System.out.println("1. Roll Dice");
+				System.out.println("2. Accusation");
+				System.out.println("3. Give up");
+				
+				String input = scan.next();
+				
+				if(input.equals("1"))
+					rollDice();
+			}
 			
-			
-		
+				
 	}
+	public int rollDice(){
+		game.clearConsole();
+		int roll = game.rollDice();
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	
+		System.out.println("You rolled a " + roll);
+		return roll;
+	
+	
+	
+	
+	
+	
+	
+	}
+
+
+
 }
 
