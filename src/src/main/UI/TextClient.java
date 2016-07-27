@@ -156,6 +156,7 @@ public class TextClient {
 			i++;
 		}
 		game.dealCards();
+		game.setupPlayers();
 		
 	}
 	

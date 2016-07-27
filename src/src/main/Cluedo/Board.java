@@ -4,6 +4,13 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Scanner;
 
+import src.main.GameObject.Player;
+import src.main.Tiles.DoorTile;
+import src.main.Tiles.MoveTile;
+import src.main.Tiles.StairTile;
+import src.main.Tiles.StartingTile;
+import src.main.Tiles.Tile;
+
 /**
  * Board Class to represent the board of a Game of Cluedo
  * 
@@ -61,12 +68,12 @@ public class Board {
 		    			case "A": tile = new DoorTile(x,y, "Basement"); break;
 		    		
 		    			// Represents a characters starting tile
-		    			case "0": tile = new StartingTile(x,y, "Miss Scarlett"); break;
-		    			case "1": tile = new StartingTile(x,y, "Colonel Mustard"); break;
-		    			case "2": tile = new StartingTile(x,y, "Mrs White"); break;
-		    			case "3": tile = new StartingTile(x,y, "The Reverand Green"); break;
-		    			case "4": tile = new StartingTile(x,y, "Mrs Peacock"); break;
-		    			case "5": tile = new StartingTile(x,y, "Professor Plum"); break;
+		    			case "0": tile = new StartingTile(x,y, Player.Character.MISS_SCARLETT); break;
+		    			case "1": tile = new StartingTile(x,y, Player.Character.COLONEL_MUSTARD); break;
+		    			case "2": tile = new StartingTile(x,y, Player.Character.MRS_WHITE); break;
+		    			case "3": tile = new StartingTile(x,y, Player.Character.THE_REVERAND_GREEN); break;
+		    			case "4": tile = new StartingTile(x,y, Player.Character.MRS_PEACOCK); break;
+		    			case "5": tile = new StartingTile(x,y, Player.Character.PROFESSOR_PLUM); break;
 		    		
 		    			// Represents a Stairway Tile
 		    			case "6": tile = new StairTile(x,y, "Kitchen"); break;
@@ -75,18 +82,18 @@ public class Board {
 		    			case "9": tile = new StairTile(x,y, "Study"); break;
 		    		
 		    			// Represents a Characters Starting Location
-		    			case "S": tile = new Tile(x,y); tile.setPlayer("Miss Scarlett");break;
-		    			case "M": tile = new Tile(x,y); tile.setPlayer("Colonel Mustard");break;
-		    			case "W": tile = new Tile(x,y); tile.setPlayer("Mrs White");break;
-		    			case "G": tile = new Tile(x,y); tile.setPlayer("The Reverand Green");break;
-		    			case "P": tile = new Tile(x,y); tile.setPlayer("Mrs Peacock");break;
-		    			case "p": tile = new Tile(x,y); tile.setPlayer("Professor Plum");break;
+		    			case "S": tile = new StartingTile(x,y, Player.Character.MISS_SCARLETT);break;
+		    			case "M": tile = new StartingTile(x,y, Player.Character.COLONEL_MUSTARD);break;
+		    			case "W": tile = new StartingTile(x,y, Player.Character.MRS_WHITE); break;
+		    			case "G": tile = new StartingTile(x,y, Player.Character.THE_REVERAND_GREEN);break;
+		    			case "P": tile = new StartingTile(x,y, Player.Character.MRS_PEACOCK);;break;
+		    			case "p": tile = new StartingTile(x,y, Player.Character.PROFESSOR_PLUM);break;
 		    		
 		    			// Represents a null tile
 		    			case "n": tile = null; break;
 		    		
 		    			// Represents an ordinary Tile
-		    			case "t": tile = new Tile(x,y); break;
+		    			case "t": tile = new MoveTile(x,y); break;
 		    		}
 		    	board2D[x][y] = tile; // assign tile to corresponding board coordinate
 		    	x++;
@@ -143,7 +150,7 @@ public class Board {
 		}	
 		
 	// print bottom border line
-	System.out.print("  ");
+	System.out.print("   ");
 	for(int i = 0; i < 73; i++)
 		System.out.print('"');
 		
@@ -225,7 +232,9 @@ public class Board {
 		return board2D[x][y];
 	}
 	
-	
+	public void setTile(int x, int y, Tile tile){
+		board2D[x][y] = tile;
+	}
 }
 
 

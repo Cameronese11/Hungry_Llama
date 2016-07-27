@@ -1,4 +1,5 @@
-package src.main.Cluedo;
+package src.main.Tiles;
+
 
 import src.main.GameObject.Room;
 
@@ -8,7 +9,7 @@ import src.main.GameObject.Room;
  * @author cameronmclachlan
  *
  */
-public class StairTile extends Tile {
+public class StairTile extends MoveTile implements Tile{
 
 	private String roomLocation;
 	private String roomDestination;

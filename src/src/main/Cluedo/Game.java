@@ -12,6 +12,8 @@ import src.main.Cards.WeaponCard;
 import src.main.GameObject.Basement;
 import src.main.GameObject.Player;
 import src.main.GameObject.Player.Character;
+import src.main.Tiles.MoveTile;
+import src.main.Tiles.Tile;
 import src.main.GameObject.Room;
 import src.main.GameObject.Weapon;
 import src.main.UI.TextClient;
@@ -134,6 +136,16 @@ public class Game {
 		cards.remove(murderWeapon);
 		cards.remove(murderWeapon);		
 	}
+	
+	
+	public void setupPlayers(){
+		for(Player p: players){
+			Tile tile = p.determineStartTile();
+			p.move(tile);
+		}
+	}
+		
+	
 
 	
 	/**

@@ -7,8 +7,9 @@ import java.util.List;
 import src.main.Cards.Card;
 import src.main.Cluedo.Board;
 import src.main.Cluedo.Game;
-import src.main.Cluedo.StartingTile;
-import src.main.Cluedo.Tile;
+import src.main.Tiles.MoveTile;
+import src.main.Tiles.StartingTile;
+import src.main.Tiles.Tile;
 
 /**
  * Represents a player(user) playing the game
@@ -23,7 +24,7 @@ public class Player {
 	private Game game;
 	private Board board;
 	private int num;
-	private Tile point;
+	private MoveTile currentTile;
 	private List<Card> hand;
 	
 	/**
@@ -53,6 +54,7 @@ public class Player {
 		this.num = n;
 		this.character = c;
 		hand = new ArrayList<>();
+		
 	}	
 	
 	/**
@@ -62,10 +64,13 @@ public class Player {
 	public Tile determineStartTile(){
 		for(int y = 0; y < 25; y++){
 			for(int x = 0; x < 24; x++){
+				if(x == 7 && y == 24)
+					x = 7;
 				Tile tile = board.getTile(x, y);
-				if(tile instanceof StartingTile)
-					if(equals(tile.getPlayer()))
+				if(tile instanceof StartingTile){
+					if(((StartingTile) tile).getCharacter().equals(character))
 						return tile;
+				}
 			}
 		}
 		return null;			
@@ -93,5 +98,16 @@ public class Player {
 	
 	public List<Card> getHand(){
 		return hand;
+	}
+	
+	public boolean move(Tile tile){
+		if(tile instanceof MoveTile){
+			((MoveTile) tile).setPlayer(this);
+			if(currentTile != null)
+				currentTile.setPlayer(null);
+			currentTile = (MoveTile) tile;
+		}
+		
+		return false;
 	}
 }
