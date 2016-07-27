@@ -114,7 +114,7 @@ public class Board {
 	public void printBoard(){
 		
 		System.out.print("   ");
-		// print x coordinates
+		// print x coordinates with appropriate spacing
 		for(int i = 0; i < 24; i++)
 			if(i < 9)
 				System.out.print(" " + (i+1) + " ");
@@ -122,12 +122,11 @@ public class Board {
 				System.out.print(" " + (i+1));
 			else
 				System.out.print(i+1 + " ");
-	
-		
 		System.out.println();
 		
 		// loop through 2D array
 		for(int y = 0; y < board2D[0].length; y++){
+			// print out the y coordinate
 			if(y < 9)
 				System.out.print(" ");
 			System.out.print(y + 1);
@@ -220,14 +219,6 @@ public class Board {
 	
 	// Getters and Setters //
 	
-	/**
-	 * Returns the tile at a given coordinate
-	 * 
-	 * @param x
-	 * @param y
-	 * 
-	 * @return tile
-	 */
 	public Tile getTile(int x, int y){
 		return board2D[x][y];
 	}

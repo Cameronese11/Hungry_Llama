@@ -13,7 +13,7 @@ import src.main.Cluedo.Game;
 import src.main.GameObject.Player;
 
 /**
- * Class to present the game onto print to and 
+ * Class to present the game and 
  * Receive input from the console
  * 
  * @author cameronmclachlan
@@ -59,6 +59,9 @@ public class TextClient {
 				numPlayers = 4;
 				done = true;
 			}else if(answer.equals("5")){
+				numPlayers = 5;
+				done = true;
+			}else if(answer.equals("6")){
 				numPlayers = 6;
 				done = true;
 			}
@@ -248,10 +251,10 @@ public class TextClient {
 		for(Card c: game.getCurrentPlayer().getHand())
 			System.out.println(c.toString());
 		System.out.println();
-		if(!game.getCards().isEmpty()){
+		if(!game.getDeck().isEmpty()){
 			System.out.println("//////////  Left Over Cards  //////////");
 			System.out.println();
-			for(Card c: game.getCards())
+			for(Card c: game.getDeck())
 				System.out.println(c.toString());
 			System.out.println();
 		}

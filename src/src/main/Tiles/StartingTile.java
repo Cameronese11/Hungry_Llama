@@ -1,8 +1,6 @@
 package src.main.Tiles;
 
 
-import java.util.Scanner;
-
 import src.main.GameObject.Player;
 
 /**
@@ -27,11 +25,6 @@ public class StartingTile extends MoveTile implements Tile{
 		super(x, y);
 		this.startingCharacter = startingCharacter;
 	}
-
-	
-	public Player.Character getCharacter(){
-		return startingCharacter;
-	}
 	
 	/**
 	 * print the tile
@@ -41,5 +34,11 @@ public class StartingTile extends MoveTile implements Tile{
 			System.out.print("[ ]");
 		else
 			System.out.print("[" + getLetter() + "]");
+	}
+	
+	// Getters and Setters
+	
+	public Player.Character getCharacter(){
+		return startingCharacter;
 	}
 }

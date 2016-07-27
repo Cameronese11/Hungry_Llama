@@ -7,7 +7,7 @@ import src.main.GameObject.Player;
 import src.main.GameObject.Player.Character;
 
 /**
- * Represnts a Tile on the board
+ * Represents a Tile on the board
  * 
  * @author cameronmclachlan
  *
@@ -40,7 +40,7 @@ public class MoveTile implements Tile{
 	}
 	
 	/**
-	 * Returns the first letter of the players last name
+	 * Returns the Letter to represent the  tiles starting character
 	 * 
 	 * @return letter
 	 */
