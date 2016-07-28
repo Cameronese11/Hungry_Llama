@@ -45,6 +45,6 @@ public class StairTile extends MoveTile implements Tile{
 	 * print the tile
 	 */
 	public void print(){
-		System.out.print("[S]");
+		System.out.print("[s]");
 	}
 }

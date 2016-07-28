@@ -19,7 +19,7 @@ n,t,t,t,t,t,t,t,t,t,n,n,A,n,n,t,t,l,n,n,n,n,n,n
 n,t,t,t,t,t,t,t,t,n,n,H,H,n,n,t,t,t,n,n,n,n,n,n
 8,n,n,n,n,n,L,t,t,n,n,n,n,n,n,t,t,t,t,t,t,t,t,5
 n,n,n,n,n,n,n,t,t,n,n,n,n,n,H,t,t,t,t,t,t,t,t,n
-n,n,n,n,n,n,n,t,t,n,n,n,n,n,n,t,t,S,n,n,n,n,n,9
+n,n,n,n,n,n,n,t,t,n,n,n,n,n,n,t,t,s,n,n,n,n,n,9
 n,n,n,n,n,n,n,t,t,n,n,n,n,n,n,t,t,n,n,n,n,n,n,n
 n,n,n,n,n,n,n,t,t,n,n,n,n,n,n,t,t,n,n,n,n,n,n,n
 n,n,n,n,n,n,n,0,n,n,n,n,n,n,n,n,t,n,n,n,n,n,n,n

@@ -111,6 +111,9 @@ public class Player {
 		return false;
 	}
 	
+	public Tile getCurrentTile(){
+		return currentTile;
+	}
 	
 	// Getters and Setters
 	

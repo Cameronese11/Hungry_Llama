@@ -209,12 +209,7 @@ public class Game {
 	 * @return - player
 	 */
 	public Player nextTurn(){
-		if(currentPlayer == null)
-			currentPlayer = getPlayer(2);
-		if(currentPlayer.getNum() < numPlayers)
-			return getPlayer(currentPlayer.getNum() + 1);
-		else
-			return getPlayer(1);
+		return null;
 	}
 	
 	/**
@@ -223,11 +218,33 @@ public class Game {
 	 * @return int - dice roll 
 	 */
 	public int rollDice(){
-		return (int) (Math.random() * 6);
+		return (int) (Math.random() * 6) + 1;
 	}
 	
-	public void determineMoveLocations(Player player, int DiceRoll){
-		Tile Location = player.
+	public List<Tile> determineMoveLocations(Player player, int DiceRoll){
+		Tile location = player.getCurrentTile();
+		List<Tile>moveableTiles = new ArrayList();
+		moveableTiles = RecursiveCheck(DiceRoll, location, moveableTiles);
+		moveableTiles.remove(location);
+		return moveableTiles;
+	}
+	
+	
+	public List<Tile> RecursiveCheck(int steps, Tile tile, List<Tile> moveableTiles){
+		if(tile == null || steps == -1)
+			return moveableTiles;
+		
+		int x = tile.getX();
+		int y = tile.getY();
+		if(!moveableTiles.contains(tile))
+			moveableTiles.add(tile);
+		
+		moveableTiles = RecursiveCheck(steps-1, board.getTile(x - 1, y), moveableTiles);
+		moveableTiles = RecursiveCheck(steps-1, board.getTile(x + 1, y), moveableTiles);
+		moveableTiles = RecursiveCheck(steps-1, board.getTile(x, y - 1), moveableTiles);
+		moveableTiles = RecursiveCheck(steps-1, board.getTile(x, y + 1), moveableTiles);
+		
+		return moveableTiles;
 		
 	}
 	
@@ -247,6 +264,7 @@ public class Game {
 				}
 			}else
 				done = true;
+		currentPlayer = getPlayer(1);
 	}
 	
 	public static void main(String[] args) {

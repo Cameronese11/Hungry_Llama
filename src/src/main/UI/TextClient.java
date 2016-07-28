@@ -11,6 +11,7 @@ import src.main.Cards.Card;
 import src.main.Cluedo.Board;
 import src.main.Cluedo.Game;
 import src.main.GameObject.Player;
+import src.main.Tiles.Tile;
 
 /**
  * Class to present the game and 
@@ -182,7 +183,7 @@ public class TextClient {
 				
 				board.printBoard();
 				
-				System.out.println(game.nextTurn().getCharacter() + " It is your turn");
+				System.out.println(game.getCurrentPlayer().getCharacter() + " It is your turn");
 				System.out.println();
 				System.out.println("Type 'r' when you are Ready");
 				System.out.println();
@@ -191,20 +192,22 @@ public class TextClient {
 				
 				if(input.equals("r"))
 					startTurn();
+				
+				System.out.println();
+				System.out.println();
+				System.out.println("Type in the coordinate where you would like");
+				System.out.println("to move with the format x,y");
+				System.out.println();
+				
+				String input2 = scan.next();
+				
+			
+				
 			}
 			
 				
 	}
-	public int rollDice(){
-		game.clearConsole();
-		int roll = game.rollDice();
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		return roll;
-	}
+	
 	
 	public void startTurn(){
 		game.clearConsole();
@@ -217,35 +220,33 @@ public class TextClient {
 		
 		showTurnInfo();
 
-		System.out.println();
-		System.out.println("What would you like to do?");
-		System.out.println();
-		System.out.println("1. Roll the Dice");
-		System.out.println();
-		String input = scan.next();
-		
 		int roll = 0;
-		if(input.equals("1")){
-			roll = rollDice();
-			showTurnInfo();
-			System.out.println();
-			System.out.println("You rolled a " + roll);
-			System.out.println();
-			System.out.println();
-		
-			String input2 = scan.next();
-		
-		
-		
-		
+		roll = game.rollDice();
+		System.out.println();
+		System.out.println("You rolled a " + roll);
+		System.out.println();
+		System.out.println("You can move to the following locations");
+		System.out.println();
+		List<Tile> moveableTiles = game.determineMoveLocations(game.getCurrentPlayer(), roll);
+		int count = 0;
+		for(Tile t: moveableTiles){
+			System.out.print("(" + (t.getX()+1) + "," + (t.getY()+1) + ") ");
+			count++;
+			if(count == 6){
+				System.out.println();
+				count = 0;
+			}
 		}
-		
-		
-		
 	}
 	
 	public void showTurnInfo(){
+		Player currentPlayer = game.getCurrentPlayer();
 		board.printBoard();
+		System.out.print(currentPlayer.getCharacter() + ": ");
+		currentPlayer.getCurrentTile().print();
+		System.out.print(" (" + (currentPlayer.getCurrentTile().getX()+1) + ",");
+		System.out.println((currentPlayer.getCurrentTile().getY()+1) + ")");
+		System.out.println();
 		System.out.println("//////////     Your Hand     //////////");
 		System.out.println();
 		for(Card c: game.getCurrentPlayer().getHand())

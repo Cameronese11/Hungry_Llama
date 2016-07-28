@@ -21,6 +21,9 @@ public class MoveTile implements Tile{
 	// player at this tile, null if none
 	protected Player player;
 	
+	// if true then a player can move to this tile
+	protected boolean moveTo;
+	
 	/**
 	 * Constructs a new Tile object
 	 * 
@@ -36,7 +39,10 @@ public class MoveTile implements Tile{
 	 * prints the tile
 	 */
 	public void print(){
-		System.out.print("[ ]");
+		if(moveTo)
+			System.out.print("[#]");
+		else
+			System.out.print("[ ]");
 	}
 	
 	/**
@@ -78,5 +84,9 @@ public class MoveTile implements Tile{
 	
 	public void setPlayer(Player player){
 		this.player = player;
+	}
+	
+	public void setMoveTo(Boolean moveTo){
+		this.moveTo = moveTo;
 	}
 }

@@ -2,6 +2,7 @@ package src.main.Cluedo;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import java.util.Scanner;
 
 import src.main.GameObject.Player;
@@ -81,7 +82,7 @@ public class Board {
 		    			case "8": tile = new StairTile(x,y, "Lounge"); break;
 		    			case "9": tile = new StairTile(x,y, "Study"); break;
 		    		
-		    			// Represents a Characters Starting Location
+		    			// Represents a Characters Position on the board
 		    			case "S": tile = new StartingTile(x,y, Player.Character.MISS_SCARLETT);break;
 		    			case "M": tile = new StartingTile(x,y, Player.Character.COLONEL_MUSTARD);break;
 		    			case "W": tile = new StartingTile(x,y, Player.Character.MRS_WHITE); break;
@@ -220,6 +221,8 @@ public class Board {
 	// Getters and Setters //
 	
 	public Tile getTile(int x, int y){
+		if(x<0 || x>23 || y<0 || y>24)
+			return null;
 		return board2D[x][y];
 	}
 	
