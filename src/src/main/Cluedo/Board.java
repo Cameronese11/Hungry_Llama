@@ -6,11 +6,11 @@ import java.util.List;
 import java.util.Scanner;
 
 import src.main.GameObject.Player;
-import src.main.Tiles.DoorTile;
-import src.main.Tiles.MoveTile;
-import src.main.Tiles.StairTile;
-import src.main.Tiles.StartingTile;
-import src.main.Tiles.Tile;
+import src.main.Location.DoorTile;
+import src.main.Location.MoveTile;
+import src.main.Location.StairTile;
+import src.main.Location.StartingTile;
+import src.main.Location.Tile;
 
 /**
  * Board Class to represent the board of a Game of Cluedo
@@ -133,6 +133,8 @@ public class Board {
 			System.out.print(y + 1);
 			System.out.print("|");
 			for(int x = 0; x < board2D.length; x++){
+				if(x == 14)
+					x = 14;
 				// draw tile if it exists
 				if(board2D[x][y] != null)
 					board2D[x][y].print();
@@ -217,7 +219,7 @@ public class Board {
 		return x;
 	}
 	
-	
+
 	// Getters and Setters //
 	
 	public Tile getTile(int x, int y){

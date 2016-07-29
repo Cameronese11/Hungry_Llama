@@ -1,4 +1,4 @@
-package src.main.Tiles;
+package src.main.Location;
 
 
 import src.main.GameObject.Player;

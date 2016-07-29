@@ -1,7 +1,4 @@
-package src.main.Tiles;
-
-
-import src.main.GameObject.Room;
+package src.main.Location;
 
 /**
  * Represents a stairway tile
@@ -46,5 +43,13 @@ public class StairTile extends MoveTile implements Tile{
 	 */
 	public void print(){
 		System.out.print("[s]");
+	}
+	
+	public String getRoomLocation(){
+		return roomLocation;
+	}
+	
+	public String getRoomDestination(){
+		return roomDestination;
 	}
 }

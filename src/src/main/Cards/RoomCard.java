@@ -1,6 +1,6 @@
 package src.main.Cards;
 
-import src.main.GameObject.Room;
+import src.main.Location.Room;
 
 /**
  * Represents a Room Card in the Game. 

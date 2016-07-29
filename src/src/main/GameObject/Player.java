@@ -7,9 +7,13 @@ import java.util.List;
 import src.main.Cards.Card;
 import src.main.Cluedo.Board;
 import src.main.Cluedo.Game;
-import src.main.Tiles.MoveTile;
-import src.main.Tiles.StartingTile;
-import src.main.Tiles.Tile;
+import src.main.Location.DoorTile;
+import src.main.Location.Location;
+import src.main.Location.MoveTile;
+import src.main.Location.Room;
+import src.main.Location.StairTile;
+import src.main.Location.StartingTile;
+import src.main.Location.Tile;
 
 /**
  * Represents a player(user) playing the game
@@ -24,7 +28,7 @@ public class Player {
 	
 	private Character character;
 	private int num;
-	private MoveTile currentTile;
+	Location location;
 	private List<Card> hand;
 	
 	/**
@@ -78,6 +82,7 @@ public class Player {
 	/**
 	 *Equals method to compare to players 
 	 */
+	@Override
 	public boolean equals(Object player){
 		if( !(player instanceof Player) || (player == null))
 			return false;
@@ -100,19 +105,42 @@ public class Player {
 	 * @param tile - new tile to move to
 	 * @return - true if the move was successful
 	 */
-	public boolean move(Tile tile){
-		if(tile instanceof MoveTile){
-			((MoveTile) tile).setPlayer(this);
-			if(currentTile != null)
-				currentTile.setPlayer(null);
-			currentTile = (MoveTile) tile;
+	public boolean move(Location newLocation){
+		
+		if(location instanceof Tile)
+			((MoveTile) location).setPlayer(null);
+		else if(location instanceof Room)
+			((Room) location).removePlayer(this);
+		
+		
+
+		if(newLocation instanceof Tile){
+			Tile tile = (Tile) newLocation;
+			
+			if(tile instanceof DoorTile){
+				Room room = game.getRoom(((DoorTile) tile).getRoom());
+				room.addPlayer(this);
+				location = room;
+			}else if(tile instanceof StartingTile){
+				((StartingTile) tile).setPlayer(this);
+				location = (StartingTile) tile;
+			}else if(tile instanceof MoveTile){
+				((MoveTile) tile).setPlayer(this);
+				location = (MoveTile) tile;
+			}else if(tile instanceof StairTile){
+				Room room = game.getRoom(((StairTile) tile).getRoomDestination());
+				room.addPlayer(this);
+				location = room;
+			}
+		}else if(newLocation instanceof Room){
+		
 		}
 		
-		return false;
+	return true;
 	}
 	
-	public Tile getCurrentTile(){
-		return currentTile;
+	public Location getLocation(){
+		return location;
 	}
 	
 	// Getters and Setters
@@ -129,5 +157,23 @@ public class Player {
 		return hand;
 	}
 	
+	public void print(){
+		System.out.print("[" + getLetter() + "]");
+	}
 	
+	/**
+	 * Returns the Letter to represent the  tiles starting character
+	 * 
+	 * @return letter
+	 */
+	public String getLetter(){
+		switch(character){
+			case MISS_SCARLETT: return"S";
+			case COLONEL_MUSTARD: return "M";
+			case MRS_WHITE: return "W";
+			case THE_REVERAND_GREEN: return "G";
+			case MRS_PEACOCK: return "P";
+			case PROFESSOR_PLUM: return "p";
+		}return " ";		
+	}
 }

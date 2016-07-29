@@ -1,5 +1,8 @@
 package src.main.GameObject;
 
+import src.main.Cluedo.Game;
+import src.main.Location.Room;
+
 /**
  * Represents a weapon in the game
  * 
@@ -8,14 +11,17 @@ package src.main.GameObject;
  */
 public class Weapon {
 
+	private Game game;
 	private String name;
+	private String room;
 	
 	/**
 	 * Constructs a new weapon object
 	 * 
 	 * @param name - name of the weapon
 	 */
-	public Weapon(String name){
+	public Weapon(Game game, String name){
+		this.game = game;
 		this.name = name;
 	}
 	
@@ -23,5 +29,20 @@ public class Weapon {
 	
 	public String getName(){
 		return name;
+	}
+	
+	public String getRoom(){
+		return room;
+	}
+	
+
+	public void setRoom(String room){
+		this.room = room;
+	}
+
+	public void move(Room room){
+		Room oldRoom = game.getRoom(this.room);
+		oldRoom.removeWeapon(this);
+		room.addWeapon(this);					
 	}
 }

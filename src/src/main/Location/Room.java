@@ -1,7 +1,10 @@
-package src.main.GameObject;
+package src.main.Location;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import src.main.GameObject.Player;
+import src.main.GameObject.Weapon;
 
 /**
  * Represents a Room on the 
@@ -10,12 +13,12 @@ import java.util.List;
  * @author cameronmclachlan
  *
  */
-public class Room {
+public class Room implements Location{
 
 	private String name;
 	
 	private List<Weapon> weapons;
-	private Player player;
+	private List<Player> players;
 	
 	/**
 	 * constructs a new Room object
@@ -24,6 +27,7 @@ public class Room {
 	 */
 	public Room(String name){
 		weapons = new ArrayList<>();
+		players = new ArrayList<>();
 		this.name = name;
 	}
 	
@@ -37,22 +41,40 @@ public class Room {
 	}
 	
 	/**
+	 * Adds a weapon to the room
+	 * 
+	 * @param weapon
+	 */
+	public void removeWeapon(Weapon weapon){
+		weapons.remove(weapon);
+	}
+	
+	/**
 	 * Adds a player to the room
 	 * 
 	 * @param player
 	 */
 	public void addPlayer(Player player){
-		this.player = player;
+		players.add(player);
+	}
+	
+	/**
+	 * Removes a player to the room
+	 * 
+	 * @param player
+	 */
+	public void removePlayer(Player player){
+		players.remove(player);
 	}
 	
 	// Getters and Setters
 	
-	public Weapon getWeapon(){
-		return null;
+	public List<Weapon> getWeapons(){
+		return weapons;
 	}
 	
-	public Player getPlayer(){
-		return player;
+	public List<Player> getPlayers(){
+		return players;
 	}
 	
 	public String getName(){
@@ -60,7 +82,9 @@ public class Room {
 	}
 	
 	
-	
+	public void printLocation(){
+		System.out.print(name);
+	}
 	
 	
 }

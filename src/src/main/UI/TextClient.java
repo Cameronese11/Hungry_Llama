@@ -11,7 +11,10 @@ import src.main.Cards.Card;
 import src.main.Cluedo.Board;
 import src.main.Cluedo.Game;
 import src.main.GameObject.Player;
-import src.main.Tiles.Tile;
+import src.main.GameObject.Weapon;
+import src.main.Location.Location;
+import src.main.Location.Room;
+import src.main.Location.Tile;
 
 /**
  * Class to present the game and 
@@ -191,17 +194,45 @@ public class TextClient {
 				String input = scan.next();
 				
 				if(input.equals("r"))
-					startTurn();
+					StartTurn();
 				
 				System.out.println();
 				System.out.println();
 				System.out.println("Type in the coordinate where you would like");
-				System.out.println("to move with the format x,y");
+				System.out.println("to move with the format x,y (no brackets)");
 				System.out.println();
 				
-				String input2 = scan.next();
+				boolean done = false;
+				int x = 0;
+				int y = 0;
+				while(done == false){
+					input = scan.next();
+					Scanner sc = new Scanner(input);
+					sc.useDelimiter(",");
+					String input1 = sc.next();
+					String input2 = sc.next();
+					try{
+						x = Integer.valueOf(input1);
+						y = Integer.valueOf(input2);
+						done = true;
+					}catch (NumberFormatException e){
+						input = null;
+						System.out.println();
+						System.out.println("Invalid Input");
+						System.out.println();
+						System.out.println("Type in the coordinate where you would like");
+						System.out.println("to move with the format x,y (no brackets)");
+						System.out.println();
+					}
 				
-			
+				}	
+				
+				game.getCurrentPlayer().move((Location) board.getTile(x-1, y-1));				
+				if(game.getCurrentPlayer().getLocation() instanceof Room)
+					suggestion();
+				
+				game.setCurrentPlayer(game.nextTurn());
+				
 				
 			}
 			
@@ -209,7 +240,7 @@ public class TextClient {
 	}
 	
 	
-	public void startTurn(){
+	public void StartTurn(){
 		game.clearConsole();
 		
 		try {
@@ -222,6 +253,7 @@ public class TextClient {
 
 		int roll = 0;
 		roll = game.rollDice();
+		roll = 6;
 		System.out.println();
 		System.out.println("You rolled a " + roll);
 		System.out.println();
@@ -242,11 +274,30 @@ public class TextClient {
 	public void showTurnInfo(){
 		Player currentPlayer = game.getCurrentPlayer();
 		board.printBoard();
-		System.out.print(currentPlayer.getCharacter() + ": ");
-		currentPlayer.getCurrentTile().print();
-		System.out.print(" (" + (currentPlayer.getCurrentTile().getX()+1) + ",");
-		System.out.println((currentPlayer.getCurrentTile().getY()+1) + ")");
+		System.out.println("///////////     Players     ///////////");
 		System.out.println();
+		for(Player p: game.getPlayers()){
+			if(game.getCurrentPlayer().equals(p))
+				System.out.print("*");
+			System.out.print(p.getCharacter() + ": ");
+			p.print();
+			System.out.print(" ");
+			p.getLocation().printLocation();
+			System.out.println();
+		}
+		System.out.println();
+		System.out.println("////////////     Rooms     ////////////");
+		System.out.println();
+		for(Room r: game.getRooms()){
+			System.out.println(r.getName());
+			for(Weapon w: r.getWeapons()){
+				System.out.println("  Weapon: " + w.getName());
+			}
+			for(Player p: r.getPlayers())
+				System.out.println("  Player: " + p.getCharacter());
+			System.out.println();
+		}
+		
 		System.out.println("//////////     Your Hand     //////////");
 		System.out.println();
 		for(Card c: game.getCurrentPlayer().getHand())
@@ -261,6 +312,107 @@ public class TextClient {
 		}
 		System.out.println("///////////////////////////////////////");
 		
+		
+	}
+
+	public void suggestion(){
+		Weapon weapon = null;
+		Player suspect = null;
+		
+		game.clearConsole();
+		
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		
+		showTurnInfo();
+		boolean done = false;
+		
+		while(done == false){
+			System.out.println();
+			System.out.println("Would you like to make a suggestion?");
+			System.out.println("y for yes, n for no");
+			System.out.println();
+			String input = scan.next();
+			if(input.equalsIgnoreCase("y"))
+				done = true;
+			else if(input.equalsIgnoreCase("n"))
+				done = true;
+			else
+				System.out.println("invalid response");
+			System.out.println();
+		}
+		done = false;
+		while (done == false){
+			System.out.print("Chose your suspected murder weapon");
+			System.out.println();
+			System.out.println("1. Candlestick");
+			System.out.println("2. Dagger");
+			System.out.println("3. Lead Pipe");
+			System.out.println("4. Revolver");
+			System.out.println("5. Rope");
+			System.out.println("6. Spanner");
+			System.out.println();
+			String input = scan.next();
+			done = true;
+			if(input.equals("1"))
+				weapon = game.getWeapon("Candlestick");
+			else if(input.equals("2"))
+				weapon = game.getWeapon("Dagger");
+			else if(input.equals("3"))
+				weapon = game.getWeapon("LeadPipe");
+			else if(input.equals("4"))
+				weapon = game.getWeapon("Revolver");
+			else if(input.equals("5"))
+				weapon = game.getWeapon("Rope");
+			else if(input.equals("6"))
+				weapon = game.getWeapon("Spanner");
+			else{
+				System.out.println();
+				System.out.println("invalid input");
+				done = false;
+			}
+			System.out.println();
+		}
+		done = false;
+		while (done == false){
+			System.out.print("Chose your suspect");
+			System.out.println();
+			System.out.println("1. MISS_SCARLETT");
+			System.out.println("2. COLONEL_MUSTARD");
+			System.out.println("3. MRS_WHITE");
+			System.out.println("4. THE_REVERAND_GREEN");
+			System.out.println("5. MRS_PEACOCK");
+			System.out.println("6. PROFESSOR_PLUM");
+			System.out.println();
+			String input = scan.next();
+			done = true;
+			if(input.equals("1"))
+				suspect = game.getPlayer(Player.Character.MISS_SCARLETT);
+			else if(input.equals("2"))
+				suspect = game.getPlayer(Player.Character.COLONEL_MUSTARD);
+			else if(input.equals("3"))
+				suspect = game.getPlayer(Player.Character.MRS_WHITE);
+			else if(input.equals("4"))
+				suspect = game.getPlayer(Player.Character.THE_REVERAND_GREEN);
+			else if(input.equals("5"))
+				suspect = game.getPlayer(Player.Character.MRS_PEACOCK);
+			else if(input.equals("6"))
+				suspect = game.getPlayer(Player.Character.PROFESSOR_PLUM);
+			else{
+				System.out.println();
+				System.out.println("invalid input");
+				done = false;
+			}if(suspect.equals(game.getCurrentPlayer())){
+				System.out.println();
+				System.out.println("You cant be a suspect!");
+				done = false;
+			}
+			System.out.println();
+		}
+		game.suggestion(suspect,weapon,game.getCurrentPlayer().getLocation());
 		
 	}
 

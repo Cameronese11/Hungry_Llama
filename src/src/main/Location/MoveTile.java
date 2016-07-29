@@ -1,4 +1,4 @@
-package src.main.Tiles;
+package src.main.Location;
 
 
 import java.util.Scanner;
@@ -12,7 +12,7 @@ import src.main.GameObject.Player.Character;
  * @author cameronmclachlan
  *
  */
-public class MoveTile implements Tile{
+public class MoveTile implements Tile, Location{
 	
 	// Tile coordinates
 	protected int x;
@@ -21,8 +21,6 @@ public class MoveTile implements Tile{
 	// player at this tile, null if none
 	protected Player player;
 	
-	// if true then a player can move to this tile
-	protected boolean moveTo;
 	
 	/**
 	 * Constructs a new Tile object
@@ -39,10 +37,17 @@ public class MoveTile implements Tile{
 	 * prints the tile
 	 */
 	public void print(){
-		if(moveTo)
-			System.out.print("[#]");
-		else
+		if(player == null)
 			System.out.print("[ ]");
+		else
+			System.out.print("[" + getLetter() + "]");
+	}
+	
+	/**
+	 * prints the tile
+	 */
+	public void printLocation(){
+			System.out.print("(" + (x+1) + "," + (y+1) + ")");
 	}
 	
 	/**
@@ -86,7 +91,5 @@ public class MoveTile implements Tile{
 		this.player = player;
 	}
 	
-	public void setMoveTo(Boolean moveTo){
-		this.moveTo = moveTo;
-	}
+	
 }

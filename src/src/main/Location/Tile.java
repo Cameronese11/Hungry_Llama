@@ -1,4 +1,4 @@
-package src.main.Tiles;
+package src.main.Location;
 
 /**
  * Represents a tile on the board

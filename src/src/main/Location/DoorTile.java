@@ -1,7 +1,4 @@
-package src.main.Tiles;
-
-
-import src.main.GameObject.Room;
+package src.main.Location;
 
 /**
  * Represents a Tile of the board which 
@@ -28,5 +25,9 @@ public class DoorTile extends MoveTile implements Tile {
 	// print this tile
 	public void print(){
 		System.out.print("[D]");
+	}
+	
+	public String getRoom(){
+		return room;
 	}
 }

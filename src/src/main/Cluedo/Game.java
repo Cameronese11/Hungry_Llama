@@ -12,9 +12,11 @@ import src.main.Cards.WeaponCard;
 import src.main.GameObject.Basement;
 import src.main.GameObject.Player;
 import src.main.GameObject.Player.Character;
-import src.main.Tiles.MoveTile;
-import src.main.Tiles.Tile;
-import src.main.GameObject.Room;
+import src.main.Location.DoorTile;
+import src.main.Location.Location;
+import src.main.Location.MoveTile;
+import src.main.Location.Room;
+import src.main.Location.Tile;
 import src.main.GameObject.Weapon;
 import src.main.UI.TextClient;
 
@@ -67,12 +69,12 @@ public class Game {
 	}
 	
 	private void initialiseWeapons(){
-		weapons.add(new Weapon("Candlestick"));
-		weapons.add(new Weapon("Dagger"));
-		weapons.add(new Weapon("Lead Pipe"));
-		weapons.add(new Weapon("Revolver"));
-		weapons.add(new Weapon("Rope"));
-		weapons.add(new Weapon("Spanner"));
+		weapons.add(new Weapon(this, "Candlestick"));
+		weapons.add(new Weapon(this, "Dagger"));
+		weapons.add(new Weapon(this, "Lead Pipe"));
+		weapons.add(new Weapon(this, "Revolver"));
+		weapons.add(new Weapon(this, "Rope"));
+		weapons.add(new Weapon(this, "Spanner"));
 	}
 
 	private void initialiseRooms(){
@@ -83,8 +85,13 @@ public class Game {
 		rooms.add(new Room("Hall"));
 		rooms.add(new Room("Study"));
 		rooms.add(new Room("Library"));
-		rooms.add(new Room("Billard"));
+		rooms.add(new Room("Billard Room"));
 		rooms.add(new Room("Conservatory"));
+		Collections.shuffle(weapons);
+		Collections.shuffle(rooms);
+		for(int i = 0; i < weapons.size(); i++)
+			rooms.get(i).addWeapon(weapons.get(i));
+
 	}
 	
 	private void initialiseCharacters() {
@@ -152,7 +159,7 @@ public class Game {
 	public void setupPlayers(){
 		for(Player p: players){
 			Tile tile = p.determineStartTile();
-			p.move(tile);
+			p.move((Location) tile);
 		}
 	}
 		
@@ -164,6 +171,8 @@ public class Game {
 		for(int clear = 0; clear < 100000; clear++)
 		     System.out.print("\b") ;
 	}
+	
+	
 	
 	/**
 	 * Creates a player in the game with 
@@ -209,7 +218,12 @@ public class Game {
 	 * @return - player
 	 */
 	public Player nextTurn(){
-		return null;
+		int playerNum = currentPlayer.getNum();
+		if(playerNum == numPlayers)
+			playerNum = 1;
+		else
+			playerNum++;
+		return getPlayer(playerNum);
 	}
 	
 	/**
@@ -222,10 +236,15 @@ public class Game {
 	}
 	
 	public List<Tile> determineMoveLocations(Player player, int DiceRoll){
-		Tile location = player.getCurrentTile();
+		Location location = player.getLocation();
+		Tile tile = null;
 		List<Tile>moveableTiles = new ArrayList();
-		moveableTiles = RecursiveCheck(DiceRoll, location, moveableTiles);
-		moveableTiles.remove(location);
+		if(location instanceof Tile){
+			 tile = (Tile) location;
+			 moveableTiles = RecursiveCheck(DiceRoll, tile, moveableTiles);
+			 moveableTiles.remove(location);
+			 
+		}
 		return moveableTiles;
 	}
 	
@@ -311,6 +330,10 @@ public class Game {
 		return null;
 	}
 	
+	public List<Room> getRooms(){
+		return rooms;
+	}
+	
 	public Weapon getWeapon(String name){
 		for(Weapon w: weapons)
 			if(w.getName().equals(name))
@@ -322,8 +345,18 @@ public class Game {
 		return currentPlayer;
 	}
 	
+	public void setCurrentPlayer(Player player){
+		currentPlayer = player;
+	}
+	
 	public void setNumPlayers(int num){
 		this.numPlayers = num;
+	}
+
+	public void suggestion(Player suspect, Weapon weapon, Location location) {
+		weapon.move((Room) location);
+		suspect.move(location);
+		
 	}
 	
 }
