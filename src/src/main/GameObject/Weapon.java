@@ -45,4 +45,15 @@ public class Weapon {
 		oldRoom.removeWeapon(this);
 		room.addWeapon(this);					
 	}
+	
+	/**
+	 *Equals method to compare to players 
+	 */
+	@Override
+	public boolean equals(Object weapon){
+		if( !(weapon instanceof Weapon) || (weapon == null))
+			return false;
+		
+		return (((Weapon) weapon).getName().equals(getName()));
+	}
 }

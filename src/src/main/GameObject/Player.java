@@ -133,7 +133,9 @@ public class Player {
 				location = room;
 			}
 		}else if(newLocation instanceof Room){
-		
+			((Room) newLocation).addPlayer(this);
+			location = newLocation;
+			
 		}
 		
 	return true;

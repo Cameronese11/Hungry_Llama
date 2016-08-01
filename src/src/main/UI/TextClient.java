@@ -12,6 +12,7 @@ import src.main.Cluedo.Board;
 import src.main.Cluedo.Game;
 import src.main.GameObject.Player;
 import src.main.GameObject.Weapon;
+import src.main.GameObject.Player.Character;
 import src.main.Location.Location;
 import src.main.Location.Room;
 import src.main.Location.Tile;
@@ -49,11 +50,13 @@ public class TextClient {
 		boolean done = false;
 		String answer = "";
 		int numPlayers = 0;
+		answer = "";
 		while(!done){
 						
 			// Determine the number of players
 			System.out.println("How many people are playing(3-6)");
-			answer = scan.next();
+			System.out.println();
+			answer = scan.nextLine();
 			
 			// keep asking until correct value is entered
 			if(answer.equals("3")){
@@ -76,40 +79,46 @@ public class TextClient {
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
-				System.out.println("Must be between 1 and 6 players");
+				System.out.println("Must be between 1 and 6 players!");
 				System.out.println();
 			}
 		}
 		game.setNumPlayers(numPlayers);
+		
+		
 		int i = 1;
+		// while there are still players to be assigned, then assign them a character
 		while(i<=numPlayers){
-			game.clearConsole();
 			
+			// clear the console, 
+			game.clearConsole();
 			try {
-				Thread.sleep(1000);
+				Thread.sleep(1000); // for timing
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
 			
 			// Determine each players character
-
 			System.out.println("Player " + i);
 			System.out.println();
 			System.out.println("Type the integer representing the Character you would like to use,"); 
 			System.out.println("type 'r' for a random character");
 			System.out.println();
-			int k = game.getCharacters().size();
 			
+			int k = game.getCharacters().size();
 			List<Player.Character> a = game.getCharacters();
 			List<Player.Character> b = game.getCharactersLeft();
+			Player.Character character = null;
+			done = true;
+			
+			// print all the unassigned characters
 			for(int j = 0; j < k; j++)
 				if(b.contains(a.get(j)))
 					System.out.println((j + 1) + ". " + a.get(j));
 			System.out.println();
 			
-			done = true;
-			answer = scan.next();
-			Player.Character character = null;
+			// Wait for user input
+			answer = scan.nextLine();
 			
 			if(answer.equalsIgnoreCase("r")){
 				character = game.generatePlayer(i);
@@ -146,14 +155,24 @@ public class TextClient {
 			}else
 				done = false;
 			if(done == false){ 
-				System.out.println("invalid response, please try again");
+				System.out.println("invalid response! please try again");
 				System.out.println();
+				
+				try {
+					// to give them a change to read below print statement
+					Thread.sleep(2000); // 3000
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				
 				i--;
 			}
 			if(character != null){
 				System.out.println("Player " + i + " is assigned " + character);
 				
+				
 				try {
+					// to give them a change to read below print statement
 					Thread.sleep(0000); // 3000
 				} catch (InterruptedException e) {
 					e.printStackTrace();
@@ -162,18 +181,22 @@ public class TextClient {
 			}
 			i++;
 		}
-		game.dealCards();
-		game.setupPlayers();
-		
 	}
+		
 	
 	/**
 	 * Run the Game
 	 */
 	public void Run(){
-		initialiseGame();
+		
 		Scanner scan = new Scanner(System.in);
-
+		
+		
+		game.getCurrentPlayer().move(game.getRoom("Lounge")); // remove later
+		
+		
+		
+		// Game loop:
 			while(true){
 				
 				game.clearConsole();
@@ -184,93 +207,219 @@ public class TextClient {
 					e.printStackTrace();
 				}
 				
-				board.printBoard();
+				
 				
 				System.out.println(game.getCurrentPlayer().getCharacter() + " It is your turn");
 				System.out.println();
-				System.out.println("Type 'r' when you are Ready");
+				System.out.println("Type anything and hit enter when you are Ready");
 				System.out.println();
 			
 				String input = scan.next();
+				input = null;
 				
-				if(input.equals("r"))
-					StartTurn();
+				game.clearConsole();
 				
-				System.out.println();
-				System.out.println();
-				System.out.println("Type in the coordinate where you would like");
-				System.out.println("to move with the format x,y (no brackets)");
-				System.out.println();
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				
+				showTurnInfo();
+				
 				
 				boolean done = false;
-				int x = 0;
-				int y = 0;
+				boolean suggestion = false;
+				boolean stairway = true;
+				boolean askSuggestion = false;
+				input = null;
+				List<Tile> moveableTiles = rollDice();
 				while(done == false){
+					System.out .println();
+					System.out.println("What would you like to do?");
+					System.out .println();
+					System.out.println("1. Move");
+					System.out.println("2. Make an Accusation");
+					if(game.getCurrentPlayer().getLocation() instanceof Room){
+						Room room = (Room) game.getCurrentPlayer().getLocation();
+						System.out.println("3. Make a Suggestion");
+						if(room.getStairwayTo() != null)
+							System.out.println("4. Use Stairway to " + room.getStairwayTo());		
+					}
+					
 					input = scan.next();
-					Scanner sc = new Scanner(input);
-					sc.useDelimiter(",");
-					String input1 = sc.next();
-					String input2 = sc.next();
-					try{
-						x = Integer.valueOf(input1);
-						y = Integer.valueOf(input2);
+					if(input.equals("1")){
 						done = true;
-					}catch (NumberFormatException e){
-						input = null;
+						move(moveableTiles);
+					}else if(input.equals("2")){
+						done = true;
+						makeAccusation();
+					}else if(input.equals("3")){
+						if(game.getCurrentPlayer().getLocation() instanceof Room){
+							boolean fin = false;
+							while(fin == false){
+								System.out.println("");
+								System.out.println("If you make a suggestion from this room now, you cannot move this turn");
+								System.out.println("are you sure you want to do this?");
+								System.out.println();
+								System.out.println("1. Yes");
+								System.out.println("2. No");
+								String input2 = scan.next();
+								if(input2.equals("1")){
+									done = true;
+									fin = true;
+									suggestion = true;
+									askSuggestion = true;
+								}else if(input2.equals("2")){
+									fin = true;
+								}else{
+									System.out.println();
+									System.out.println("invalid input, please try again");
+								}
+							}						
+						}
+					}else if(input.equals("4")){
+						if(game.getCurrentPlayer().getLocation() instanceof Room){
+							Room room = (Room) game.getCurrentPlayer().getLocation();
+							if(room.getStairwayTo() != null){
+								boolean fin = false;
+								while(fin == false){
+									System.out.println("");
+									System.out.println("If you use the stairway it will count as your turn");
+									System.out.println("are you sure you want to do this?");
+									System.out.println();
+									System.out.println("1. Yes");
+									System.out.println("2. No");
+									String input2 = scan.next();
+									if(input2.equals("1")){
+										fin = true;
+										stairway = true;
+										done = true;
+									}else if(input2.equals("2")){
+										fin = true;
+									}else{
+										System.out.println();
+										System.out.println("invalid input, please try again");
+									}
+								}			
+							}
+						}
+					}else{
+					 System.out.println("invalid input, please try again");
+					
+					}
+					
+				
+				}
+				
+				if(stairway == true){
+					game.useStairway();
+					game.clearConsole();
+					
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+					
+					showTurnInfo();
+					System.out.println();
+					System.out.println("Board Updated...");
+				
+				}
+				
+				if(game.getCurrentPlayer().getLocation() instanceof Room)
+					while(askSuggestion == false){
 						System.out.println();
-						System.out.println("Invalid Input");
+						System.out.println("Would you like to make a suggestion?");
 						System.out.println();
-						System.out.println("Type in the coordinate where you would like");
-						System.out.println("to move with the format x,y (no brackets)");
+						System.out.println("1. Yes");
+						System.out.println("2. No");
+						System.out.println();
+						String input2 = scan.next();
+						if(input2.equalsIgnoreCase("1")){
+							suggestion = true;
+							askSuggestion = false;
+						}	
+						else if(input2.equalsIgnoreCase("2"))
+							askSuggestion = false;
+						else
+							System.out.println("invalid response");
 						System.out.println();
 					}
+			
 				
-				}	
 				
-				game.getCurrentPlayer().move((Location) board.getTile(x-1, y-1));				
-				if(game.getCurrentPlayer().getLocation() instanceof Room)
-					suggestion();
+				if(suggestion == true)
+					if(game.getCurrentPlayer().getLocation() instanceof Room)
+						makeSuggestion();
 				
+				
+					
 				game.setCurrentPlayer(game.nextTurn());
 				
 				
-			}
+			
 			
 				
-	}
-	
-	
-	public void StartTurn(){
-		game.clearConsole();
-		
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		
-		showTurnInfo();
-
-		int roll = 0;
-		roll = game.rollDice();
-		roll = 6;
-		System.out.println();
-		System.out.println("You rolled a " + roll);
-		System.out.println();
-		System.out.println("You can move to the following locations");
-		System.out.println();
-		List<Tile> moveableTiles = game.determineMoveLocations(game.getCurrentPlayer(), roll);
-		int count = 0;
-		for(Tile t: moveableTiles){
-			System.out.print("(" + (t.getX()+1) + "," + (t.getY()+1) + ") ");
-			count++;
-			if(count == 6){
-				System.out.println();
-				count = 0;
 			}
-		}
 	}
+	public void move(List<Tile> moveableTiles){
+		
+		System.out.println();
+		System.out.println();
+		System.out.println("Type in the coordinate where you would like");
+		System.out.println("to move with the format x,y (no brackets)");
+		System.out.println();
+		
+		String input;
+		boolean done = false;
+		int x = 0;
+		int y = 0;
+		while(done == false){
+			input = scan.next();
+			Scanner sc = new Scanner(input);
+			sc.useDelimiter(",");
+			String input1 = sc.next();
+			String input2 = sc.next();
+			try{
+				x = Integer.valueOf(input1);
+				y = Integer.valueOf(input2);
+				for(Tile t :moveableTiles)
+					if(t.getX() == (x - 1) && t.getY() == (y - 1))
+						done = true;
+			}catch (NumberFormatException e){
+				
+			}
+			if(done == false){
+				input = null;
+				System.out.println();
+				System.out.println("Invalid Input");
+				System.out.println();
+				System.out.println("Type in a valid coordinate where you would like");
+				System.out.println("to move with the format x,y (no brackets)");
+				System.out.println();
+			}
+		}	
+		
+
+		game.getCurrentPlayer().move((Location) board.getTile(x-1, y-1));				
+		
+		
+		
+		
+	}
+		
+		
+		
 	
+	
+	public void makeAccusation() {
+		System.out.println();
+		System.out.println("Lets make an accusation brah");
+		
+	}
+
 	public void showTurnInfo(){
 		Player currentPlayer = game.getCurrentPlayer();
 		board.printBoard();
@@ -303,10 +452,10 @@ public class TextClient {
 		for(Card c: game.getCurrentPlayer().getHand())
 			System.out.println(c.toString());
 		System.out.println();
-		if(!game.getDeck().isEmpty()){
+		if(!game.getCardsLeft().isEmpty()){
 			System.out.println("//////////  Left Over Cards  //////////");
 			System.out.println();
-			for(Card c: game.getDeck())
+			for(Card c: game.getCardsLeft())
 				System.out.println(c.toString());
 			System.out.println();
 		}
@@ -315,9 +464,32 @@ public class TextClient {
 		
 	}
 
-	public void suggestion(){
+	public List<Tile> rollDice(){
+		int roll = 0;
+		roll = game.rollDice();
+		System.out.println();
+		System.out.println("You rolled a " + roll);
+		System.out.println();
+		System.out.println("You can move to the following locations");
+		System.out.println();
+		List<Tile> moveableTiles = game.determineMoveLocations(game.getCurrentPlayer(), roll);
+		int count = 0;
+		for(Tile t: moveableTiles){
+			System.out.print("(" + (t.getX()+1) + "," + (t.getY()+1) + ") ");
+			count++;
+			if(count == 6){
+				System.out.println();
+				count = 0;
+			}
+		}
+		System.out.println();
+		return moveableTiles;
+	}
+	
+	
+	public void makeSuggestion(){
 		Weapon weapon = null;
-		Player suspect = null;
+		Character suspect = null;
 		
 		game.clearConsole();
 		
@@ -328,24 +500,17 @@ public class TextClient {
 		}
 		
 		showTurnInfo();
+		System.out.println();
+		System.out.println("Board Updated...");
+		
+		
 		boolean done = false;
 		
-		while(done == false){
-			System.out.println();
-			System.out.println("Would you like to make a suggestion?");
-			System.out.println("y for yes, n for no");
-			System.out.println();
-			String input = scan.next();
-			if(input.equalsIgnoreCase("y"))
-				done = true;
-			else if(input.equalsIgnoreCase("n"))
-				done = true;
-			else
-				System.out.println("invalid response");
-			System.out.println();
-		}
-		done = false;
+		
 		while (done == false){
+			System.out.println();
+			System.out.println("Make a Suggestion, chose wisely");
+			System.out.println();
 			System.out.print("Chose your suspected murder weapon");
 			System.out.println();
 			System.out.println("1. Candlestick");
@@ -390,29 +555,41 @@ public class TextClient {
 			String input = scan.next();
 			done = true;
 			if(input.equals("1"))
-				suspect = game.getPlayer(Player.Character.MISS_SCARLETT);
+				suspect = Player.Character.MISS_SCARLETT;
 			else if(input.equals("2"))
-				suspect = game.getPlayer(Player.Character.COLONEL_MUSTARD);
+				suspect = Player.Character.COLONEL_MUSTARD;
 			else if(input.equals("3"))
-				suspect = game.getPlayer(Player.Character.MRS_WHITE);
+				suspect = Player.Character.MRS_WHITE;
 			else if(input.equals("4"))
-				suspect = game.getPlayer(Player.Character.THE_REVERAND_GREEN);
+				suspect = Player.Character.THE_REVERAND_GREEN;
 			else if(input.equals("5"))
-				suspect = game.getPlayer(Player.Character.MRS_PEACOCK);
+				suspect = Player.Character.MRS_PEACOCK;
 			else if(input.equals("6"))
-				suspect = game.getPlayer(Player.Character.PROFESSOR_PLUM);
+				suspect = Player.Character.PROFESSOR_PLUM;
 			else{
 				System.out.println();
 				System.out.println("invalid input");
 				done = false;
-			}if(suspect.equals(game.getCurrentPlayer())){
-				System.out.println();
-				System.out.println("You cant be a suspect!");
-				done = false;
 			}
+			if(suspect != null)
+				if(suspect.equals(game.getCurrentPlayer())){
+					System.out.println();
+					System.out.println("You cant be a suspect!");
+					done = false;
+				}
 			System.out.println();
 		}
-		game.suggestion(suspect,weapon,game.getCurrentPlayer().getLocation());
+		String Refute = game.suggestion(suspect,weapon,((Room)game.getCurrentPlayer().getLocation()));
+		if(Refute == null){
+			System.out.println("Well done, Suggestion was NOT refuted");
+		}else{
+			System.out.println(Refute);
+		}
+		
+		System.out.println();
+		System.out.println("Press any key when your done");
+		String input = scan.next();
+		
 		
 	}
 

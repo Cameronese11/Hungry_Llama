@@ -19,16 +19,18 @@ public class Room implements Location{
 	
 	private List<Weapon> weapons;
 	private List<Player> players;
+	private String stairwayTo;
 	
 	/**
 	 * constructs a new Room object
 	 * 
 	 * @param name - name of the room
 	 */
-	public Room(String name){
+	public Room(String name, String stairwayTo){
 		weapons = new ArrayList<>();
 		players = new ArrayList<>();
 		this.name = name;
+		this.stairwayTo = stairwayTo;
 	}
 	
 	/**
@@ -39,6 +41,7 @@ public class Room implements Location{
 	public void addWeapon(Weapon weapon){
 		weapons.add(weapon);
 	}
+
 	
 	/**
 	 * Adds a weapon to the room
@@ -46,7 +49,8 @@ public class Room implements Location{
 	 * @param weapon
 	 */
 	public void removeWeapon(Weapon weapon){
-		weapons.remove(weapon);
+		if(weapons.contains(weapon))
+			weapons.remove(weapon);
 	}
 	
 	/**
@@ -64,7 +68,19 @@ public class Room implements Location{
 	 * @param player
 	 */
 	public void removePlayer(Player player){
-		players.remove(player);
+		if(players.contains(player))
+			players.remove(player);
+	}
+	
+	/**
+	 *Equals method to compare to players 
+	 */
+	@Override
+	public boolean equals(Object room){
+		if( !(room instanceof Room) || (room == null))
+			return false;
+		
+		return (((Room) room).getName().equals(getName()));
 	}
 	
 	// Getters and Setters
@@ -84,6 +100,10 @@ public class Room implements Location{
 	
 	public void printLocation(){
 		System.out.print(name);
+	}
+
+	public String getStairwayTo() {
+		return stairwayTo;
 	}
 	
 	

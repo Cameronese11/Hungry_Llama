@@ -31,10 +31,12 @@ public class Game {
 	private List<Player> players;
 	private List<Room> rooms;
 	private List<Weapon> weapons;
-	private List<Card> deck;
+	private List<Card> cards;
+	
 	
 	private List<Player.Character> characters; 	  
 	private List<Player.Character> charactersLeft; // characters not yet assigned to a player
+	private List<Card> cardsLeft; // all leftover cards not given to a player
 	
 	private Board board;
 	private TextClient textClient;
@@ -49,23 +51,34 @@ public class Game {
 	 * @param filename - file location to construct the board
 	 */
 	public Game(String filename){
+	
+		// initialise Gameboard
 		board = new Board(filename);
+		
+		// initialise Lists
 		players = new ArrayList<Player>();
 		charactersLeft = new ArrayList<>();
 		characters = new ArrayList<>();
 		rooms = new ArrayList<>();
 		weapons = new ArrayList<>();
-		deck = new ArrayList<>();
+		cards = new ArrayList<>();
+		
+		// initialise UI
 		textClient = new TextClient(this, board);
-		initialiseGame();
-		textClient.Run();
-	}
-	
-	private void initialiseGame(){
+		
+		// initialise game objects
 		initialiseWeapons();
 		initialiseRooms();
 		initialiseCharacters();
-		initialiseCards();
+		List<Card> deck = initialiseCards();
+		textClient.initialiseGame();
+		
+		// setup game
+		dealCards(deck);
+		setupPlayers();
+		
+		// run game
+		textClient.Run();
 	}
 	
 	private void initialiseWeapons(){
@@ -78,19 +91,21 @@ public class Game {
 	}
 
 	private void initialiseRooms(){
-		rooms.add(new Room("Kitchen"));
-		rooms.add(new Room("Dinning Room"));
-		rooms.add(new Room("Lounge"));
-		rooms.add(new Room("Ball Room"));
-		rooms.add(new Room("Hall"));
-		rooms.add(new Room("Study"));
-		rooms.add(new Room("Library"));
-		rooms.add(new Room("Billard Room"));
-		rooms.add(new Room("Conservatory"));
+		rooms.add(new Room("Kitchen", "Study"));
+		rooms.add(new Room("Dinning Room", null));
+		rooms.add(new Room("Lounge", "Conservatory"));
+		rooms.add(new Room("Ball Room", null));
+		rooms.add(new Room("Hall", null));
+		rooms.add(new Room("Study", "Kitchen"));
+		rooms.add(new Room("Library", null));
+		rooms.add(new Room("Billard Room", null));
+		rooms.add(new Room("Conservatory", "Lounge"));
 		Collections.shuffle(weapons);
 		Collections.shuffle(rooms);
-		for(int i = 0; i < weapons.size(); i++)
+		for(int i = 0; i < weapons.size(); i++){
 			rooms.get(i).addWeapon(weapons.get(i));
+			weapons.get(i).setRoom(rooms.get(i).getName());
+		}
 
 	}
 	
@@ -113,21 +128,35 @@ public class Game {
 	 * Select a Weapon, Suspect and Room card as the Solution, 
 	 * place in the basement and get the rest of the cards ready 
 	 */
-	private void initialiseCards(){
+	private List<Card> initialiseCards(){
 		List<SuspectCard> suspectCards = new ArrayList<>();
 		List<RoomCard> roomCards = new ArrayList<>();
 		List<WeaponCard> weaponCards = new ArrayList<>();
+		List<Card> deck = new ArrayList<>();
 		
 		// sort all the cards into individual piles for each card type and shuffle
-		for(Character c: characters)
-			suspectCards.add(new SuspectCard(c));
-		for(Room r: rooms)
-			roomCards.add(new RoomCard(r));
-		for(Weapon w: weapons)
-			weaponCards.add(new WeaponCard(w));
+		for(Character c: characters){
+			Card card = new SuspectCard(c);
+			suspectCards.add((SuspectCard) card);
+			cards.add(card);
+			deck.add(card);
+		}for(Room r: rooms){
+			Card card = new RoomCard(r);
+			roomCards.add((RoomCard) card);
+			cards.add(card);
+			deck.add(card);
+		}for(Weapon w: weapons){
+			Card card = new WeaponCard(w);
+			weaponCards.add((WeaponCard) card);
+			cards.add(card);
+			deck.add(card);
+		}
+		
 		Collections.shuffle(roomCards);
 		Collections.shuffle(suspectCards);
 		Collections.shuffle(weaponCards);
+		Collections.shuffle(cards);
+		
 		
 		// Select a card of the top of each pile to put towards the 'solution'
 		Room murderRoom = roomCards.get(0).getRoom();
@@ -137,19 +166,13 @@ public class Game {
 		// place the solution in the basement
 		basement = new Basement(murderRoom, murderCharacter, murderWeapon);
 		
-		// merge the piles into one and shuffle
-		for(RoomCard r: roomCards)
-			deck.add(r);
-		for(SuspectCard s: suspectCards)
-			deck.add(s);
-		for(WeaponCard w: weaponCards)
-			deck.add(w);
-		Collections.shuffle(deck);
 		
 		// remove 'solution' from deck
-		deck.remove(murderWeapon);
-		deck.remove(murderWeapon);
-		deck.remove(murderWeapon);		
+		deck.remove(getCard(murderWeapon));
+		deck.remove(getCard(murderCharacter));
+		deck.remove(getCard(murderRoom));		
+		
+		return deck; // return deck to be dealt to players later
 	}
 	
 	/**
@@ -157,6 +180,7 @@ public class Game {
 	 * starting tiles on the board
 	 */
 	public void setupPlayers(){
+		currentPlayer = getPlayer(1);
 		for(Player p: players){
 			Tile tile = p.determineStartTile();
 			p.move((Location) tile);
@@ -226,6 +250,7 @@ public class Game {
 		return getPlayer(playerNum);
 	}
 	
+	
 	/**
 	 * roll the dice
 	 * 
@@ -241,15 +266,31 @@ public class Game {
 		List<Tile>moveableTiles = new ArrayList();
 		if(location instanceof Tile){
 			 tile = (Tile) location;
-			 moveableTiles = RecursiveCheck(DiceRoll, tile, moveableTiles);
+			 moveableTiles = recursiveCheck(DiceRoll, tile, moveableTiles);
 			 moveableTiles.remove(location);
-			 
+		}else if(location instanceof Room){
+			for(Tile t: getTiles()){
+				if(t instanceof DoorTile){
+					if(currentPlayer.getLocation().equals(getRoom(((DoorTile) t).getRoom()))){
+						if(moveableTiles.isEmpty()){
+							moveableTiles = recursiveCheck(DiceRoll, t, moveableTiles);
+							 moveableTiles.remove(t);
+						}	
+					}
+				}
+			}
+						
+			
+			
+			
+			
+			
 		}
 		return moveableTiles;
 	}
 	
 	
-	public List<Tile> RecursiveCheck(int steps, Tile tile, List<Tile> moveableTiles){
+	public List<Tile> recursiveCheck(int steps, Tile tile, List<Tile> moveableTiles){
 		if(tile == null || steps == -1)
 			return moveableTiles;
 		
@@ -258,10 +299,10 @@ public class Game {
 		if(!moveableTiles.contains(tile))
 			moveableTiles.add(tile);
 		
-		moveableTiles = RecursiveCheck(steps-1, board.getTile(x - 1, y), moveableTiles);
-		moveableTiles = RecursiveCheck(steps-1, board.getTile(x + 1, y), moveableTiles);
-		moveableTiles = RecursiveCheck(steps-1, board.getTile(x, y - 1), moveableTiles);
-		moveableTiles = RecursiveCheck(steps-1, board.getTile(x, y + 1), moveableTiles);
+		moveableTiles = recursiveCheck(steps-1, board.getTile(x - 1, y), moveableTiles);
+		moveableTiles = recursiveCheck(steps-1, board.getTile(x + 1, y), moveableTiles);
+		moveableTiles = recursiveCheck(steps-1, board.getTile(x, y - 1), moveableTiles);
+		moveableTiles = recursiveCheck(steps-1, board.getTile(x, y + 1), moveableTiles);
 		
 		return moveableTiles;
 		
@@ -272,10 +313,10 @@ public class Game {
 	 * such that every player has an equal number of cards,
 	 * the remaining cards are left in the deck
 	 */
-	public void dealCards(){
+	public void dealCards(List<Card> deck){
 		boolean done = false;
 		
-		while(!done)
+		while(!done){
 			if(deck.size() >= numPlayers){
 				for(Player p: players){
 					p.addCard(deck.get(0));
@@ -283,7 +324,8 @@ public class Game {
 				}
 			}else
 				done = true;
-		currentPlayer = getPlayer(1);
+		}
+		cardsLeft = deck;
 	}
 	
 	public static void main(String[] args) {
@@ -305,8 +347,33 @@ public class Game {
 		return charactersLeft;
 	}
 	
-	public List<Card> getDeck(){
-		return deck;
+	public List<Card> getCards(){
+		return cards;
+	}
+	
+	public List<Card> getCardsLeft(){
+		return cardsLeft;
+	}
+	
+	public Card getCard(Object o){
+		for(Card c: cards){
+			
+			if(o instanceof Character)
+				if(c instanceof SuspectCard)
+					if(((Character) o).equals(((SuspectCard) c).getCharacter()))
+						return c;
+			
+			if(o instanceof Weapon)
+				if(c instanceof WeaponCard)
+					if(((Weapon) o).equals(((WeaponCard) c).getWeapon()))
+						return c;
+			
+			if(o instanceof Room)
+				if(c instanceof RoomCard)
+					if(((Room) o).equals(((RoomCard) c).getRoom()))
+						return c;	
+		}	
+		return null;
 	}
 	
 	public Player getPlayer(Character character){
@@ -349,13 +416,50 @@ public class Game {
 		currentPlayer = player;
 	}
 	
+	public List<Tile> getTiles(){
+		List<Tile> tiles = new ArrayList<>();
+		for(int y = 0; y < 24; y++){
+			for(int x = 0; x < 25; x++){
+				 tiles.add(board.getTile(x,y));
+			}
+		}
+		return tiles;
+	}
+	
 	public void setNumPlayers(int num){
 		this.numPlayers = num;
 	}
 
-	public void suggestion(Player suspect, Weapon weapon, Location location) {
-		weapon.move((Room) location);
-		suspect.move(location);
+	public String suggestion(Character suspect, Weapon weapon, Room room) {
+		weapon.move(room);
+		Player player = null;
+		for(Player p: players)
+			if(p.getCharacter().equals(suspect))
+				player = getPlayer(suspect);
+		
+		if(player != null)
+				player.move(room);
+		
+		List<Player> otherPlayers = new ArrayList<Player>(players);
+		otherPlayers.remove(currentPlayer);
+		for(Player p: players){
+			List<Card> hand = p.getHand();
+			if(hand.contains(getCard(suspect)))
+				return "Suggestion Refuted, " + p.getCharacter() + " has " + suspect + " in his/her hand";
+			else if(hand.contains(getCard(weapon)))
+				return "Suggestion Refuted, " + p.getCharacter() + " has " + weapon.getName() + " in his/her hand";
+			else if(hand.contains(getCard(room)))
+				return "Suggestion Refuted, " + p.getCharacter() + " has " + room.getName() + " in his/her hand";
+		}
+		return null;
+		
+			
+	}
+
+	public void useStairway() {
+		String dest = ((Room) currentPlayer.getLocation()).getStairwayTo();
+		Room destination = getRoom(dest);
+		currentPlayer.move(destination);
 		
 	}
 	
