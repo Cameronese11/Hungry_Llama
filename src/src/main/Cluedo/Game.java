@@ -163,6 +163,7 @@ public class Game {
 		Character murderCharacter = suspectCards.get(0).getCharacter();
 		Weapon murderWeapon = weaponCards.get(0).getWeapon();
 		
+		
 		// place the solution in the basement
 		basement = new Basement(murderRoom, murderCharacter, murderWeapon);
 		
@@ -194,8 +195,8 @@ public class Game {
 		
 		for(int clear = 0; clear < 100000; clear++)
 		     System.out.print("\b") ;
-	}
 	
+	}
 	
 	
 	/**
@@ -272,10 +273,9 @@ public class Game {
 			for(Tile t: getTiles()){
 				if(t instanceof DoorTile){
 					if(currentPlayer.getLocation().equals(getRoom(((DoorTile) t).getRoom()))){
-						if(moveableTiles.isEmpty()){
-							moveableTiles = recursiveCheck(DiceRoll, t, moveableTiles);
-							 moveableTiles.remove(t);
-						}	
+						moveableTiles = recursiveCheck(DiceRoll, t, moveableTiles);
+						moveableTiles.remove(t);
+						
 					}
 				}
 			}
@@ -411,7 +411,9 @@ public class Game {
 	public Player getCurrentPlayer(){
 		return currentPlayer;
 	}
-	
+	public Basement getBasement(){
+		return basement;
+	}
 	public void setCurrentPlayer(Player player){
 		currentPlayer = player;
 	}
@@ -461,6 +463,12 @@ public class Game {
 		Room destination = getRoom(dest);
 		currentPlayer.move(destination);
 		
+	}
+
+	public Boolean accusation(Character suspect, Weapon weapon, Room room) {
+		return (suspect.equals(basement.getMurderCharacter())
+				&& weapon.equals(basement.getMurderWeapon())
+				&& room.equals(basement.getMurderRoom()));
 	}
 	
 }
