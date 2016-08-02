@@ -29,6 +29,7 @@ import src.main.UI.TextClient;
 public class Game {
 	
 	private List<Player> players;
+	private List<Player> playersIn;
 	private List<Room> rooms;
 	private List<Weapon> weapons;
 	private List<Card> cards;
@@ -40,7 +41,7 @@ public class Game {
 	
 	
 	private Board board;
-	private TextClient textClient;
+
 	
 	private Player currentPlayer;
 	private int numPlayers;
@@ -51,18 +52,18 @@ public class Game {
 	 * 
 	 * @param filename - file location to construct the board
 	 */
-	public Game(){
+	public Game(Board board){
+		
+		this.board = board;
 		
 		// initialise Lists
-		players = new ArrayList<Player>();
+		playersIn = new ArrayList<>();
+		players = new ArrayList<>();
 		charactersLeft = new ArrayList<>();
 		characters = new ArrayList<>();
 		rooms = new ArrayList<>();
 		weapons = new ArrayList<>();
 		cards = new ArrayList<>();
-		
-		// initialise UI
-		textClient = new TextClient(this, board);
 		
 		// initialise game objects
 		initialiseWeapons();
@@ -196,6 +197,7 @@ public class Game {
 	public Character generatePlayer(int i){
 		Character character = generateCharacter();
 		players.add(new Player(this, board, i, character));
+		playersIn.add(new Player(this, board, i, character));
 		charactersLeft.remove(character);
 		return character;
 	}
@@ -221,6 +223,7 @@ public class Game {
 	 */
 	public Character addPlayer(int i, Character character){
 		players.add(new Player(this, board, i, character));
+		playersIn.add(new Player(this, board, i, character));
 		charactersLeft.remove(character);
 		return character;
 	}
@@ -321,7 +324,7 @@ public class Game {
 		
 		while(!done){
 			if(deck.size() >= numPlayers){
-				for(Player p: players){
+				for(Player p: playersIn){
 					p.addCard(deck.get(0));
 					deck.remove(0);
 				}
@@ -345,7 +348,7 @@ public class Game {
 		// move weapon to the suggestion location
 		weapon.move(room);
 		Player player = null;
-		for(Player p: players)
+		for(Player p: playersIn)
 			if(p.getCharacter().equals(suspect))
 				player = getPlayer(suspect);
 		
@@ -353,13 +356,13 @@ public class Game {
 		if(player != null)
 				player.move(room);
 		
-		// create a list of all the players in the game 
+		// create a list of all the players 
 		// apart from the player making the suggestion
 		List<Player> otherPlayers = new ArrayList<Player>(players);
 		otherPlayers.remove(currentPlayer);
 		
 		// finally search through the player hand for any matches
-		for(Player p: players){
+		for(Player p: otherPlayers){
 			List<Card> hand = p.getHand();
 			if(hand.contains(getCard(suspect)))
 				return "Suggestion Refuted, " + p.getCharacter() + " has " + suspect + " in his/her hand";
@@ -404,7 +407,7 @@ public class Game {
 	 * @param player - player to remove
 	 */
 	public void removePlayer(Player player) {
-		players.remove(player);
+		playersIn.remove(player);
 		numPlayers--;
 	}
 	
@@ -412,6 +415,10 @@ public class Game {
 	
 	public List<Player> getPlayers(){
 		return players;
+	}
+	
+	public List<Player> getPlayersIn(){
+		return playersIn;
 	}
 	
 	public List<Player.Character> getCharacters(){

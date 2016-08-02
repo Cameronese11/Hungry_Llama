@@ -2,6 +2,7 @@ package src.main.CluedoTests;
 
 import org.junit.Test;
 
+import src.main.Cluedo.Board;
 import src.main.Cluedo.Game;
 
 /**
@@ -19,7 +20,8 @@ public class MovementTests {
 	// Moving a player from a moveTile to another vaild moveTile 
 	// e.g. its within the number of squares of the diceroll
 	{
-		Game game = new Game();
+		Board board = new Board("reasources/board.txt");
+		Game game = new Game(board);
 		
 		
 		

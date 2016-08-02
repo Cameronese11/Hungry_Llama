@@ -79,7 +79,7 @@ public class TextClient {
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
-				System.out.println("Must be between 1 and 6 players!");
+				System.out.println("Must be between 3 and 6 players!");
 				System.out.println();
 			}
 		}
@@ -443,7 +443,6 @@ public class TextClient {
 		}
 		showTurnInfo();
 		System.out.println();
-		System.out.println("Board Updated...");
 		
 		// loop to determine the murder weapon
 		while (done == false){
@@ -588,6 +587,7 @@ public class TextClient {
 			System.out.println("Muderer: " + game.getBasement().getMurderCharacter());
 			System.out.println();
 			System.out.println("Press any key when your done");
+			System.out.println();
 			String input = scan.next();
 			game.removePlayer(game.getCurrentPlayer());
 			}	
@@ -726,7 +726,7 @@ public class TextClient {
 		// next to the player whose turn it is
 		System.out.println("///////////     Players     ///////////");
 		System.out.println();
-		for(Player p: game.getPlayers()){
+		for(Player p: game.getPlayersIn()){
 			if(game.getCurrentPlayer().equals(p))
 				System.out.print("*");
 			System.out.print(p.getCharacter() + ": ");
@@ -811,8 +811,8 @@ public class TextClient {
 	
 
 	public static void main(String[] args) {
-		Game game = new Game();
 		Board board = new Board(args[0]);
+		Game game = new Game(board);
 		TextClient textClient = new TextClient(game, board);
 		textClient.initialiseGame();
 		
