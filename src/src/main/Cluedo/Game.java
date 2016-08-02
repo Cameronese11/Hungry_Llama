@@ -32,11 +32,12 @@ public class Game {
 	private List<Room> rooms;
 	private List<Weapon> weapons;
 	private List<Card> cards;
+	private List<Card> deck;
 	
 	
 	private List<Player.Character> characters; 	  
 	private List<Player.Character> charactersLeft; // characters not yet assigned to a player
-	private List<Card> cardsLeft; // all leftover cards not given to a player
+	
 	
 	private Board board;
 	private TextClient textClient;
@@ -50,10 +51,7 @@ public class Game {
 	 * 
 	 * @param filename - file location to construct the board
 	 */
-	public Game(String filename){
-	
-		// initialise Gameboard
-		board = new Board(filename);
+	public Game(){
 		
 		// initialise Lists
 		players = new ArrayList<Player>();
@@ -70,15 +68,8 @@ public class Game {
 		initialiseWeapons();
 		initialiseRooms();
 		initialiseCharacters();
-		List<Card> deck = initialiseCards();
-		textClient.initialiseGame();
+		deck = initialiseCards();
 		
-		// setup game
-		dealCards(deck);
-		setupPlayers();
-		
-		// run game
-		textClient.Run();
 	}
 	
 	private void initialiseWeapons(){
@@ -325,7 +316,7 @@ public class Game {
 	 * such that every player has an equal number of cards,
 	 * the remaining cards are left in the deck
 	 */
-	public void dealCards(List<Card> deck){
+	public void dealCards(){
 		boolean done = false;
 		
 		while(!done){
@@ -337,7 +328,6 @@ public class Game {
 			}else
 				done = true;
 		}
-		cardsLeft = deck;
 	}
 	
 	/**
@@ -408,12 +398,6 @@ public class Game {
 	}
 	
 
-
-	
-	public static void main(String[] args) {
-		new Game(args[0]);
-	}
-	
 	
 	// getters and Setters
 	
@@ -434,7 +418,7 @@ public class Game {
 	}
 	
 	public List<Card> getCardsLeft(){
-		return cardsLeft;
+		return deck;
 	}
 	
 	public Card getCard(Object o){
@@ -512,6 +496,11 @@ public class Game {
 	
 	public void setNumPlayers(int num){
 		this.numPlayers = num;
+	}
+
+	public void removePlayer(Player player) {
+		players.remove(player);
+		numPlayers--;
 	}
 }
 

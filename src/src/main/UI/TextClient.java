@@ -589,6 +589,7 @@ public class TextClient {
 			System.out.println();
 			System.out.println("Press any key when your done");
 			String input = scan.next();
+			game.removePlayer(game.getCurrentPlayer());
 			}	
 	}
 		
@@ -808,7 +809,20 @@ public class TextClient {
 		return moveableTiles;
 	}
 	
-	
+
+	public static void main(String[] args) {
+		Game game = new Game();
+		Board board = new Board(args[0]);
+		TextClient textClient = new TextClient(game, board);
+		textClient.initialiseGame();
+		
+		// setup game
+		game.dealCards();
+		game.setupPlayers();
+		
+		// run game
+		textClient.Run();
+	}
 
 }
 
