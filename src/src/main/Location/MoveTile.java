@@ -51,7 +51,7 @@ public class MoveTile implements Tile, Location{
 	}
 	
 	/**
-	 * Returns the Letter to represent the  tiles starting character
+	 * Returns the Letter to represent the tiles starting character
 	 * 
 	 * @return letter
 	 */

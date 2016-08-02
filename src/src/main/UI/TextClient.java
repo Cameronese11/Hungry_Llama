@@ -1,11 +1,9 @@
 
 package src.main.UI;
 
-import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 
-import javax.xml.stream.events.Characters;
 
 import src.main.Cards.Card;
 import src.main.Cluedo.Board;
@@ -45,6 +43,7 @@ public class TextClient {
 	 * Setup the Game 
 	 */
 	public void initialiseGame(){
+		
 		System.out.println("Welcome to Cluedo");
 		System.out.println();
 		scan = new Scanner(System.in);
@@ -121,6 +120,7 @@ public class TextClient {
 			// Wait for user input
 			answer = scan.nextLine();
 			
+			// create a new player for the user depending on the user inout
 			if(answer.equalsIgnoreCase("r")){
 				character = game.generatePlayer(i);
 			}else if(answer.equals("1")){
@@ -155,13 +155,15 @@ public class TextClient {
 					done = false;
 			}else
 				done = false;
+			
+			// to ensure correct input
 			if(done == false){ 
 				System.out.println("invalid response! please try again");
 				System.out.println();
 				
 				try {
-					
-					Thread.sleep(2000); 
+					// to give them a change to read above print statement
+					Thread.sleep(2000); // 2000
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
@@ -173,7 +175,7 @@ public class TextClient {
 				
 				
 				try {
-					// to give them a change to read below print statement
+					// to give them a change to read above print statement
 					Thread.sleep(3000); // 3000
 				} catch (InterruptedException e) {
 					e.printStackTrace();
@@ -195,16 +197,15 @@ public class TextClient {
 		// Game loop:
 			while(running){
 				
+				// clear the console
 				game.clearConsole();
-				
 				try {
 					Thread.sleep(1000);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
 				
-				
-				
+				// wait for the user to signal they are ready before starting thier turn
 				System.out.println(game.getCurrentPlayer().getCharacter() + " It is your turn");
 				System.out.println();
 				System.out.println("Type anything and hit enter when you are Ready");
@@ -213,8 +214,8 @@ public class TextClient {
 				String input = scan.next();
 				input = null;
 				
+				//clear console
 				game.clearConsole();
-				
 				try {
 					Thread.sleep(1000);
 				} catch (InterruptedException e) {
@@ -223,19 +224,26 @@ public class TextClient {
 				
 				showTurnInfo();
 				
-				
+				// booleans to control below loops
 				boolean done = false;
 				boolean suggestion = false;
 				boolean stairway = false;
 				boolean askSuggestion = false;
+				boolean fin = false;
 				input = null;
+				
+				// automatically roll the dice
 				List<Tile> moveableTiles = rollDice();
+				
+				// loop to determine the players first move
 				while(done == false){
 					System.out .println();
 					System.out.println("What would you like to do?");
 					System.out .println();
 					System.out.println("1. Move");
 					System.out.println("2. Make an Accusation");
+					
+					// if the player is in a room they have more options
 					if(game.getCurrentPlayer().getLocation() instanceof Room){
 						Room room = (Room) game.getCurrentPlayer().getLocation();
 						System.out.println("3. Make a Suggestion");
@@ -243,18 +251,19 @@ public class TextClient {
 							System.out.println("4. Use Stairway to " + room.getStairwayTo());		
 					}
 					System.out.println();
+					
+					// wait for user input	
 					input = scan.next();
-					if(input.equals("1")){
+					if(input.equals("1")){ // the player wants to move
 						done = true;
 						move(moveableTiles);
-					}else if(input.equals("2")){
+					}else if(input.equals("2")){ // the player wants to make an accusation
 						done = true;
 						makeAccusation();
 						askSuggestion = true;
-						
-					}else if(input.equals("3")){
+					}else if(input.equals("3")){ // the player wants to make a suggestion
 						if(game.getCurrentPlayer().getLocation() instanceof Room){
-							boolean fin = false;
+							fin = false;
 							while(fin == false){
 								System.out.println();
 								System.out.println("If you make a suggestion from this room now, you cannot move this turn");
@@ -277,11 +286,11 @@ public class TextClient {
 								}
 							}						
 						}
-					}else if(input.equals("4")){
+					}else if(input.equals("4")){ // the player wants to use a stairway
 						if(game.getCurrentPlayer().getLocation() instanceof Room){
 							Room room = (Room) game.getCurrentPlayer().getLocation();
 							if(room.getStairwayTo() != null){
-								boolean fin = false;
+								fin = false;
 								while(fin == false){
 									System.out.println("");
 									System.out.println("If you use the stairway it will count as your turn");
@@ -312,6 +321,7 @@ public class TextClient {
 				
 				}
 				
+				// the user has indicated they want to use a stairwayÍ
 				if(stairway == true){
 					game.useStairway();
 					game.clearConsole();
@@ -321,13 +331,13 @@ public class TextClient {
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
-					
 					showTurnInfo();
 					System.out.println();
 					System.out.println("Board Updated...");
-				
 				}
 				
+				// the user finished there turn in a room and has not been 
+				// asked to make a suggestion yet, or not already made one
 				if(game.getCurrentPlayer().getLocation() instanceof Room)
 					while(askSuggestion == false){
 						System.out.println();
@@ -349,21 +359,23 @@ public class TextClient {
 					}
 			
 				
-				
+				// user has indicated they want to make a suggestion
 				if(suggestion == true)
 					if(game.getCurrentPlayer().getLocation() instanceof Room)
 						makeSuggestion();
 				
 				
-					
-				game.setCurrentPlayer(game.nextTurn());
-				
-				
-			
-			
-				
+				// turn is over, set the current player to the next player
+				game.setCurrentPlayer(game.nextTurn());		
 			}
 	}
+	
+	
+	/**
+	 * completes a regular move turn for a player in the game
+	 * 
+	 * @param moveableTiles - all the tiles the player can move to
+	 */
 	public void move(List<Tile> moveableTiles){
 		
 		System.out.println();
@@ -375,12 +387,16 @@ public class TextClient {
 		boolean done = false;
 		int x = 0;
 		int y = 0;
+		
+		// read the user input to determine the tile they would like to move too
 		while(done == false){
 			input = scan.next();
 			Scanner sc = new Scanner(input);
 			sc.useDelimiter(",");
 			String input1 = sc.next();
 			String input2 = sc.next();
+			
+			// read the input and determine if it is a valid location
 			try{
 				x = Integer.valueOf(input1);
 				y = Integer.valueOf(input2);
@@ -388,8 +404,10 @@ public class TextClient {
 					if(t.getX() == (x - 1) && t.getY() == (y - 1))
 						done = true;
 			}catch (NumberFormatException e){
-				
+				// if the input is not to integers then catch the exception
 			}
+			
+			// input must have been incorrct, alert the player this and ask for the input again
 			if(done == false){
 				input = null;
 				System.out.println();
@@ -401,39 +419,33 @@ public class TextClient {
 			}
 		}	
 		
-
+		// move the player to the new location
 		game.getCurrentPlayer().move((Location) board.getTile(x-1, y-1));				
-		
-		
-		
 		
 	}
 		
-		
-		
-	
-	
+	/**
+	 * make an accusation in the game
+	 */
 	public void makeAccusation() {
+		
 		Weapon weapon = null;
 		Character suspect = null;
 		Room room = null;
+		boolean done = false;
 		
+		// clear console
 		game.clearConsole();
-		
 		try {
 			Thread.sleep(1000);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		
 		showTurnInfo();
 		System.out.println();
 		System.out.println("Board Updated...");
 		
-		
-		boolean done = false;
-		
-		
+		// loop to determine the murder weapon
 		while (done == false){
 			System.out.println();
 			System.out.println("Make a Accusation, chose wisely");
@@ -449,6 +461,8 @@ public class TextClient {
 			System.out.println();
 			String input = scan.next();
 			done = true;
+			
+			// choose weapon depending on input from user
 			if(input.equals("1"))
 				weapon = game.getWeapon("Candlestick");
 			else if(input.equals("2"))
@@ -461,6 +475,8 @@ public class TextClient {
 				weapon = game.getWeapon("Rope");
 			else if(input.equals("6"))
 				weapon = game.getWeapon("Spanner");
+			
+			// if input is incorrect, notify user and ask again
 			else{
 				System.out.println();
 				System.out.println("invalid input");
@@ -469,6 +485,8 @@ public class TextClient {
 			System.out.println();
 		}
 		done = false;
+		
+		// loop to determine the murder suspect
 		while (done == false){
 			System.out.print("Chose your suspect");
 			System.out.println();
@@ -481,6 +499,8 @@ public class TextClient {
 			System.out.println();
 			String input = scan.next();
 			done = true;
+			
+			// choose weapon depending on input from user
 			if(input.equals("1"))
 				suspect = Player.Character.MISS_SCARLETT;
 			else if(input.equals("2"))
@@ -493,6 +513,8 @@ public class TextClient {
 				suspect = Player.Character.MRS_PEACOCK;
 			else if(input.equals("6"))
 				suspect = Player.Character.PROFESSOR_PLUM;
+			
+			// if input is incorrect, notify user and ask again
 			else{
 				System.out.println();
 				System.out.println("invalid input");
@@ -502,6 +524,8 @@ public class TextClient {
 			System.out.println();
 		}
 		done = false;
+		
+		// loop to determine the murder room
 		while (done == false){
 			System.out.print("Chose your murder room");
 			System.out.println();
@@ -516,7 +540,10 @@ public class TextClient {
 			System.out.println("9. Conservatory");
 			System.out.println();
 			String input = scan.next();
+			
 			done = true;
+
+			// choose room depending on input from user
 			if(input.equals("1"))
 				room = game.getRoom("Kitchen");
 			else if(input.equals("2"))
@@ -535,6 +562,8 @@ public class TextClient {
 				room = game.getRoom("Billard Room");
 			else if(input.equals("9"))
 				room = game.getRoom("Conservatory");
+
+			// if input is incorrect, notify user and ask again
 			else{
 				System.out.println();
 				System.out.println("invalid input");
@@ -542,13 +571,15 @@ public class TextClient {
 			}
 			System.out.println();
 		}
-		
-		
+		// check accusation against the solution
 		Boolean accusation = game.accusation(suspect,weapon,room);
 		
+		// if accusation is corrct
 		if(accusation){
 			System.out.println("Congratulations you Win!");
 			running = false;
+		
+		// if accusation is incorrect
 		}else{
 			System.out.println("You Lose!, The correct solution is:");
 			System.out.println();
@@ -558,102 +589,30 @@ public class TextClient {
 			System.out.println();
 			System.out.println("Press any key when your done");
 			String input = scan.next();
-			}
-		
-		
-		
+			}	
+	}
 		
 	
-		
-	}
-
-	public void showTurnInfo(){
-		Player currentPlayer = game.getCurrentPlayer();
-		board.printBoard();
-		System.out.println("///////////     Players     ///////////");
-		System.out.println();
-		for(Player p: game.getPlayers()){
-			if(game.getCurrentPlayer().equals(p))
-				System.out.print("*");
-			System.out.print(p.getCharacter() + ": ");
-			p.print();
-			System.out.print(" ");
-			p.getLocation().printLocation();
-			System.out.println();
-		}
-		System.out.println();
-		System.out.println("////////////     Rooms     ////////////");
-		System.out.println();
-		for(Room r: game.getRooms()){
-			System.out.println(r.getName());
-			for(Weapon w: r.getWeapons()){
-				System.out.println("  Weapon: " + w.getName());
-			}
-			for(Player p: r.getPlayers())
-				System.out.println("  Player: " + p.getCharacter());
-			System.out.println();
-		}
-		
-		System.out.println("//////////     Your Hand     //////////");
-		System.out.println();
-		for(Card c: game.getCurrentPlayer().getHand())
-			System.out.println(c.toString());
-		System.out.println();
-		if(!game.getCardsLeft().isEmpty()){
-			System.out.println("//////////  Left Over Cards  //////////");
-			System.out.println();
-			for(Card c: game.getCardsLeft())
-				System.out.println(c.toString());
-			System.out.println();
-		}
-		System.out.println("///////////////////////////////////////");
-		
-		
-	}
-
-	public List<Tile> rollDice(){
-		int roll = 0;
-		roll = game.rollDice();
-		System.out.println();
-		System.out.println("You rolled a " + roll);
-		System.out.println();
-		System.out.println("You can move to the following locations");
-		System.out.println();
-		List<Tile> moveableTiles = game.determineMoveLocations(game.getCurrentPlayer(), roll);
-		int count = 0;
-		for(Tile t: moveableTiles){
-			System.out.print("(" + (t.getX()+1) + "," + (t.getY()+1) + ") ");
-			count++;
-			if(count == 6){
-				System.out.println();
-				count = 0;
-			}
-		}
-		System.out.println();
-		return moveableTiles;
-	}
-	
-	
+	/**
+	 * make a suggestion in the game
+	 */
 	public void makeSuggestion(){
 		Weapon weapon = null;
 		Character suspect = null;
+		boolean done = false;
 		
+		// clear console
 		game.clearConsole();
-		
 		try {
 			Thread.sleep(1000);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		
 		showTurnInfo();
 		System.out.println();
 		System.out.println("Board Updated...");
 		
-		
-		boolean done = false;
-		
-		
+		// loop to determine the murder weapon
 		while (done == false){
 			System.out.println();
 			System.out.println("Make a Suggestion, chose wisely");
@@ -669,6 +628,8 @@ public class TextClient {
 			System.out.println();
 			String input = scan.next();
 			done = true;
+			
+			// choose weapon depending on input from user
 			if(input.equals("1"))
 				weapon = game.getWeapon("Candlestick");
 			else if(input.equals("2"))
@@ -681,6 +642,8 @@ public class TextClient {
 				weapon = game.getWeapon("Rope");
 			else if(input.equals("6"))
 				weapon = game.getWeapon("Spanner");
+			
+			// if input is incorrect, notify user and ask again
 			else{
 				System.out.println();
 				System.out.println("invalid input");
@@ -689,6 +652,8 @@ public class TextClient {
 			System.out.println();
 		}
 		done = false;
+		
+		// loop to determine the murder suspect
 		while (done == false){
 			System.out.print("Chose your suspect");
 			System.out.println();
@@ -701,6 +666,8 @@ public class TextClient {
 			System.out.println();
 			String input = scan.next();
 			done = true;
+			
+			// choose suspect depending on input from user
 			if(input.equals("1"))
 				suspect = Player.Character.MISS_SCARLETT;
 			else if(input.equals("2"))
@@ -713,17 +680,24 @@ public class TextClient {
 				suspect = Player.Character.MRS_PEACOCK;
 			else if(input.equals("6"))
 				suspect = Player.Character.PROFESSOR_PLUM;
+			
+			// if input is incorrect, notify user and ask again
 			else{
 				System.out.println();
 				System.out.println("invalid input");
 				done = false;
 			}
-			
 			System.out.println();
 		}
+		
+		// check the suggestion against the other players hands
 		String Refute = game.suggestion(suspect,weapon,((Room)game.getCurrentPlayer().getLocation()));
+		
+		// nobody else has the above cards in thier hand
 		if(Refute == null){
 			System.out.println("Well done, Suggestion was NOT refuted");
+		
+			// sombody else had one of the cards in thier hand, print it out for the user
 		}else{
 			System.out.println(Refute);
 		}
@@ -734,6 +708,107 @@ public class TextClient {
 		
 		
 	}
+	
+	
+
+	/**
+	 * Shows all the board and player information for a player on thier turn
+	 */
+	public void showTurnInfo(){
+		
+		Player currentPlayer = game.getCurrentPlayer();
+		
+		// prints the board
+		board.printBoard();
+		
+		// prints all the player in the game with an "*"
+		// next to the player whose turn it is
+		System.out.println("///////////     Players     ///////////");
+		System.out.println();
+		for(Player p: game.getPlayers()){
+			if(game.getCurrentPlayer().equals(p))
+				System.out.print("*");
+			System.out.print(p.getCharacter() + ": ");
+			p.print();
+			System.out.print(" ");
+			p.getLocation().printLocation();
+			System.out.println();
+		}
+		System.out.println();
+		
+		// prints all the rooms and all the stuff inside them
+		System.out.println("////////////     Rooms     ////////////");
+		System.out.println();
+		for(Room r: game.getRooms()){
+			System.out.println(r.getName());
+			
+			// prints all the weapons in the room
+			for(Weapon w: r.getWeapons()){
+				System.out.println("  Weapon: " + w.getName());
+			}
+			
+			// prints all the players in the room
+			for(Player p: r.getPlayers())
+				System.out.println("  Player: " + p.getCharacter());
+			System.out.println();
+		}
+		
+		// prints the current players hand
+		System.out.println("//////////     Your Hand     //////////");
+		System.out.println();
+		for(Card c: game.getCurrentPlayer().getHand())
+			System.out.println(c.toString());
+		System.out.println();
+		
+		// if there are any left over cards, these are displayed for every player
+		if(!game.getCardsLeft().isEmpty()){
+			System.out.println("//////////  Left Over Cards  //////////");
+			System.out.println();
+			for(Card c: game.getCardsLeft())
+				System.out.println(c.toString());
+			System.out.println();
+		}
+		System.out.println("///////////////////////////////////////");
+		
+		
+	}
+
+	/**
+	 * rolls the dice in the game
+	 * 
+	 * @return - all the locations the current player 
+	 * 				could move from this dice roll
+	 */
+	public List<Tile> rollDice(){
+
+		int roll = game.rollDice();
+		System.out.println();
+		System.out.println("You rolled a " + roll);
+		System.out.println();
+		System.out.println("You can move to the following locations");
+		System.out.println();
+		
+		// determone move locations
+		List<Tile> moveableTiles = game.determineMoveLocations(game.getCurrentPlayer(), roll);
+		
+		int count = 0;
+		
+		// print all moveable tiles, the coordinates of the tiles are 1 higher then thier array positions
+		for(Tile t: moveableTiles){
+			System.out.print("(" + (t.getX()+1) + "," + (t.getY()+1) + ") ");
+			count++;
+			
+			// count variable is used to ensure 6 tiles max are printed per line
+			if(count == 6){
+				System.out.println();
+				count = 0;
+			}
+		}
+		System.out.println();
+		return moveableTiles;
+	}
+	
+	
 
 }
 

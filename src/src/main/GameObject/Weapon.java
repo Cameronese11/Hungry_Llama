@@ -25,27 +25,7 @@ public class Weapon {
 		this.name = name;
 	}
 	
-	// Getters and Setters
-	
-	public String getName(){
-		return name;
-	}
-	
-	public String getRoom(){
-		return room;
-	}
-	
 
-	public void setRoom(String room){
-		this.room = room;
-	}
-
-	public void move(Room room){
-		Room oldRoom = game.getRoom(this.room);
-		oldRoom.removeWeapon(this);
-		room.addWeapon(this);					
-	}
-	
 	/**
 	 *Equals method to compare to players 
 	 */
@@ -56,4 +36,31 @@ public class Weapon {
 		
 		return (((Weapon) weapon).getName().equals(getName()));
 	}
+	
+	/**
+	 * Moves a weapon to a new room
+	 * 
+	 * @param room - new room
+	 */
+	public void move(Room room){
+		Room oldRoom = game.getRoom(this.room);
+		oldRoom.removeWeapon(this);
+		room.addWeapon(this);					
+	}
+	
+	// Getters and Setters
+	
+	public String getName(){
+		return name;
+	}
+	
+	public String getRoom(){
+		return room;
+	}
+
+	public void setRoom(String room){
+		this.room = room;
+	}
+
+	
 }

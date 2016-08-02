@@ -26,9 +26,9 @@ public class Basement{
 	 * @param r - Solution weapon 
 	 * 
 	 */
-	public Basement(Room r,Player.Character character, Weapon w){
+	public Basement(Room r,Player.Character c, Weapon w){
 		murderRoom = r;
-		murderCharacter = character;
+		murderCharacter = c;
 		murderWeapon = w;
 	}
 	

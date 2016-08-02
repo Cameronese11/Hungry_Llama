@@ -27,6 +27,8 @@ public class DoorTile extends MoveTile implements Tile {
 		System.out.print("[D]");
 	}
 	
+	// Getters and Setters
+	
 	public String getRoom(){
 		return room;
 	}

@@ -151,7 +151,6 @@ public class Game {
 			cards.add(card);
 			deck.add(card);
 		}
-		
 		Collections.shuffle(roomCards);
 		Collections.shuffle(suspectCards);
 		Collections.shuffle(weaponCards);
@@ -163,10 +162,8 @@ public class Game {
 		Character murderCharacter = suspectCards.get(0).getCharacter();
 		Weapon murderWeapon = weaponCards.get(0).getWeapon();
 		
-		
 		// place the solution in the basement
 		basement = new Basement(murderRoom, murderCharacter, murderWeapon);
-		
 		
 		// remove 'solution' from deck
 		deck.remove(getCard(murderWeapon));
@@ -213,6 +210,18 @@ public class Game {
 	}
 	
 	/**
+	 * Returns a randam character that isn't 
+	 * currently in use
+	 * 
+	 * @return - character
+	 */
+	public Character generateCharacter(){
+		List<Player.Character> notInUse = charactersLeft;	
+		Collections.shuffle(notInUse);
+		return(notInUse.get(0));
+	}
+	
+	/**
 	 * Create a player in the game with
 	 * a specific character
 	 * 
@@ -223,18 +232,6 @@ public class Game {
 		players.add(new Player(this, board, i, character));
 		charactersLeft.remove(character);
 		return character;
-	}
-	
-	/**
-	 * Returns a randam character that isn't 
-	 * currently in use
-	 * 
-	 * @return - character
-	 */
-	public Character generateCharacter(){
-		List<Player.Character> notInUse = charactersLeft;	
-		Collections.shuffle(notInUse);
-		return(notInUse.get(0));
 	}
 	
 	/**
@@ -261,14 +258,26 @@ public class Game {
 		return (int) (Math.random() * 6) + 1;
 	}
 	
+	/**
+	 * Determines the move Locations for a particular player
+	 * 
+	 * @param player - player to move
+	 * @param DiceRoll
+	 *
+	 * @return moveableTiles - List of tiles where the player could move too
+	 */
 	public List<Tile> determineMoveLocations(Player player, int DiceRoll){
 		Location location = player.getLocation();
 		Tile tile = null;
 		List<Tile>moveableTiles = new ArrayList();
+		
+		// if there moving from a tile
 		if(location instanceof Tile){
 			 tile = (Tile) location;
 			 moveableTiles = recursiveCheck(DiceRoll, tile, moveableTiles);
 			 moveableTiles.remove(location);
+		
+		// if there moving from a room
 		}else if(location instanceof Room){
 			for(Tile t: getTiles()){
 				if(t instanceof DoorTile){
@@ -278,18 +287,22 @@ public class Game {
 						
 					}
 				}
-			}
-						
-			
-			
-			
-			
-			
+			}				
 		}
 		return moveableTiles;
 	}
 	
-	
+	/**
+	 * Recursive method helper for determine move location.
+	 * Checks all tiles in every direction of a tile to see if
+	 * the player can move there
+	 * 
+	 * @param steps - number of steps player would have left at this tile
+	 * @param tile - tile to check surrounding tiles from
+	 * @param moveableTiles - list of tiles player can move too
+	 * 
+	 * @return moveableTiles - list of tiles player can move too
+	 */
 	public List<Tile> recursiveCheck(int steps, Tile tile, List<Tile> moveableTiles){
 		if(tile == null || steps == -1)
 			return moveableTiles;
@@ -305,7 +318,6 @@ public class Game {
 		moveableTiles = recursiveCheck(steps-1, board.getTile(x, y + 1), moveableTiles);
 		
 		return moveableTiles;
-		
 	}
 	
 	/**
@@ -327,6 +339,76 @@ public class Game {
 		}
 		cardsLeft = deck;
 	}
+	
+	/**
+	 * Checks a suggestion againt the rest of the players hands
+	 * 
+	 * @param suspect - suspected murderer
+	 * @param weapon - suspected murder weapon
+	 * @param room - suspected murder room
+	 * 
+	 * @return string - string that says who refuted the suggestion,
+	 * 					null if the suggestion was successful
+	 */
+	public String suggestion(Character suspect, Weapon weapon, Room room) {
+		
+		// move weapon to the suggestion location
+		weapon.move(room);
+		Player player = null;
+		for(Player p: players)
+			if(p.getCharacter().equals(suspect))
+				player = getPlayer(suspect);
+		
+		// if the suspect is in the game, move them there too
+		if(player != null)
+				player.move(room);
+		
+		// create a list of all the players in the game 
+		// apart from the player making the suggestion
+		List<Player> otherPlayers = new ArrayList<Player>(players);
+		otherPlayers.remove(currentPlayer);
+		
+		// finally search through the player hand for any matches
+		for(Player p: players){
+			List<Card> hand = p.getHand();
+			if(hand.contains(getCard(suspect)))
+				return "Suggestion Refuted, " + p.getCharacter() + " has " + suspect + " in his/her hand";
+			else if(hand.contains(getCard(weapon)))
+				return "Suggestion Refuted, " + p.getCharacter() + " has " + weapon.getName() + " in his/her hand";
+			else if(hand.contains(getCard(room)))
+				return "Suggestion Refuted, " + p.getCharacter() + " has " + room.getName() + " in his/her hand";
+		}
+		return null;	
+	}
+
+	/**
+	 * moves a player to the corresponding room as that 
+	 * stairway would suggest
+	 */
+	public void useStairway() {
+		String dest = ((Room) currentPlayer.getLocation()).getStairwayTo();
+		Room destination = getRoom(dest);
+		currentPlayer.move(destination);
+		
+	}
+
+	/**
+	 * Checks an accusation against the solution
+	 * 
+	 * @param suspect - accused murderer
+	 * @param weapon - accused murder weapon
+	 * @param room - accused murder room
+	 * 
+	 * @return boolean - true if all three match
+	 */
+	public Boolean accusation(Character suspect, Weapon weapon, Room room) {
+		return (suspect.equals(basement.getMurderCharacter())
+				&& weapon.equals(basement.getMurderWeapon())
+				&& room.equals(basement.getMurderRoom()));
+	}
+	
+
+
 	
 	public static void main(String[] args) {
 		new Game(args[0]);
@@ -431,44 +513,6 @@ public class Game {
 	public void setNumPlayers(int num){
 		this.numPlayers = num;
 	}
-
-	public String suggestion(Character suspect, Weapon weapon, Room room) {
-		weapon.move(room);
-		Player player = null;
-		for(Player p: players)
-			if(p.getCharacter().equals(suspect))
-				player = getPlayer(suspect);
-		
-		if(player != null)
-				player.move(room);
-		
-		List<Player> otherPlayers = new ArrayList<Player>(players);
-		otherPlayers.remove(currentPlayer);
-		for(Player p: players){
-			List<Card> hand = p.getHand();
-			if(hand.contains(getCard(suspect)))
-				return "Suggestion Refuted, " + p.getCharacter() + " has " + suspect + " in his/her hand";
-			else if(hand.contains(getCard(weapon)))
-				return "Suggestion Refuted, " + p.getCharacter() + " has " + weapon.getName() + " in his/her hand";
-			else if(hand.contains(getCard(room)))
-				return "Suggestion Refuted, " + p.getCharacter() + " has " + room.getName() + " in his/her hand";
-		}
-		return null;
-		
-			
-	}
-
-	public void useStairway() {
-		String dest = ((Room) currentPlayer.getLocation()).getStairwayTo();
-		Room destination = getRoom(dest);
-		currentPlayer.move(destination);
-		
-	}
-
-	public Boolean accusation(Character suspect, Weapon weapon, Room room) {
-		return (suspect.equals(basement.getMurderCharacter())
-				&& weapon.equals(basement.getMurderWeapon())
-				&& room.equals(basement.getMurderRoom()));
-	}
-	
 }
+
+	

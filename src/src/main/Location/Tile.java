@@ -8,8 +8,6 @@ package src.main.Location;
  */
 public interface Tile {
 
-	
-
 	int getX();
 
 	int getY();

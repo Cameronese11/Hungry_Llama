@@ -105,15 +105,18 @@ public class Player {
 	 * @param tile - new tile to move to
 	 * @return - true if the move was successful
 	 */
-	public boolean move(Location newLocation){
+	public void move(Location newLocation){
 		
+		// if the player is moving from a tile
 		if(location instanceof Tile)
 			((MoveTile) location).setPlayer(null);
+		
+		// if the player is moving from a room
 		else if(location instanceof Room)
 			((Room) location).removePlayer(this);
 		
 		
-
+		// if the player is moving to a tile
 		if(newLocation instanceof Tile){
 			Tile tile = (Tile) newLocation;
 			
@@ -121,34 +124,38 @@ public class Player {
 				Room room = game.getRoom(((DoorTile) tile).getRoom());
 				room.addPlayer(this);
 				location = room;
+			
 			}else if(tile instanceof StartingTile){
 				((StartingTile) tile).setPlayer(this);
 				location = (StartingTile) tile;
+			
 			}else if(tile instanceof MoveTile){
 				((MoveTile) tile).setPlayer(this);
 				location = (MoveTile) tile;
+			
 			}else if(tile instanceof StairTile){
 				Room room = game.getRoom(((StairTile) tile).getRoomDestination());
 				room.addPlayer(this);
 				location = room;
 			}
+		
+		// if the player is moving to a room(from a suggestion only)
 		}else if(newLocation instanceof Room){
 			((Room) newLocation).addPlayer(this);
 			location = newLocation;
-			
 		}
-		
-	return true;
 	}
 	
-	public Location getLocation(){
-		return location;
-	}
+	
 	
 	// Getters and Setters
 	
 	public Character getCharacter(){
 		return character;
+	}
+	
+	public Location getLocation(){
+		return location;
 	}
 	
 	public int getNum(){
