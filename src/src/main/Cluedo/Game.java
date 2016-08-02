@@ -397,7 +397,16 @@ public class Game {
 				&& room.equals(basement.getMurderRoom()));
 	}
 	
-
+	/**
+	 * Removes a player from the game
+	 * called after an incorrectS accusation
+	 * 
+	 * @param player - player to remove
+	 */
+	public void removePlayer(Player player) {
+		players.remove(player);
+		numPlayers--;
+	}
 	
 	// getters and Setters
 	
@@ -498,10 +507,6 @@ public class Game {
 		this.numPlayers = num;
 	}
 
-	public void removePlayer(Player player) {
-		players.remove(player);
-		numPlayers--;
-	}
 }
 
 	

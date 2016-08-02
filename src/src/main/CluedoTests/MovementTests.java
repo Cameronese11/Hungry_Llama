@@ -19,7 +19,7 @@ public class MovementTests {
 	// Moving a player from a moveTile to another vaild moveTile 
 	// e.g. its within the number of squares of the diceroll
 	{
-		Game game = new Game("resources/board.txt");
+		Game game = new Game();
 		
 		
 		
