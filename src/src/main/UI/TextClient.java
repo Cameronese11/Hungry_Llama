@@ -233,7 +233,8 @@ public class TextClient {
 				input = null;
 				
 				// automatically roll the dice
-				List<Tile> moveableTiles = rollDice();
+				int roll = game.rollDice();
+				showMoveableLocations(roll);
 				
 				// loop to determine the players first move
 				while(done == false){
@@ -256,7 +257,7 @@ public class TextClient {
 					input = scan.next();
 					if(input.equals("1")){ // the player wants to move
 						done = true;
-						move(moveableTiles);
+						move(roll);
 					}else if(input.equals("2")){ // the player wants to make an accusation
 						done = true;
 						makeAccusation();
@@ -376,7 +377,7 @@ public class TextClient {
 	 * 
 	 * @param moveableTiles - all the tiles the player can move to
 	 */
-	public void move(List<Tile> moveableTiles){
+	public void move(int roll){
 		
 		System.out.println();
 		System.out.println("Type in the coordinate where you would like");
@@ -400,9 +401,9 @@ public class TextClient {
 			try{
 				x = Integer.valueOf(input1);
 				y = Integer.valueOf(input2);
-				for(Tile t :moveableTiles)
-					if(t.getX() == (x - 1) && t.getY() == (y - 1))
-						done = true;
+				done = game.movePlayer(game.getCurrentPlayer(),(Location) board.getTile(x-1, y-1), roll);	
+				
+
 			}catch (NumberFormatException e){
 				// if the input is not to integers then catch the exception
 			}
@@ -420,7 +421,7 @@ public class TextClient {
 		}	
 		
 		// move the player to the new location
-		game.getCurrentPlayer().move((Location) board.getTile(x-1, y-1));				
+					
 		
 	}
 		
@@ -589,7 +590,6 @@ public class TextClient {
 			System.out.println("Press any key when your done");
 			System.out.println();
 			String input = scan.next();
-			game.removePlayer(game.getCurrentPlayer());
 			}	
 	}
 		
@@ -695,7 +695,7 @@ public class TextClient {
 		String Refute = game.suggestion(suspect,weapon,((Room)game.getCurrentPlayer().getLocation()));
 		
 		// nobody else has the above cards in thier hand
-		if(Refute == null){
+		if(Refute == ""){
 			System.out.println("Well done, Suggestion was NOT refuted");
 		
 			// sombody else had one of the cards in thier hand, print it out for the user
@@ -726,7 +726,7 @@ public class TextClient {
 		// next to the player whose turn it is
 		System.out.println("///////////     Players     ///////////");
 		System.out.println();
-		for(Player p: game.getPlayersIn()){
+		for(Player p: game.getPlayers()){
 			if(game.getCurrentPlayer().equals(p))
 				System.out.print("*");
 			System.out.print(p.getCharacter() + ": ");
@@ -780,9 +780,9 @@ public class TextClient {
 	 * @return - all the locations the current player 
 	 * 				could move from this dice roll
 	 */
-	public List<Tile> rollDice(){
+	public void showMoveableLocations(int roll){
 
-		int roll = game.rollDice();
+		
 		System.out.println();
 		System.out.println("You rolled a " + roll);
 		System.out.println();
@@ -806,7 +806,6 @@ public class TextClient {
 			}
 		}
 		System.out.println();
-		return moveableTiles;
 	}
 	
 
@@ -822,6 +821,10 @@ public class TextClient {
 		
 		// run game
 		textClient.Run();
+	}
+	
+	public boolean getRunning(){
+		return this.running;
 	}
 
 }

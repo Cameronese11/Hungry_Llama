@@ -13,7 +13,6 @@ import src.main.GameObject.Weapon;
  * Rope
  * Spanner
  * 
- * @author cameronmclachlan
  */
 public class WeaponCard implements Card{
 

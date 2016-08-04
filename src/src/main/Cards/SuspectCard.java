@@ -13,7 +13,6 @@ import src.main.GameObject.Player.Character;
  * Mrs. Peacock
  * Professor Plum
  * 
- * @author cameronmclachlan
  */
 public class SuspectCard implements Card {
 

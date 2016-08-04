@@ -104,14 +104,8 @@ public class Player {
 	 * @param tile - new tile to move to
 	 * @return - true if the move was successful
 	 */
-	public boolean move(Location newLocation/*, int roll*/){
-		
-		//List<Tile> moveableLocations = game.determineMoveLocations(this, roll);
-		
-		//if(newLocation instanceof Tile)
-		//	if(moveableLocations.contains((Tile)newLocation))
-		//		return false;
-		
+	public boolean move(Location newLocation){
+	
 		
 		// if the player is moving from a tile
 		if(location instanceof Tile)
@@ -120,9 +114,7 @@ public class Player {
 		else if(location instanceof Room)
 			((Room) location).removePlayer(this);
 		
-		
-		
-		
+
 		// if the player is moving to a tile
 		if(newLocation instanceof Tile){
 			Tile tile = (Tile) newLocation;

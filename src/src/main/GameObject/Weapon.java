@@ -45,6 +45,7 @@ public class Weapon {
 	public void move(Room room){
 		Room oldRoom = game.getRoom(this.room);
 		oldRoom.removeWeapon(this);
+		this.room = room.getName();
 		room.addWeapon(this);					
 	}
 	

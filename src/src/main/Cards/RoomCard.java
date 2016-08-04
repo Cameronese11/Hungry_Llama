@@ -7,7 +7,7 @@ import src.main.Location.Room;
  * There is one room card for evey room object
  *  
  *  Kitchen
- *  Dinning Room
+ *  Dining Room
  *  Lounge
  *  Hall
  *  Study
@@ -16,7 +16,6 @@ import src.main.Location.Room;
  *  Conservatory
  *  Ball Room
  * 
- * @author cameronmclachlan
  */
 public class RoomCard implements Card{
 

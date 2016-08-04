@@ -13,9 +13,6 @@ import src.main.Location.Tile;
 
 /**
  * Board Class to represent the board of a Game of Cluedo
- * 
- * @author cameronmclachlan
- *
  */
 public class Board {
 
@@ -49,7 +46,7 @@ public class Board {
 		    while (scan.hasNext()) {
 		    	String line = scan.nextLine();
 		    	Scanner sc = new Scanner(line);
-		    	sc.useDelimiter(",");
+		    	sc.useDelimiter(","); // To distinguish between tiles in the file
 		    	while(sc.hasNext()){
 		    		String read = sc.next();
 		    		Tile tile = null;
@@ -57,7 +54,7 @@ public class Board {
 		    		
 		    			// Represents a particular Room Doorway
 		    			case "K": tile = new DoorTile(x,y, "Kitchen"); break;
-		    			case "D": tile = new DoorTile(x,y, "Dinning Room"); break;
+		    			case "D": tile = new DoorTile(x,y, "Dining Room"); break;
 		    			case "L": tile = new DoorTile(x,y, "Lounge"); break;
 		    			case "H": tile = new DoorTile(x,y, "Hall"); break;
 		    			case "s": tile = new DoorTile(x,y, "Study"); break;
@@ -163,7 +160,7 @@ public class Board {
 	 */
 	public int addMapDetails(int x, int y){
 		
-		// add stairways
+		// add stairway icons
 		if(x == 0 && y == 1){
 			System.out.print("[X]");
 			x = x + 1;
