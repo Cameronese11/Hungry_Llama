@@ -324,10 +324,12 @@ public class Game {
 		
 		while(!done){
 			if(deck.size() >= numPlayers){
-				for(Player p: playersIn){
-					p.addCard(deck.get(0));
+				for(int i = 0; i < playersIn.size(); i++){
+					players.get(i).addCard(deck.get(0));
+					playersIn.get(i).addCard(deck.get(0));
 					deck.remove(0);
 				}
+				
 			}else
 				done = true;
 		}
