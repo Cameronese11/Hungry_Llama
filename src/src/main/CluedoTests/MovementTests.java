@@ -32,152 +32,98 @@ public class MovementTests {
 		Location oldLocation = (Location) board.getTile(17,10); // 18,11
 		Location newLocation = (Location) board.getTile(9,17);  // 10,18
 		Player p = setupMockPlayer(game, oldLocation);
-
-		board.printBoard();
 		
-		// Test
+		board.printBoard();
 		p.move(newLocation);
-		
-		
 		board.printBoard();
 		
-		// Check
 		assertTrue(p.getLocation().equals(newLocation));
 		assertTrue(((Tile) newLocation).getPlayer().equals(p));
 		
-		// check that the player isnt located on any other tile
-		for(int x = 0; x < 24; x++)
-			for(int y = 0; y < 25; y++)
-				if(board.getTile(x, y) instanceof Tile)
-					if(!board.getTile(x, y).equals(newLocation))
-						assertTrue(((Tile) board.getTile(x, y)).getPlayer() == null);
-		
-		// check that the player isn't located in any other room
-		for(Room r: game.getRooms()){
-			if(newLocation instanceof Room)
-				if(!r.equals(newLocation))
-					assertTrue(r.getPlayers().size() == 0);
-		}
-	}
-	
-	@Test
-	public void invalidPlayerTileToTile(){
-		
-	}
-
-
-	
-	@Test
-	public void validPlayerTileToRoom(){
-		// Moving a player from a moveTile to another room 
-		// e.g. its within the number of squares of the diceroll
-		{
-			// Setup
-			Board board = new Board("resources/board.txt");
-			Game game = new Game(board);
-			Location oldLocation = (Location) board.getTile(17,10); // 18,11
-			Location newLocation = game.getRoom("Kitchen");
-			Player p = setupMockPlayer(game, oldLocation);
-			
-			board.printBoard();
-			
-			// Test
-			p.move(newLocation);
-			
-			
-			board.printBoard();
-			
-			// Check
-			assert p.getLocation().equals(newLocation);
-			assert ((Tile) newLocation).getPlayer().equals(p);
-			
-			// check that the player isnt located on any other tile
-			for(int x = 0; x < 24; x++)
-				for(int y = 0; y < 25; y++)
-					if(board.getTile(x, y) instanceof Tile)
-						if(!board.getTile(x, y).equals(newLocation))
-							assert ((Tile) board.getTile(x, y)).getPlayer() == null;	
-		
-			// check that the player isn't located in any other room
-			for(Room r: game.getRooms()){
-				if(newLocation instanceof Room)
-					if(!r.equals(newLocation))
-						assertTrue(r.getPlayers().size() == 0);
-			}
-		}
-	}
-	
-	@Test
-	public void invalidPlayerTileToRoom(){
-		
-	}
-	
-	
-	@Test
-	public void validPlayerRoomToTile()
-		// Moving a player from a moveTile to another room 
-		// e.g. its within the number of squares of the diceroll
-		{
-			// Setup
-			Board board = new Board("resources/board.txt");
-			Game game = new Game(board);
-			Location oldLocation = game.getRoom("Kitchen");
-			Location newLocation = (Location) board.getTile(17,10); // 18,11
-			Player p = setupMockPlayer(game, oldLocation);
-				
-			board.printBoard();
-			
-			// Test
-			p.move(newLocation);
-					
-					
-			board.printBoard();
-					
-			// Check
-			assert p.getLocation().equals(newLocation);
-			assert ((Tile) newLocation).getPlayer().equals(p);
-					
-			// check that the player isnt located on any other tile
-			for(int x = 0; x < 24; x++)
-				for(int y = 0; y < 25; y++)
-					if(board.getTile(x, y) instanceof Tile)
-						if(!board.getTile(x, y).equals(newLocation))
-							assert ((Tile) board.getTile(x, y)).getPlayer() == null;	
-				
-			// check that the player isn't located in any other room
-			for(Room r: game.getRooms()){
-				if(newLocation instanceof Room)
-					if(!r.equals(newLocation))
-						assertTrue(r.getPlayers().size() == 0);
-				}
-			}
-	
-	@Test
-	public void invalidPlayerRoomToTile(){
-		
-	}
-	
-
-	@Test
-	public void validPlayerRoomToRoom(){
-		
-	}
-	@Test
-	public void invalidPlayerRoomToRoom(){
-		
-	}
-
-	public Player setupMockPlayer(Game game, Location location){
-		game.addPlayer(1, Player.Character.MISS_SCARLETT);
-		Player player = game.getPlayer(1);
-		player.setLocation(location);
-		if(location instanceof Room)
-			((Room) location).addPlayer(player);
+		if(newLocation instanceof Tile)
+			checkTiles(board, (Tile) newLocation);
 		else
-			((Tile) location).setPlayer(player);
-		return player;
+			checkRooms(game, (Room) newLocation);
 	}
+	
+	@Test
+	public void invalidPlayerTileToTile(){}
 
 
+	
+	@Test
+	public void validPlayerTileToRoom(){}
+	
+	@Test
+	public void invalidPlayerTileToRoom(){}
+	
+	
+	@Test
+	public void validPlayerRoomToTile(){}
+		
+	
+	@Test
+	public void invalidPlayerRoomToTile(){}
+	
+
+	@Test
+	public void validPlayerRoomToRoom(){}
+		
+
+	@Test
+	public void invalidPlayerRoomToRoom(){}
+
+	@Test
+	public void validPlayerStairwayRoomToRoom(){}
+	
+	@Test
+	public void invalidPlayerStairwayRoomToRoom(){}
+	
+	
+	
+	// Weapon Movement Tests
+	
+	@Test
+	public void validWeaponRoomToRoom(){}
+	
+	@Test
+	public void invalidWeaponToRoom(){}
+	
+	
+	
+	// TestHelperMethods
+	
+
+
+		public Player setupMockPlayer(Game game, Location location){
+			game.addPlayer(1, Player.Character.MISS_SCARLETT);
+			Player player = game.getPlayer(1);
+			player.setLocation(location);
+			if(location instanceof Room)
+				((Room) location).addPlayer(player);
+			else
+				((Tile) location).setPlayer(player);
+			return player;
+		}
+		
+		public void checkTiles(Board board, Tile newLocation){
+						for(int x = 0; x < 24; x++)
+							for(int y = 0; y < 25; y++)
+								if(board.getTile(x, y) instanceof Tile)
+									if(!board.getTile(x, y).equals(newLocation))
+										assert ((Tile) board.getTile(x, y)).getPlayer() == null;	
+			
+		}
+
+		public void checkRooms(Game game, Room newLocation){
+			for(Room r: game.getRooms()){
+					if(!r.equals(newLocation))
+						assertTrue(r.getPlayers().size() == 0);
+			}
+		}
+
+	
+
+	
 
 }
