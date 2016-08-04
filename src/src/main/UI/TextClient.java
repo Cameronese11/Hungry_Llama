@@ -176,7 +176,7 @@ public class TextClient {
 				
 				try {
 					// to give them a change to read above print statement
-					Thread.sleep(3000); // 3000
+					Thread.sleep(0000); // 3000
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}

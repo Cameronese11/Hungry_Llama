@@ -170,6 +170,11 @@ public class Player {
 		System.out.print("[" + getLetter() + "]");
 	}
 	
+	// For Tests
+	public void setLocation(Location location){
+		this.location = location;
+	}
+	
 	/**
 	 * Returns the Letter to represent the  tiles starting character
 	 * 

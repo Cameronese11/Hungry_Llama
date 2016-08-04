@@ -171,7 +171,7 @@ public class Game {
 	 */
 	public void setupPlayers(){
 		currentPlayer = getPlayer(1);
-		for(Player p: players){
+		for(Player p: playersIn){
 			Tile tile = p.determineStartTile();
 			p.move((Location) tile);
 		}

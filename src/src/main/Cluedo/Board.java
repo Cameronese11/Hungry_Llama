@@ -133,8 +133,6 @@ public class Board {
 			System.out.print(y + 1);
 			System.out.print("|");
 			for(int x = 0; x < board2D.length; x++){
-				if(x == 14)
-					x = 14;
 				// draw tile if it exists
 				if(board2D[x][y] != null)
 					board2D[x][y].print();
