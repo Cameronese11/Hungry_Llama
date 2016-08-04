@@ -14,7 +14,7 @@ import src.main.GameObject.Player;
 import src.main.GameObject.Player.Character;
 import src.main.Location.DoorTile;
 import src.main.Location.Location;
-import src.main.Location.MoveTile;
+import src.main.Location.Tile;
 import src.main.Location.Room;
 import src.main.Location.Tile;
 import src.main.GameObject.Weapon;
@@ -171,9 +171,18 @@ public class Game {
 	 */
 	public void setupPlayers(){
 		currentPlayer = getPlayer(1);
+		
+		
+		
 		for(Player p: playersIn){
 			Tile tile = p.determineStartTile();
 			p.move((Location) tile);
+		}
+		
+		for(int i = 0; i < playersIn.size(); i++){
+			Tile tile = players.get(i).determineStartTile();
+			players.get(i).move((Location) tile);
+			playersIn.get(i).move((Location) tile);
 		}
 	}
 		

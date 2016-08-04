@@ -6,7 +6,7 @@ package src.main.Location;
  * 
  * @author cameronmclachlan
  */
-public class DoorTile extends MoveTile implements Tile {
+public class DoorTile extends Tile{
 
 	private String room;
 	

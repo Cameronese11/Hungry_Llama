@@ -8,7 +8,7 @@ import src.main.Cluedo.Board;
 import src.main.Cluedo.Game;
 import src.main.GameObject.Player;
 import src.main.Location.Location;
-import src.main.Location.MoveTile;
+import src.main.Location.Tile;
 import src.main.Location.Room;
 
 /**
@@ -43,14 +43,14 @@ public class MovementTests {
 		
 		// Check
 		assertTrue(p.getLocation().equals(newLocation));
-		assertTrue(((MoveTile) newLocation).getPlayer().equals(p));
+		assertTrue(((Tile) newLocation).getPlayer().equals(p));
 		
 		// check that the player isnt located on any other tile
 		for(int x = 0; x < 24; x++)
 			for(int y = 0; y < 25; y++)
-				if(board.getTile(x, y) instanceof MoveTile)
+				if(board.getTile(x, y) instanceof Tile)
 					if(!board.getTile(x, y).equals(newLocation))
-						assertTrue(((MoveTile) board.getTile(x, y)).getPlayer() == null);
+						assertTrue(((Tile) board.getTile(x, y)).getPlayer() == null);
 		
 		// check that the player isn't located in any other room
 		for(Room r: game.getRooms()){
@@ -89,14 +89,14 @@ public class MovementTests {
 			
 			// Check
 			assert p.getLocation().equals(newLocation);
-			assert ((MoveTile) newLocation).getPlayer().equals(p);
+			assert ((Tile) newLocation).getPlayer().equals(p);
 			
 			// check that the player isnt located on any other tile
 			for(int x = 0; x < 24; x++)
 				for(int y = 0; y < 25; y++)
-					if(board.getTile(x, y) instanceof MoveTile)
+					if(board.getTile(x, y) instanceof Tile)
 						if(!board.getTile(x, y).equals(newLocation))
-							assert ((MoveTile) board.getTile(x, y)).getPlayer() == null;	
+							assert ((Tile) board.getTile(x, y)).getPlayer() == null;	
 		
 			// check that the player isn't located in any other room
 			for(Room r: game.getRooms()){
@@ -135,14 +135,14 @@ public class MovementTests {
 					
 			// Check
 			assert p.getLocation().equals(newLocation);
-			assert ((MoveTile) newLocation).getPlayer().equals(p);
+			assert ((Tile) newLocation).getPlayer().equals(p);
 					
 			// check that the player isnt located on any other tile
 			for(int x = 0; x < 24; x++)
 				for(int y = 0; y < 25; y++)
-					if(board.getTile(x, y) instanceof MoveTile)
+					if(board.getTile(x, y) instanceof Tile)
 						if(!board.getTile(x, y).equals(newLocation))
-							assert ((MoveTile) board.getTile(x, y)).getPlayer() == null;	
+							assert ((Tile) board.getTile(x, y)).getPlayer() == null;	
 				
 			// check that the player isn't located in any other room
 			for(Room r: game.getRooms()){
@@ -174,7 +174,7 @@ public class MovementTests {
 		if(location instanceof Room)
 			((Room) location).addPlayer(player);
 		else
-			((MoveTile) location).setPlayer(player);
+			((Tile) location).setPlayer(player);
 		return player;
 	}
 

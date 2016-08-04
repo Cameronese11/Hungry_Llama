@@ -9,9 +9,8 @@ import src.main.Cluedo.Board;
 import src.main.Cluedo.Game;
 import src.main.Location.DoorTile;
 import src.main.Location.Location;
-import src.main.Location.MoveTile;
+import src.main.Location.Tile;
 import src.main.Location.Room;
-import src.main.Location.StairTile;
 import src.main.Location.StartingTile;
 import src.main.Location.Tile;
 
@@ -109,11 +108,12 @@ public class Player {
 		
 		// if the player is moving from a tile
 		if(location instanceof Tile)
-			((MoveTile) location).setPlayer(null);
-		
+			((Tile) location).setPlayer(null);
 		// if the player is moving from a room
 		else if(location instanceof Room)
 			((Room) location).removePlayer(this);
+		
+		
 		
 		
 		// if the player is moving to a tile
@@ -125,18 +125,9 @@ public class Player {
 				room.addPlayer(this);
 				location = room;
 			
-			}else if(tile instanceof StartingTile){
-				((StartingTile) tile).setPlayer(this);
-				location = (StartingTile) tile;
-			
-			}else if(tile instanceof MoveTile){
-				((MoveTile) tile).setPlayer(this);
-				location = (MoveTile) tile;
-			
-			}else if(tile instanceof StairTile){
-				Room room = game.getRoom(((StairTile) tile).getRoomDestination());
-				room.addPlayer(this);
-				location = room;
+			}else if(tile instanceof Tile){
+				((Tile) tile).setPlayer(this);
+				location = (Tile) tile;
 			}
 		
 		// if the player is moving to a room(from a suggestion only)

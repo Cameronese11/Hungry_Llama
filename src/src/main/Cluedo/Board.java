@@ -7,8 +7,7 @@ import java.util.Scanner;
 
 import src.main.GameObject.Player;
 import src.main.Location.DoorTile;
-import src.main.Location.MoveTile;
-import src.main.Location.StairTile;
+import src.main.Location.Tile;
 import src.main.Location.StartingTile;
 import src.main.Location.Tile;
 
@@ -76,12 +75,6 @@ public class Board {
 		    			case "4": tile = new StartingTile(x,y, Player.Character.MRS_PEACOCK); break;
 		    			case "5": tile = new StartingTile(x,y, Player.Character.PROFESSOR_PLUM); break;
 		    		
-		    			// Represents a Stairway Tile
-		    			case "6": tile = new StairTile(x,y, "Kitchen"); break;
-		    			case "7": tile = new StairTile(x,y, "Conservatory"); break;
-		    			case "8": tile = new StairTile(x,y, "Lounge"); break;
-		    			case "9": tile = new StairTile(x,y, "Study"); break;
-		    		
 		    			// Represents a Characters Position on the board
 		    			case "S": tile = new StartingTile(x,y, Player.Character.MISS_SCARLETT);break;
 		    			case "M": tile = new StartingTile(x,y, Player.Character.COLONEL_MUSTARD);break;
@@ -94,7 +87,7 @@ public class Board {
 		    			case "n": tile = null; break;
 		    		
 		    			// Represents an ordinary Tile
-		    			case "t": tile = new MoveTile(x,y); break;
+		    			case "t": tile = new Tile(x,y); break;
 		    		}
 		    	board2D[x][y] = tile; // assign tile to corresponding board coordinate
 		    	x++;
@@ -140,11 +133,11 @@ public class Board {
 					if(y == 0){
 						System.out.print('"');
 						System.out.print('"');
-						System.out.print('"');
+						System.out.print('"');					
 					}else
 						System.out.print("   ");
 			// modify x according to the Room name added
-			x = roomNames(x,y);	
+			x = addMapDetails(x,y);	
 			}
 		System.out.println("|");
 		}	
@@ -168,10 +161,24 @@ public class Board {
 	 * @param y
 	 * @return x - updated x value
 	 */
-	public int roomNames(int x, int y){
+	public int addMapDetails(int x, int y){
 		
+		// add stairways
+		if(x == 0 && y == 1){
+			System.out.print("[X]");
+			x = x + 1;
+		}if(x == 0 && y == 23){
+			System.out.print("[X]");
+			x = x + 1;
+		}if(x == 21 && y == 1){
+			System.out.print("[X]");
+			x = x + 1;
+		}if(x == 21 && y == 23){
+			System.out.print("[X]");
+			x = x + 1;
 		
-		if(x == 0 && y == 3){
+		// add room names
+		}else if(x == 0 && y == 3){
 			System.out.print(" Kitchen ");
 			x = x + 3;
 		}else if(x == 10 && y == 3){
@@ -217,7 +224,7 @@ public class Board {
 		return x;
 	}
 	
-
+	
 	// Getters and Setters //
 	
 	public Tile getTile(int x, int y){

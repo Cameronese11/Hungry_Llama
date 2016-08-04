@@ -10,7 +10,7 @@ import src.main.GameObject.Player;
  * @author cameronmclachlan
  *
  */
-public class StartingTile extends MoveTile implements Tile{
+public class StartingTile extends Tile{
 
 	private Player.Character startingCharacter;
 	
@@ -26,15 +26,6 @@ public class StartingTile extends MoveTile implements Tile{
 		this.startingCharacter = startingCharacter;
 	}
 	
-	/**
-	 * print the tile
-	 */
-	public void print(){
-		if(player == null)
-			System.out.print("[ ]");
-		else
-			System.out.print("[" + getLetter() + "]");
-	}
 	
 	// Getters and Setters
 	
