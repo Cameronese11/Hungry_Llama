@@ -18,8 +18,6 @@ import src.main.Location.Tile;
 /**
  * Class to present the game and 
  * Receive input from the console
- * 
- * @author cameronmclachlan
  */
 public class TextClient {
 	

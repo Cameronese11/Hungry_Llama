@@ -18,9 +18,6 @@ import src.main.Location.Tile;
 
 /**
  * Class for all the Accusing and Suggestion tests
- * 
- * @author cameronmclachlan
- *
  */
 public class AccusingAndSuggestingTests {
 
@@ -33,13 +30,11 @@ public class AccusingAndSuggestingTests {
 		Game game = new Game(board);
 		Player p1 = setupMockPlayer(game, board.getTile(7, 8), 1);
 		Player p2 = setupMockPlayer(game, board.getTile(17, 7), 2);
-		Player p3 = setupMockPlayer(game, board.getTile(6, 17), 3);
-		Player p4 = setupMockPlayer(game, board.getTile(15, 15), 4);
-		Player p5 = setupMockPlayer(game, board.getTile(21, 19), 5);
-		game.setNumPlayers(5);
-		game.dealCards();
-		game.setCurrentPlayer(p1);
+		game.setNumPlayers(2);
 		Basement basement = game.getBasement();
+		dealCards(game, p1, p2);
+		game.setCurrentPlayer(p1);
+		
 		
 		// Action / Check
 		assertTrue( // make a correct accusation
@@ -57,16 +52,14 @@ public class AccusingAndSuggestingTests {
 		Player p1 = setupMockPlayer(game, board.getTile(7, 8), 1);
 		Player p2 = setupMockPlayer(game, board.getTile(17, 7), 2);
 		game.setNumPlayers(2);
-		game.dealCards();
-		game.setCurrentPlayer(p1);
 		Basement basement = game.getBasement();
-		Card card = game.getCard("Candlestick");
-		if(p1.getHand().contains(card))
-			p1.getHand().remove(card);
-		p2.addCard(game.getCard("Candlestick"));
+		dealCards(game, p1, p2);
+		game.setCurrentPlayer(p1);
+		
+		
 		
 		assertFalse(
-			game.accusation(basement.getMurderCharacter(),game.getWeapon("Candlestick"),basement.getMurderRoom()));
+			game.accusation(basement.getMurderCharacter(),game.getWeapon("Revolver"),basement.getMurderRoom()));
 		
 		
 		// Checks
@@ -90,10 +83,10 @@ public class AccusingAndSuggestingTests {
 		Player p1 = setupMockPlayer(game, location, 1,Player.Character.MISS_SCARLETT);
 		Player p2 = setupMockPlayer(game, board.getTile(17, 7), 2, Player.Character.COLONEL_MUSTARD);
 		game.setNumPlayers(2);
-		game.dealCards();
+		Basement basement = game.getBasement();
+		dealCards(game, p1, p2);
 		game.setCurrentPlayer(p1);
-		p2.addCard(game.getCard("Candlestick")); // ensures suggestion will fail
-		game.setCurrentPlayer(p1);
+		
 		
 		// ensures candlestick must be moved into the correct room
 		Weapon weapon = game.getWeapon("Candlestick"); 
@@ -111,23 +104,19 @@ public class AccusingAndSuggestingTests {
 	
 	@Test
 	public void validUnrefutedSuggestion() 
-	// Valid suggestion that is refuted,
+	// Valid suggestion that is unrefuted,
 	// Valid in that it is done within a room
 	// Should be unrefuted
 	{
 		// Setup
 		Board board = new Board("resources/board.txt");
 		Game game = new Game(board);
-		Basement basement = game.getBasement(); 
-		Room location = basement.getMurderRoom();
-		Player p1 = null;
-		if(!basement.getMurderCharacter().equals(Player.Character.MISS_SCARLETT))
-			p1 = setupMockPlayer(game, location, 1,Player.Character.MISS_SCARLETT);
-		else
-			p1 = setupMockPlayer(game, location, 1,Player.Character.MRS_WHITE);
-		Player p2 = setupMockPlayer(game, board.getTile(17, 7), 2, basement.getMurderCharacter());
+		Location location = game.getRoom("Hall");
+		Player p1 = setupMockPlayer(game, location, 1,Player.Character.MRS_PEACOCK);
+		Player p2 = setupMockPlayer(game, board.getTile(17, 7), 2, Player.Character.MISS_SCARLETT);
 		game.setNumPlayers(2);
-		game.dealCards();
+		Basement basement = game.getBasement();
+		dealCards(game, p1, p2);
 		game.setCurrentPlayer(p1);
 		
 		// Check / Action
@@ -149,9 +138,10 @@ public class AccusingAndSuggestingTests {
 		Player p1 = setupMockPlayer(game, board.getTile(7, 8), 1);
 		Player p2 = setupMockPlayer(game, board.getTile(17, 7), 2);
 		game.setNumPlayers(2);
-		game.dealCards();
-		game.setCurrentPlayer(p1);
 		Basement basement = game.getBasement();
+		dealCards(game, p1, p2);
+		game.setCurrentPlayer(p1);
+		
 		
 		// Check / Action
 		assertTrue(game.suggestion(basement.getMurderCharacter(), basement.getMurderWeapon(), basement.getMurderRoom()) == null);
@@ -171,9 +161,9 @@ public class AccusingAndSuggestingTests {
 		Player p1 = setupMockPlayer(game, location, 1);
 		Player p2 = setupMockPlayer(game, board.getTile(17, 7), 2);
 		game.setNumPlayers(2);
-		game.dealCards();
-		game.setCurrentPlayer(p1);
 		Basement basement = game.getBasement();
+		dealCards(game, p1,p2);
+		game.setCurrentPlayer(p1);
 		
 		// Check / Action
 		assertTrue(game.suggestion(basement.getMurderCharacter(), basement.getMurderWeapon(), game.getRoom("Hall")) == null);
@@ -262,5 +252,27 @@ public class AccusingAndSuggestingTests {
 		System.out.println();
 	}
 
+	public void dealCards(Game game, Player player1, Player player2){
+		Basement basement = game.getBasement();
+		basement.setMurderCharacter(Player.Character.MISS_SCARLETT);
+		basement.setMurderWeapon(game.getWeapon("Candlestick"));
+		basement.setMurderRoom(game.getRoom("Hall"));
+		player1.addCard(game.getCard(game.getRoom("Dining Room")));
+		player1.addCard(game.getCard(game.getWeapon("Rope")));
+		player1.addCard(game.getCard(Player.Character.MRS_PEACOCK));
+		player1.addCard(game.getCard(game.getRoom("Hall")));
+		player1.addCard(game.getCard(game.getWeapon("Candlestick")));
+		player1.addCard(game.getCard(Player.Character.MISS_SCARLETT));
+		
+		player2.addCard(game.getCard(game.getRoom("Library")));
+		player2.addCard(game.getCard(game.getWeapon("Dagger")));
+		player2.addCard(game.getCard(Player.Character.COLONEL_MUSTARD));
+		player2.addCard(game.getCard(game.getRoom("Conservatory")));
+		player2.addCard(game.getCard(game.getWeapon("Lead Pipe")));
+		player2.addCard(game.getCard(Player.Character.PROFESSOR_PLUM));
+
+		
+		
+	}
 }
 

@@ -5,9 +5,6 @@ import src.main.Location.Room;
 
 /**
  * Represents a weapon in the game
- * 
- * @author cameronmclachlan
- *
  */
 public class Weapon {
 

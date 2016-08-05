@@ -14,9 +14,6 @@ import src.main.Location.Room;
 
 /**
  * tests for all the actions a player can do
- * 
- * @author cameronmclachlan
- *
  */
 public class PlayerTests {
 

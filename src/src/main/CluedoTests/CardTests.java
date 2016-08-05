@@ -14,9 +14,6 @@ import src.main.Location.Tile;
 
 /**
  * Tests for all the Cards
- * 
- * @author cameronmclachlan
- *
  */
 public class CardTests {
 

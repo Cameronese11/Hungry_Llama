@@ -3,8 +3,6 @@ package src.main.Location;
 /**
  * Represents a Tile of the board which 
  * is a doorway to a room
- * 
- * @author cameronmclachlan
  */
 public class DoorTile extends Tile{
 

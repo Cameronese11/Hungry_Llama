@@ -8,9 +8,6 @@ import src.main.GameObject.Player.Character;
 
 /**
  * Represents a Tile on the board
- * 
- * @author cameronmclachlan
- *
  */
 public class Tile implements Location{
 	

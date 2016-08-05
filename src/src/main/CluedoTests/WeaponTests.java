@@ -12,9 +12,6 @@ import src.main.Location.Room;
 
 /**
  * Class for all the weapon tests
- * 
- * @author cameronmclachlan
- *
  */
 public class WeaponTests {
 

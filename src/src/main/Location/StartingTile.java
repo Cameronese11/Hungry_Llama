@@ -6,9 +6,6 @@ import src.main.GameObject.Player;
 /**
  * Represents a tile on the board where a character 
  * starts
- * 
- * @author cameronmclachlan
- *
  */
 public class StartingTile extends Tile{
 

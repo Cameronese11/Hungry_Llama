@@ -16,9 +16,6 @@ import src.main.Location.Tile;
 
 /**
  * Represents a player(user) playing the game
- * 
- * @author cameronmclachlan
- *
  */
 public class Player {
 

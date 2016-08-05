@@ -7,9 +7,6 @@ import src.main.Location.Room;
 
 /**
  * Represents the basement which holds the 'solution
- * '
- * @author cameronmclachlan
- *
  */
 public class Basement{
 
@@ -45,4 +42,18 @@ public class Basement{
 	public Weapon getMurderWeapon(){
 		return murderWeapon;
 	}
+	
+	public void setMurderRoom(Room room){
+		this.murderRoom = room ;
+	}
+
+	public void setMurderCharacter(Player.Character character){
+		this.murderCharacter = character;
+	}
+
+	public void setMurderWeapon(Weapon weapon){
+		this.murderWeapon = weapon;
+	}
+	
+	
 }

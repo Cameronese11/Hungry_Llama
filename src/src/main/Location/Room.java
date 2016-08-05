@@ -9,9 +9,6 @@ import src.main.GameObject.Weapon;
 /**
  * Represents a Room on the 
  * board
- * 
- * @author cameronmclachlan
- *
  */
 public class Room implements Location{
 
