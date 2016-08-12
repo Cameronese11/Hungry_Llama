@@ -1,12 +1,22 @@
 package src.main.Cluedo;
 
+import static src.main.UI.CluedoCanvas.loadImage;
+
+import java.awt.Canvas;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Image;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Scanner;
 
+import javax.swing.ImageIcon;
+
 import src.main.GameObject.Player;
 import src.main.Location.DoorTile;
+import src.main.Location.Room;
 import src.main.Location.Tile;
 import src.main.Location.StartingTile;
 import src.main.Location.Tile;
@@ -18,6 +28,10 @@ public class Board {
 
 	private Tile[][] board2D;
 	
+
+	private static final Image BOARD = loadImage("scaledGameBoard2.png");
+	public static final int WIDTH = BOARD.getWidth(null);
+	public static final int HEIGHT = BOARD.getHeight(null) + 19;
 	/**
 	 * Constructs a new Board Object
 	 * 
@@ -26,6 +40,8 @@ public class Board {
 	public Board(String filename){
 		board2D = new Tile[24][25];
 		loadBoard(filename);
+		
+		
 	}
 	
 	/**
@@ -58,11 +74,10 @@ public class Board {
 		    			case "L": tile = new DoorTile(x,y, "Lounge"); break;
 		    			case "H": tile = new DoorTile(x,y, "Hall"); break;
 		    			case "s": tile = new DoorTile(x,y, "Study"); break;
-		    			case "I": tile = new DoorTile(x,y, "Library"); break;
+		    			case "l": tile = new DoorTile(x,y, "Library"); break;
 		    			case "B": tile = new DoorTile(x,y, "Billard Room"); break;
 		    			case "C": tile = new DoorTile(x,y, "Conservatory"); break;
 		    			case "b": tile = new DoorTile(x,y, "Ball Room"); break;
-		    			case "A": tile = new DoorTile(x,y, "Basement"); break;
 		    		
 		    			// Represents a characters starting tile
 		    			case "0": tile = new StartingTile(x,y, Player.Character.MISS_SCARLETT); break;
@@ -99,128 +114,65 @@ public class Board {
 		}	
 	}
 
-	/**
-	 * Print board to the console
-	 */
-	public void printBoard(){
+	public void paint(Graphics g){
+		g.drawImage(BOARD, 0, 0, BOARD.getWidth(null), BOARD.getHeight(null), null);
+		Graphics2D g2D = (Graphics2D) g;
+		paintRooms(g);
 		
-		System.out.print("   ");
-		// print x coordinates with appropriate spacing
-		for(int i = 0; i < 24; i++)
-			if(i < 9)
-				System.out.print(" " + (i+1) + " ");
-			else if(i == 8)
-				System.out.print(" " + (i+1));
-			else
-				System.out.print(i+1 + " ");
-		System.out.println();
 		
-		// loop through 2D array
-		for(int y = 0; y < board2D[0].length; y++){
-			// print out the y coordinate
-			if(y < 9)
-				System.out.print(" ");
-			System.out.print(y + 1);
-			System.out.print("|");
-			for(int x = 0; x < board2D.length; x++){
-				// draw tile if it exists
-				if(board2D[x][y] != null)
-					board2D[x][y].print();
-				else // draw empty space for null tiles
-					if(y == 0){
-						System.out.print('"');
-						System.out.print('"');
-						System.out.print('"');					
-					}else
-						System.out.print("   ");
-			// modify x according to the Room name added
-			x = addMapDetails(x,y);	
+		for(int x = 0; x < 24; x++)
+			for(int y = 0; y < 25; y++){
+			Tile t = getTile(x,y);
+			if(t != null)
+				t.paint(g2D);
 			}
-		System.out.println("|");
-		}	
 		
-	// print bottom border line
-	System.out.print("   ");
-	for(int i = 0; i < 73; i++)
-		System.out.print('"');
-		
-	System.out.println();
-	System.out.println();
-	}
-
-	
-	
-	/**
-	 * Determines the appropriate room name to print according to the 
-	 * given coordinates. Changes x accordingly
-	 * 
-	 * @param x
-	 * @param y
-	 * @return x - updated x value
-	 */
-	public int addMapDetails(int x, int y){
-		
-		// add stairway icons
-		if(x == 0 && y == 1){
-			System.out.print("[X]");
-			x = x + 1;
-		}if(x == 0 && y == 23){
-			System.out.print("[X]");
-			x = x + 1;
-		}if(x == 21 && y == 1){
-			System.out.print("[X]");
-			x = x + 1;
-		}if(x == 21 && y == 23){
-			System.out.print("[X]");
-			x = x + 1;
-		
-		// add room names
-		}else if(x == 0 && y == 3){
-			System.out.print(" Kitchen ");
-			x = x + 3;
-		}else if(x == 10 && y == 3){
-			System.out.print(" Ball ");
-			x = x + 2;
-		}else if(x == 10 && y == 4){
-			System.out.print(" Room ");
-			x = x + 2;
-		}else if(x == 17 && y == 3){
-			System.out.print("   Conservatory");
-			x = x + 5;
-		}else if(x == 0 && y == 11){
-			System.out.print("   Dining");
-			x = x + 3;
-		}else if(x == 0 && y == 12){
-			System.out.print("    Room ");
-			x = x + 3;
-		}else if(x == 0 && y == 11){
-			System.out.print("   Dining");
-			x = x + 3;
-		}else if(x == 9 && y == 13){
-			System.out.print("   Basement ");
-			x = x + 4;
-		}else if(x == 18 && y == 9){
-			System.out.print("   Billiard ");
-			x = x + 4;
-		}else if(x == 18 && y == 10){
-			System.out.print("     Room");
-			x = x + 3;
-		}else if(x == 18 && y == 16){
-			System.out.print("  Library");
-			x = x + 3;
-		}else if(x == 19 && y == 22){
-			System.out.print("Study ");
-			x = x + 2;
-		}else if(x == 10 && y == 21){
-			System.out.print("Hall  ");
-			x = x + 2;
-		}else if(x == 1 && y == 21){
-			System.out.print("Lounge");
-			x = x + 2;
-		}
-		return x;
 	}
 	
+	
+	public void paintRooms(Graphics g){
+		int[] KitchenXS = {23,46,46,85,85,94,94,131,131,153,153,45,45,23,23,20,20,23,23,20,20,23};
+		int[] KitchenYS = {31,31,28,28,31,31,28,28,31,31,159,159,138,138,118,118,92,92,81,81,54,54};
+		int[] BallRoomXS = {211,211,256,256,274,275,291,291,301,301,319,319,336,336,382,382};
+		int[] BallRoomYS = {182,59,59,26,21,19,17,19,19,17,19,21,26,59,59,182};
+		int[] ConservatoryXS = {438,438,445,445,498,498,508,508,561,561,567,567,571,571,567,567,571,571,567,567,571,571,567,567,545,545,462,462};
+		int[] ConservatoryYS = {118,30,30,27,27,30,30,27,27,30,30,38,38,55,55,66,66,79,79,89,89,106,106,114,114,138,138,118};
+		int[] BillardRoomXS = {439,439,569,569,573,573,570,570,573,573,570,570,573,573,570,570,573,573,570,570};
+		int[] BillardRoomYS = {299,192,192,196,196,214,214,226,226,240,240,250,250,266,266,276,276,293,293,299};
+		int[] LibraryXS = {440,440,417,417,439,439,547,547,558,558,570,570,573,573,570,570,573,573,570,570,558,558,547,547};
+		int[] LibraryYS = {436,414,414,354,354,331,331,354,354,351,351,354,354,378,378,388,388,413,413,416,416,413,413,436};
+		int[] StudyXS = {440,440,417,417,570,570,573,573,570,570,573,573,570,570,546,546,522,522,511,511,493,493,482,482,458,458};
+		int[] StudyYS = {577,555,555,492,492,514,514,527,527,537,537,551,551,577,577,580,580,577,577,580,580,577,577,580,580,577};
+		int[] HallXS = {252,252,233,233,358,358,342,342};
+		int[] HallYS = {583,570,570,423,423,570,570,583};
+		int[] LoungeXS = {22,22,19,19,22,22,19,19,22,22,174,174,155,155,135,135,110,110,100,100,45,45};
+		int[] LoungeYS = {578,554,554,517,517,506,506,468,468,446,446,554,554,578,578,580,580,578,578,580,580,578};
+		int[] DiningRoomXS = {22,130,130,199,199,  22 ,22 ,18 ,18 ,22 ,22 ,18 ,18 ,22 ,22 ,18 ,18 ,22 ,22 ,18,18,22};
+		int[] DiningRoomYS = {216,216,238,238,366, 366,363,363,332,332,322,322,296,296,286,286,260,260,250,250,220,220};	
+		
+		g.setColor(new Color(224,232,185));
+		
+		g.fillPolygon(KitchenXS, KitchenYS, KitchenXS.length);
+		g.fillPolygon(BallRoomXS, BallRoomYS, BallRoomXS.length);
+		g.fillPolygon(ConservatoryXS, ConservatoryYS, ConservatoryXS.length);
+		g.fillPolygon(BillardRoomXS, BillardRoomYS, BillardRoomXS.length);
+		g.fillPolygon(LibraryXS, LibraryYS, LibraryXS.length);
+		g.fillPolygon(StudyXS, StudyYS, StudyXS.length);
+		g.fillPolygon(HallXS, HallYS, HallXS.length);
+		g.fillPolygon(LoungeXS, LoungeYS, LoungeXS.length);
+		g.fillPolygon(DiningRoomXS, DiningRoomYS, DiningRoomXS.length);
+		
+		g.setColor(Color.black);
+		g.drawString("Kitchen", 65, 45);
+		g.drawString("Ball Room", 265, 45);
+		g.drawString("Conservatory", 460, 45);
+		g.drawString("Dining Room", 30, 235);
+		g.drawString("Billard Room", 470, 210);
+		g.drawString("Library", 470, 365);
+		g.drawString("Study", 480, 505);
+		g.drawString("Hall", 285, 460);
+		g.drawString("Lounge", 65, 460);
+	}
 	
 	// Getters and Setters //
 	
@@ -232,6 +184,14 @@ public class Board {
 	
 	public void setTile(int x, int y, Tile tile){
 		board2D[x][y] = tile;
+	}
+	
+	public int getWidth(){
+		return WIDTH;
+	}
+	
+	public int getHeight(){
+		return HEIGHT;
 	}
 }
 

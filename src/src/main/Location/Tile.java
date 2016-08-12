@@ -1,8 +1,12 @@
 package src.main.Location;
 
 
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.util.Scanner;
 
+import src.main.Cluedo.Board;
 import src.main.GameObject.Player;
 import src.main.GameObject.Player.Character;
 
@@ -18,6 +22,7 @@ public class Tile implements Location{
 	// player at this tile, null if none
 	protected Player player;
 	
+	protected final int SIZE = 23;
 	
 	/**
 	 * Constructs a new Tile object
@@ -33,19 +38,14 @@ public class Tile implements Location{
 	/**
 	 * prints the tile
 	 */
-	public void print(){
-		if(player == null)
-			System.out.print("[ ]");
-		else
-			System.out.print("[" + getLetter() + "]");
+	public void paint(Graphics2D g){
+		g.setColor(Color.yellow);
+		g.fillRect((x * SIZE) + 20, (y * SIZE) + 4, SIZE, SIZE);
+		g.setColor(Color.black);
+		g.drawRect((x * SIZE) + 20, (y * SIZE) + 4, SIZE, SIZE);
+		
 	}
 	
-	/**
-	 * prints the tile
-	 */
-	public void printLocation(){
-			System.out.print("(" + (x+1) + "," + (y+1) + ")");
-	}
 	
 	/**
 	 * Returns the Letter to represent the tiles starting character
@@ -72,6 +72,11 @@ public class Tile implements Location{
 	public int getY(){
 		return y;
 	}
+	
+	public int getSize(){
+		return SIZE;
+	}
+	
 	public Player getPlayer(){
 		return player;
 	}

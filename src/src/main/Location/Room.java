@@ -1,5 +1,8 @@
 package src.main.Location;
 
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,17 +20,21 @@ public class Room implements Location{
 	private List<Weapon> weapons;
 	private List<Player> players;
 	private String stairwayTo;
+	private int x;
+	private int y;
 	
 	/**
 	 * constructs a new Room object
 	 * 
 	 * @param name - name of the room
 	 */
-	public Room(String name, String stairwayTo){
+	public Room(String name, String stairwayTo, int x, int y){
 		weapons = new ArrayList<>();
 		players = new ArrayList<>();
 		this.name = name;
 		this.stairwayTo = stairwayTo;
+		this.x = x;
+		this.y = y;
 	}
 	
 	/**
@@ -69,6 +76,7 @@ public class Room implements Location{
 			players.remove(player);
 	}
 	
+	
 	/**
 	 *Equals method to compare to players 
 	 */
@@ -80,8 +88,19 @@ public class Room implements Location{
 		return (((Room) room).getName().equals(getName()));
 	}
 	
+	public void paint(Graphics g){
+		
+		
+	}
 	// Getters and Setters
+		
+	public int getX(){
+		return x;
+	}
 	
+	public int getY(){
+		return y;
+	}
 	public List<Weapon> getWeapons(){
 		return weapons;
 	}
@@ -94,10 +113,6 @@ public class Room implements Location{
 		return name;
 	}
 	
-	
-	public void printLocation(){
-		System.out.print(name);
-	}
 
 	public String getStairwayTo() {
 		return stairwayTo;

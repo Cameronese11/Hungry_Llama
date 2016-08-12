@@ -1,9 +1,16 @@
 package src.main.Cluedo;
 
+import java.awt.Button;
+import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
+
+import javax.swing.JButton;
 
 import src.main.Cards.Card;
 import src.main.Cards.RoomCard;
@@ -15,10 +22,10 @@ import src.main.GameObject.Player.Character;
 import src.main.Location.DoorTile;
 import src.main.Location.Location;
 import src.main.Location.Tile;
+import src.main.UI.CluedoCanvas;
 import src.main.Location.Room;
 import src.main.Location.Tile;
 import src.main.GameObject.Weapon;
-import src.main.UI.TextClient;
 
 /**
  * Represnts a Game of Cluedo
@@ -27,7 +34,7 @@ import src.main.UI.TextClient;
  * @author chethanawijesekera
  *
  */
-public class Game {
+public class Game{
 
 	private List<Player> players; // all players that were in game from the
 									// start
@@ -37,7 +44,7 @@ public class Game {
 
 	private List<Room> rooms;
 	private List<Weapon> weapons;
-
+	
 	private List<Player.Character> characters; // all possible characters
 	private List<Player.Character> charactersLeft; // characters not yet
 													// assigned to a player
@@ -46,6 +53,15 @@ public class Game {
 	private Player currentPlayer; // player whose turn it is
 	private int numPlayers; // number of players that are currently in the game
 	private Basement basement; // stores the solution
+	
+	public static State gameState;
+	
+	public static enum State{
+		RUNNING,
+		SETUP_MENU,
+		SETUP_PLAYER,
+		OVER
+	}
 
 	/**
 	 * Constructs a new Game of Cluedo
@@ -56,6 +72,7 @@ public class Game {
 	public Game(Board board) {
 
 		this.board = board;
+	
 
 		// initialise Lists
 		playersOut = new ArrayList<>();
@@ -84,15 +101,15 @@ public class Game {
 	}
 
 	private void initialiseRooms() {
-		rooms.add(new Room("Kitchen", "Study"));
-		rooms.add(new Room("Dining Room", ""));
-		rooms.add(new Room("Lounge", "Conservatory"));
-		rooms.add(new Room("Ball Room", ""));
-		rooms.add(new Room("Hall", ""));
-		rooms.add(new Room("Study", "Kitchen"));
-		rooms.add(new Room("Library", ""));
-		rooms.add(new Room("Billard Room", ""));
-		rooms.add(new Room("Conservatory", "Lounge"));
+		rooms.add(new Room("Kitchen", "Study", 55, 60));
+		rooms.add(new Room("Dining Room", "", 72, 269));
+		rooms.add(new Room("Lounge", "Conservatory", 64, 484 ));
+		rooms.add(new Room("Ball Room", "", 272, 88));
+		rooms.add(new Room("Hall", "", 271, 473));
+		rooms.add(new Room("Study", "Kitchen", 459, 518));
+		rooms.add(new Room("Library", "", 463, 364));
+		rooms.add(new Room("Billard Room", "", 477, 277));
+		rooms.add(new Room("Conservatory", "Lounge", 473, 53));
 		Collections.shuffle(weapons);
 		Collections.shuffle(rooms);
 		for (int i = 0; i < weapons.size(); i++) {
@@ -244,6 +261,7 @@ public class Game {
 		}
 	}
 
+	
 	/**
 	 * Clear the console
 	 */
@@ -262,7 +280,8 @@ public class Game {
 	 */
 	public Character generatePlayer(int i) {
 		Character character = generateCharacter();
-		players.add(new Player(this, board, i, character));
+		Color c = getCharacterColor(character);
+		players.add(new Player(this, board, i, character, c));
 		charactersLeft.remove(character);
 		return character;
 	}
@@ -287,11 +306,27 @@ public class Game {
 	 *            - character to assign to player
 	 */
 	public Character addPlayer(int i, Character character) {
-		players.add(new Player(this, board, i, character));
+		Color c = getCharacterColor(character);
+		players.add(new Player(this, board, i, character, c));
 		charactersLeft.remove(character);
 		return character;
 	}
 
+	
+	public Color getCharacterColor(Character character){
+		if(character.equals(Player.Character.COLONEL_MUSTARD))
+			return Color.yellow;
+		if(character.equals(Player.Character.MISS_SCARLETT))
+			return Color.red;
+		if(character.equals(Player.Character.MRS_PEACOCK))
+			return Color.blue;
+		if(character.equals(Player.Character.MRS_WHITE))
+			return Color.white;
+		if(character.equals(Player.Character.PROFESSOR_PLUM))
+			return new Color(74,74,213);
+		return Color.green;
+							
+	}
 	/**
 	 * Determines the player who's turn it is next
 	 * 
@@ -601,6 +636,8 @@ public class Game {
 	public void setCurrentPlayer(Player player) {
 		currentPlayer = player;
 	}
+	
+	
 
 	public List<Tile> getTiles() {
 		List<Tile> tiles = new ArrayList<>();
@@ -615,5 +652,6 @@ public class Game {
 	public void setNumPlayers(int num) {
 		this.numPlayers = num;
 	}
+
 
 }
