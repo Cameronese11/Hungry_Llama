@@ -142,18 +142,20 @@ public class SetupMenu extends javax.swing.JPanel implements ActionListener{
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		warning = false;
-		if(e.getActionCommand().equals("doneHome")){
-			nextButton1();		
-		}else{
-			boolean valid = false;
-			for(int i = 0; i < characterButtons.length ; i++)
-				if(characterButtons[i].isSelected())
-					valid = true;
+		if(e.getSource() == nextButton){
+			if(e.getActionCommand().equals("doneHome")){
+				nextButton1();		
+			}else{
+				boolean valid = false;
+				for(int i = 0; i < characterButtons.length ; i++)
+					if(characterButtons[i].isSelected())
+						valid = true;
 			
-			if(valid)
-				nextButton2();
-			else
-				warning = true;
+				if(valid)
+					nextButton2();
+				else
+					warning = true;
+			}
 		}
 		repaint();
 	}

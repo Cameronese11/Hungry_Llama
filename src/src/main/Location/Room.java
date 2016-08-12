@@ -117,6 +117,12 @@ public class Room implements Location{
 	public String getStairwayTo() {
 		return stairwayTo;
 	}
+
+	@Override
+	public void paint(Graphics g, List<Tile> moveableLocations, Tile selectedTile) {
+		// TODO Auto-generated method stub
+		
+	}
 	
 	
 }

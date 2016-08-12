@@ -12,7 +12,8 @@ import java.awt.event.KeyEvent;
 
 
 import javax.swing.JFrame;
-
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
 import javax.swing.JPanel;
 
 import src.main.Cluedo.Board;
@@ -21,6 +22,7 @@ import src.main.Cluedo.Game;
 public class CluedoFrame extends javax.swing.JFrame implements java.awt.event.KeyListener{
 
 	
+
 	private CluedoCanvas canvas;
 	private Game game;
 	private Board board;
@@ -38,10 +40,10 @@ public class CluedoFrame extends javax.swing.JFrame implements java.awt.event.Ke
 		setResizable(false); // prevent us from being resizeable
 		setVisible(true); // make sure we are visible!
 		addKeyListener(this);
-		//Game.gameState = Game.State.SETUP_MENU;
-		//gameSetupUI();
-		Game.gameState = Game.State.RUNNING;
-		gameBoardUI();
+		Game.gameState = Game.State.SETUP_MENU;
+		gameSetupUI();
+		//Game.gameState = Game.State.RUNNING;
+		//gameBoardUI();
 	}
 	
 	public void gameSetupUI(){

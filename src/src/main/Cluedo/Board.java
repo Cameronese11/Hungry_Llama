@@ -114,17 +114,18 @@ public class Board {
 		}	
 	}
 
-	public void paint(Graphics g){
+	public void paint(Graphics g, List<Tile> moveableLocations, Tile selectedTile){
 		g.drawImage(BOARD, 0, 0, BOARD.getWidth(null), BOARD.getHeight(null), null);
-		Graphics2D g2D = (Graphics2D) g;
 		paintRooms(g);
 		
 		
 		for(int x = 0; x < 24; x++)
 			for(int y = 0; y < 25; y++){
-			Tile t = getTile(x,y);
-			if(t != null)
-				t.paint(g2D);
+				Tile t = getTile(x,y);
+				if(t != null)
+					t.paint(g, moveableLocations, selectedTile);
+			
+			
 			}
 		
 	}

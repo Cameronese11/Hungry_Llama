@@ -157,7 +157,6 @@ public class Player {
 		g.setColor(col);
 		if(location instanceof Tile){
 			Tile t = (Tile) location;
-			System.out.println("printing " + character + " @ " + xPos + ", " + yPos);
 			g.fillOval(xPos, yPos, t.getSize() - 4 , t.getSize() - 4);
 			g.setColor(Color.black);
 			g.drawOval(xPos, yPos, t.getSize() - 4, t.getSize() - 4 );
