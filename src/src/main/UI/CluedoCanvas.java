@@ -21,6 +21,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import src.main.Location.*;
+import src.main.Cards.Card;
 import src.main.Cluedo.Board;
 import src.main.Cluedo.Game;
 
@@ -30,7 +31,7 @@ public class CluedoCanvas extends JPanel implements MouseListener, MouseMotionLi
 
 	private static final String IMAGE_PATH = "images/";
 	private static final Image PAGE = loadImage("setupPageHome.png");
-
+	
 	
 	private Game game;
 	private Board board;
@@ -40,6 +41,7 @@ public class CluedoCanvas extends JPanel implements MouseListener, MouseMotionLi
 	
 	
 	private Dice dice;
+	private BoardButtons boardButtonss;
 	
 	private List<Tile> moveableLocations;
 	private Tile selectedTile;
@@ -51,6 +53,7 @@ public class CluedoCanvas extends JPanel implements MouseListener, MouseMotionLi
 		addMouseListener(this);
 		addMouseMotionListener(this);
 		dice = new Dice(game, this);
+		boardButtonss = new BoardButtons(game, this);
 	}
 	
 	@Override
@@ -63,6 +66,7 @@ public class CluedoCanvas extends JPanel implements MouseListener, MouseMotionLi
 		
 		}
 	
+	
 	@Override
 	public void paint(Graphics g){
 		if(Game.gameState == Game.State.SETUP_MENU
@@ -73,7 +77,17 @@ public class CluedoCanvas extends JPanel implements MouseListener, MouseMotionLi
 			board.paint(g, moveableLocations, selectedTile);
 			for(Player p: game.getPlayers())
 				p.paint(g);
+			
 			dice.paint(g);
+			boardButtonss.paint(g);
+			g.setColor(Color.white);
+			Player p = game.getCurrentPlayer();
+			p.paintHand(g);
+			g.drawImage(p.getImage(), 590, 6,null);
+			g.drawString(p.getName().toString(), 800, 20);
+			g.drawString("It is your Turn", 800, 40);
+			for(Room r: game.getRooms())
+				r.paint(g, null, null);
 		}
 		
 		
@@ -103,10 +117,11 @@ public class CluedoCanvas extends JPanel implements MouseListener, MouseMotionLi
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		Point p = getMousePosition();
+		
 		Player player = game.getCurrentPlayer();
-		if(p != null){
-			if(dice.contains(p)){
+	
+			if(dice.contains(new Point(getMouseX(), getMouseY()))){
+				
 				int roll = dice.diceClicked();
 				moveableLocations = game.determineMoveLocations(player, roll);
 			}else if(!moveableLocations.isEmpty()){
@@ -120,21 +135,31 @@ public class CluedoCanvas extends JPanel implements MouseListener, MouseMotionLi
 						}
 					}	
 				}
+			}else{
+				String button = boardButtonss.contains(new Point(getMouseX(), getMouseY()));
+				if(button != null){
+					boardButtonss.buttonClicked(button);
+				}
+				
 			}
 			
-		}
+		
 		repaint();
 	}
 
 	@Override
 	public void mousePressed(MouseEvent e) {
-			
+		String button = boardButtonss.contains(new Point(getMouseX(), getMouseY()));
+		if(button != null)
+			boardButtonss.buttonPressed(button);
 		
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
-		
+		String button = boardButtonss.contains(new Point(getMouseX(), getMouseY()));
+		if(button != null)
+			boardButtonss.buttonReleased(button);
 		
 	}
 
@@ -163,7 +188,7 @@ public class CluedoCanvas extends JPanel implements MouseListener, MouseMotionLi
 		selectedTile = null;
 		for(Tile t: game.getTiles()){
 			if(t != null)
-				if(t.contains(getMousePosition()))
+				if(t.contains(new Point(mouseX, mouseY)))
 					selectedTile = t;
 				
 		}
@@ -172,8 +197,32 @@ public class CluedoCanvas extends JPanel implements MouseListener, MouseMotionLi
 		repaint();	
 	}
 
+	public void resetDice(){
+		dice.resetDice();
+	}
 	
+	public int getMouseX(){
+		return mouseX;
+	}
+	
+	public int getMouseY(){
+		return mouseY;
+	}
 
+	public Dice getDice(){
+		return dice;
+	}
+	
+	
+	public List<Tile> getMoveableLocations(){
+		return moveableLocations;
+	}
+	
+	public Tile getSelectedTile(){
+		return selectedTile;
+	}
+
+	
 
 
 }

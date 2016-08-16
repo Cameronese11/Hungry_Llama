@@ -31,7 +31,7 @@ public class SuspectCard implements Card {
 	 * @return - String representing this Card
 	 */
 	public String toString(){
-		return "Suspect Card: " + character;
+		return character.toString();
 	}
 	
 	// Getters and Setters

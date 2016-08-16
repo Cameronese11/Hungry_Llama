@@ -4,6 +4,7 @@ package src.main.UI;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.GridBagConstraints;
@@ -114,7 +115,8 @@ public class SetupMenu extends javax.swing.JPanel implements ActionListener{
 		}
 		
 	}
-
+	
+	
 	@Override
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
@@ -187,7 +189,7 @@ public class SetupMenu extends javax.swing.JPanel implements ActionListener{
 			}	
 		}
 		
-		game.addPlayer(index, character);
+		game.addPlayer(index, character, name);
 		playersLeft--;
 	
 		if(playersLeft == 0){

@@ -1,5 +1,9 @@
 package src.main.GameObject;
 
+import static src.main.UI.CluedoCanvas.loadImage;
+
+import java.awt.Image;
+
 import src.main.Cluedo.Game;
 import src.main.Location.Room;
 
@@ -11,6 +15,7 @@ public class Weapon {
 	private Game game;
 	private String name;
 	private String room;
+	private Image img;
 	
 	/**
 	 * Constructs a new weapon object
@@ -20,6 +25,7 @@ public class Weapon {
 	public Weapon(Game game, String name){
 		this.game = game;
 		this.name = name;
+		setImg();
 	}
 	
 
@@ -46,6 +52,13 @@ public class Weapon {
 		room.addWeapon(this);					
 	}
 	
+	public void setImg(){
+		this.img = loadImage("Dagger.png").getScaledInstance(200, 200,0);
+	}
+	
+	public Image getImage(){
+		return img;
+	}
 	// Getters and Setters
 	
 	public String getName(){

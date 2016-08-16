@@ -31,7 +31,7 @@ public class WeaponCard implements Card{
 	 * @return - String representing this card
 	 */
 	public String toString(){
-		return "Weapon Card: " + weapon.getName();
+		return weapon.getName();
 	}
 	
 	// Getters and Setters

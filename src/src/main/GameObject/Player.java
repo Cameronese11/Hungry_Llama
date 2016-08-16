@@ -1,13 +1,20 @@
 package src.main.GameObject;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.Point;
+import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.List;
 
+import static src.main.UI.CluedoCanvas.loadImage;
 import src.main.Cards.Card;
 import src.main.Cluedo.Board;
 import src.main.Cluedo.Game;
+import src.main.GameObject.Player.Character;
 import src.main.Location.DoorTile;
 import src.main.Location.Location;
 import src.main.Location.Tile;
@@ -27,9 +34,11 @@ public class Player {
 	private int size;
 	
 	private Character character;
+	private String name;
 	private int num;
 	private Color col;
 	Location location;
+	private Image img;
 	private List<Card> hand;
 	
 	/**
@@ -53,12 +62,13 @@ public class Player {
 	 * @param b - Game board
 	 * @param c - Given Character
 	 */
-	public Player(Game g, Board b, int n, Character c, Color col){
+	public Player(Game g, Board b, int n, Character c, String name){
 		this.game = g;
 		this.board = b;
+		this.name = name;
 		this.num = n;
 		this.character = c;
-		this.col = col;
+		setColorAndPicture(c);
 		hand = new ArrayList<>();
 		
 	}	
@@ -144,8 +154,6 @@ public class Player {
 			((Room) newLocation).addPlayer(this);
 			Room room = (Room) newLocation;
 			location = room;
-			xPos = room.getX();
-			yPos = room.getY();
 		}
 	
 	return true;
@@ -160,21 +168,14 @@ public class Player {
 			g.fillOval(xPos, yPos, t.getSize() - 4 , t.getSize() - 4);
 			g.setColor(Color.black);
 			g.drawOval(xPos, yPos, t.getSize() - 4, t.getSize() - 4 );
-		}else{
-			Room r = (Room) location;
-			g.fillOval(xPos, yPos, 10,10);
-			g.setColor(Color.black);
-			g.drawOval(xPos, yPos, 10,10);
-			
-			
-			
-		}
-			
+		}			
 	}
 	
 	// Getters and Setters
 	
-	
+	public Image getImage(){
+		return img;
+	}
 	public Character getCharacter(){
 		return character;
 	}
@@ -193,6 +194,10 @@ public class Player {
 	
 	public List<Card> getHand(){
 		return hand;
+	}
+	
+	public String getName(){
+		return name;
 	}
 	
 	public void print(){
@@ -229,4 +234,60 @@ public class Player {
 			case PROFESSOR_PLUM: return "p";
 		}return " ";		
 	}
+	
+	public void setColorAndPicture(Character character){
+		if(character.equals(Player.Character.COLONEL_MUSTARD)){
+			col = Color.yellow;
+			img = loadImage("ColonelMustard.png").getScaledInstance(200, 200,0);
+		}
+		if(character.equals(Player.Character.MISS_SCARLETT)){
+			col = Color.red;
+			img = loadImage("MissScarlett.png").getScaledInstance(200, 200,0);
+		}
+		if(character.equals(Player.Character.MRS_PEACOCK)){
+			col = Color.blue;
+			img = loadImage("MrsPeacock.png").getScaledInstance(200, 200,0);
+		}
+		if(character.equals(Player.Character.MRS_WHITE)){
+			col = Color.white;
+			img = loadImage("MrsWhite.png").getScaledInstance(200, 200,0);
+		}
+		if(character.equals(Player.Character.PROFESSOR_PLUM)){
+			col = new Color(74,74,213);
+			img = loadImage("ProfessorPlum.png").getScaledInstance(200, 200,0);
+		}
+		if(character.equals(Player.Character.THE_REVERAND_GREEN)){
+			col = Color.green;
+			img = loadImage("TheReveranGreen.png").getScaledInstance(200, 200,0);
+		}
+		
+		
+							
+	}
+
+	public void paintHand(Graphics g) {
+		for(int i = 0; i < 3; i++){
+			g.setColor(Color.white);
+			g.fillRect(660 + i*90, 254, 80, 112);
+			g.setColor(Color.BLACK);
+			g.drawRect(660 + i*90, 254, 80, 112);
+			Graphics2D g2d = (Graphics2D) g;
+			g2d.setFont(new Font("Calibri", Font.PLAIN, 10));
+			g2d.drawString(getHand().get(i).toString(), 660 + i*90, 300);
+		}
+		int j = 0;
+		for(int i = 3; i < hand.size(); i++){
+			g.setColor(Color.white);
+			g.fillRect(660 + j*90, 380, 80, 112);
+			g.setColor(Color.black);
+			g.drawRect(660 + j*90, 380, 80, 112);
+			Graphics2D g2d = (Graphics2D) g;
+			g2d.setFont(new Font("Calibri", Font.PLAIN, 10));
+			g2d.drawString(getHand().get(i).toString(), 660 + j*90, 430);
+			j++;
+		}
+		
+	}
+	
+	
 }

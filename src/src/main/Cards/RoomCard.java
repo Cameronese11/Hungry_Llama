@@ -34,7 +34,7 @@ public class RoomCard implements Card{
 	 * @return - String representing this card
 	 */
 	public String toString(){
-		return "Room Card: " + room.getName();
+		return room.getName();
 	}
 	
 	// Getters and Setters

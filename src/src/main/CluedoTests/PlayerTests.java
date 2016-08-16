@@ -320,7 +320,7 @@ public class PlayerTests {
 	public Player setupMockPlayer(Game game, Location location, int playerNum) {
 		
 		// Create player
-		game.generatePlayer(playerNum);
+		game.addPlayer(playerNum, Player.Character.COLONEL_MUSTARD, "");
 		Player player = game.getPlayer(playerNum);
 		
 		// set the players location

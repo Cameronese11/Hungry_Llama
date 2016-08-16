@@ -189,7 +189,7 @@ public class AccusingAndSuggestingTests {
 	public Player setupMockPlayer(Game game, Location location, int playerNum) {
 		
 		// Create player
-		game.generatePlayer(playerNum);
+		game.addPlayer(playerNum, Player.Character.COLONEL_MUSTARD, "");
 		Player player = game.getPlayer(playerNum);
 		
 		// set the players location
@@ -216,7 +216,7 @@ public class AccusingAndSuggestingTests {
 	public Player setupMockPlayer(Game game, Location location, int playerNum, Player.Character character) {
 		
 		// Create player
-		game.addPlayer(playerNum, character);
+		game.addPlayer(playerNum, character, "");
 		Player player = game.getPlayer(playerNum);
 		
 		// set the players location

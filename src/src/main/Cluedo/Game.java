@@ -101,15 +101,15 @@ public class Game{
 	}
 
 	private void initialiseRooms() {
-		rooms.add(new Room("Kitchen", "Study", 55, 60));
-		rooms.add(new Room("Dining Room", "", 72, 269));
-		rooms.add(new Room("Lounge", "Conservatory", 64, 484 ));
-		rooms.add(new Room("Ball Room", "", 272, 88));
-		rooms.add(new Room("Hall", "", 271, 473));
-		rooms.add(new Room("Study", "Kitchen", 459, 518));
-		rooms.add(new Room("Library", "", 463, 364));
-		rooms.add(new Room("Billard Room", "", 477, 277));
-		rooms.add(new Room("Conservatory", "Lounge", 473, 53));
+		rooms.add(new Room("Kitchen", "Study", 28, 60));
+		rooms.add(new Room("Dining Room", "", 45, 269));
+		rooms.add(new Room("Lounge", "Conservatory", 38, 484 ));
+		rooms.add(new Room("Ball Room", "", 236, 88));
+		rooms.add(new Room("Hall", "", 236, 490));
+		rooms.add(new Room("Study", "Kitchen", 445, 518));
+		rooms.add(new Room("Library", "", 445, 370));
+		rooms.add(new Room("Billard Room", "", 445, 238));
+		rooms.add(new Room("Conservatory", "Lounge", 445, 53));
 		Collections.shuffle(weapons);
 		Collections.shuffle(rooms);
 		for (int i = 0; i < weapons.size(); i++) {
@@ -272,19 +272,6 @@ public class Game{
 
 	}
 
-	/**
-	 * Creates a player in the game with a random character that isn't in use
-	 * 
-	 * @param i
-	 *            - player number(1-6)
-	 */
-	public Character generatePlayer(int i) {
-		Character character = generateCharacter();
-		Color c = getCharacterColor(character);
-		players.add(new Player(this, board, i, character, c));
-		charactersLeft.remove(character);
-		return character;
-	}
 
 	/**
 	 * Returns a randam character that isn't currently in use
@@ -305,28 +292,14 @@ public class Game{
 	 * @param character
 	 *            - character to assign to player
 	 */
-	public Character addPlayer(int i, Character character) {
-		Color c = getCharacterColor(character);
-		players.add(new Player(this, board, i, character, c));
+	public Character addPlayer(int i, Character character, String name) {
+		players.add(new Player(this, board, i, character, name));
 		charactersLeft.remove(character);
 		return character;
 	}
 
 	
-	public Color getCharacterColor(Character character){
-		if(character.equals(Player.Character.COLONEL_MUSTARD))
-			return Color.yellow;
-		if(character.equals(Player.Character.MISS_SCARLETT))
-			return Color.red;
-		if(character.equals(Player.Character.MRS_PEACOCK))
-			return Color.blue;
-		if(character.equals(Player.Character.MRS_WHITE))
-			return Color.white;
-		if(character.equals(Player.Character.PROFESSOR_PLUM))
-			return new Color(74,74,213);
-		return Color.green;
-							
-	}
+	
 	/**
 	 * Determines the player who's turn it is next
 	 * 

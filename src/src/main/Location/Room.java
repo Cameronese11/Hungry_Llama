@@ -88,10 +88,7 @@ public class Room implements Location{
 		return (((Room) room).getName().equals(getName()));
 	}
 	
-	public void paint(Graphics g){
-		
-		
-	}
+	
 	// Getters and Setters
 		
 	public int getX(){
@@ -120,8 +117,21 @@ public class Room implements Location{
 
 	@Override
 	public void paint(Graphics g, List<Tile> moveableLocations, Tile selectedTile) {
-		// TODO Auto-generated method stub
-		
+		for(int i = 0; i < 6; i++){
+			g.setColor(Color.BLACK);
+			g.drawRect(x + i*20, y, 20, 20);
+			g.drawRect(x + i*20, y+20, 20, 20);
+			if(i < players.size()){
+				Player p = players.get(i);
+				g.setColor(p.getColor());
+				g.fillOval(x + i*20 + 1, y + 1, 18, 18);
+				g.setColor(Color.BLACK);
+				g.drawOval(x + i*20 + 1, y + 1, 18, 18);
+			}
+			if(i < weapons.size()){
+				g.drawImage(weapons.get(i).getImage(), x + i*20 + 1, y + 21, 18, 18, null);
+			}
+		}
 	}
 	
 	

@@ -29,7 +29,7 @@ public class Board {
 	private Tile[][] board2D;
 	
 
-	private static final Image BOARD = loadImage("scaledGameBoard2.png");
+	private static final Image BOARD = loadImage("scaledGameBoard2j.png");
 	public static final int WIDTH = BOARD.getWidth(null);
 	public static final int HEIGHT = BOARD.getHeight(null) + 19;
 	/**
