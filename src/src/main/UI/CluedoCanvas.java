@@ -2,6 +2,7 @@ package src.main.UI;
 
 
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
@@ -18,6 +19,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
@@ -37,6 +39,7 @@ public class CluedoCanvas extends JPanel implements MouseListener, MouseMotionLi
 	
 	private Game game;
 	private Board board;
+	private JFrame frame;
 	
 	private int mouseX;
 	private int mouseY;
@@ -52,6 +55,7 @@ public class CluedoCanvas extends JPanel implements MouseListener, MouseMotionLi
 	public CluedoCanvas(Game game, Board board, JFrame frame){
 		this.game = game;
 		this.board = board;
+		this.frame = frame;
 		moveableLocations = new ArrayList<>();
 		addMouseListener(this);
 		addMouseMotionListener(this);
@@ -64,11 +68,14 @@ public class CluedoCanvas extends JPanel implements MouseListener, MouseMotionLi
 		return new Dimension(board.getWidth(),board.getHeight());
 	}
 	
+	@Override
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		
 		}
-	
+	public void accusation(){
+		
+	}
 	
 	@Override
 	public void paint(Graphics g){

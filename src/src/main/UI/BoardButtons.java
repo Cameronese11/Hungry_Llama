@@ -70,19 +70,9 @@ public class BoardButtons {
 	}
 	
 	public void buttonClicked(String button){
-		JPanel panel = null;
 		if(button.equals("acc")){
-			panel = new JPanel();
-			panel.setVisible(true);
-			panel.setPreferredSize(new Dimension(500, 500));
-			panel.setLocation(200, 200);
-			panel.revalidate();
-			frame.add(panel);
-			frame.pack();
-			frame.revalidate();
-			frame.repaint();
+			canvas.accusation();
 		}
-		
 			
 		if(button.equals("sug"))
 			System.out.println("make an suggestion");

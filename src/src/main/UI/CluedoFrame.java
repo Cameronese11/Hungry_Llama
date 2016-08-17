@@ -2,6 +2,8 @@ package src.main.UI;
 
 import java.awt.BorderLayout;
 import java.awt.Canvas;
+import java.awt.CardLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
@@ -32,7 +34,9 @@ public class CluedoFrame extends javax.swing.JFrame implements java.awt.event.Ke
 	private CluedoCanvas canvas;
 	private Game game;
 	private Board board;
-	private JPanel setupMenu;
+	private SetupMenu setupMenu;
+	private JPanel panelCont;
+	private JPanel accusation;
 	private JMenuBar menuBar;
 	
 	
@@ -43,25 +47,34 @@ public class CluedoFrame extends javax.swing.JFrame implements java.awt.event.Ke
 		this.game = game;
 		this.board = board;
 		
+		
+		panelCont = new JPanel();
+		
+		
+		
+		
 		setSize(getPreferredSize());
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		canvas = new CluedoCanvas(game, board, this); // create canvas
+		accusation = new AccusationOrSuggestion(game, this, canvas);
 		
-		add(canvas, BorderLayout.CENTER); // add canvas
+		panelCont.add(canvas);
+		//add(canvas, BorderLayout.CENTER); // add canvas
 		setResizable(false); // prevent us from being resizeable
 		setVisible(true); // make sure we are visible!
 		addKeyListener(this);
 		Game.gameState = Game.State.SETUP_MENU;
 		menuBar = new JMenuBar();
+		add(panelCont);
 		gameSetupUI();
 		//Game.gameState = Game.State.RUNNING;
 		//gameBoardUI();
 	}
 	
 	public void gameSetupUI(){
-		setLayout(new GridLayout(2,1)); // use border layout
+		panelCont.setLayout(new GridLayout(2,1)); // use border layout
 		setupMenu = new SetupMenu(game, this);
-		add(setupMenu);	
+		panelCont.add(setupMenu);	
 		setJMenuBar(menuBar);
 		pack();
 		repaint();
@@ -69,18 +82,20 @@ public class CluedoFrame extends javax.swing.JFrame implements java.awt.event.Ke
 	
 	public void gameBoardUI(){
 		//setupMenu.setVisible(false);
-		setLayout(new BorderLayout());
-		add(canvas,BorderLayout.CENTER,0);
+		
+		panelCont.removeAll();
+		panelCont.setLayout(new BorderLayout());
+		panelCont.add(canvas);
 		pack();
 		revalidate();
-		repaint();
 		game.setupPlayers();
 		game.dealCards();
+		repaint();
 	}
 	
 	@Override
 	public Dimension getPreferredSize(){
-		return new Dimension(board.getWidth(),board.getHeight()/* + 50*/);
+		return new Dimension(board.getWidth(),board.getHeight());
 	}
 	
 	
@@ -99,6 +114,7 @@ public class CluedoFrame extends javax.swing.JFrame implements java.awt.event.Ke
 	
 	@Override
 	public void repaint(){
+		super.repaint();
 		canvas.repaint();
 	}
 	
