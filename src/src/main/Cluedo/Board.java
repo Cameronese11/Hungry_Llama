@@ -7,6 +7,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.Point;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
@@ -114,7 +115,7 @@ public class Board {
 		}	
 	}
 
-	public void paint(Graphics g, List<Tile> moveableLocations, Tile selectedTile){
+	public void paint(Graphics g, List<Tile> moveableLocations, Point p){
 		g.drawImage(BOARD, 0, 0, BOARD.getWidth(null), BOARD.getHeight(null), null);
 		paintRooms(g);
 		
@@ -123,7 +124,7 @@ public class Board {
 			for(int y = 0; y < 25; y++){
 				Tile t = getTile(x,y);
 				if(t != null)
-					t.paint(g, moveableLocations, selectedTile);
+					t.paint(g, moveableLocations, p);
 			
 			
 			}

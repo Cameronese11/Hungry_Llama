@@ -10,6 +10,7 @@ import java.awt.Image;
 import java.util.List;
 import java.awt.Point;
 import java.awt.Polygon;
+import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -26,12 +27,13 @@ import src.main.Cluedo.Board;
 import src.main.Cluedo.Game;
 
 import src.main.GameObject.Player;
+import src.main.GameObject.Weapon;
 
 public class CluedoCanvas extends JPanel implements MouseListener, MouseMotionListener{
 
 	private static final String IMAGE_PATH = "images/";
 	private static final Image PAGE = loadImage("setupPageHome.png");
-	
+	private static final Image BLACK_OPACITY = loadImage("blackOpacity.png");
 	
 	private Game game;
 	private Board board;
@@ -41,7 +43,8 @@ public class CluedoCanvas extends JPanel implements MouseListener, MouseMotionLi
 	
 	
 	private Dice dice;
-	private BoardButtons boardButtonss;
+	private Card showCard;
+	private BoardButtons boardButtons;
 	
 	private List<Tile> moveableLocations;
 	private Tile selectedTile;
@@ -53,7 +56,7 @@ public class CluedoCanvas extends JPanel implements MouseListener, MouseMotionLi
 		addMouseListener(this);
 		addMouseMotionListener(this);
 		dice = new Dice(game, this);
-		boardButtonss = new BoardButtons(game, this);
+		boardButtons = new BoardButtons(game, this, frame);
 	}
 	
 	@Override
@@ -74,20 +77,46 @@ public class CluedoCanvas extends JPanel implements MouseListener, MouseMotionLi
 			g.drawImage(PAGE, 0, 0, null);
 			
 		}else if(Game.gameState == Game.State.RUNNING){
-			board.paint(g, moveableLocations, selectedTile);
+			if(showCard != null)
+				board.paint(g, moveableLocations, null);
+			else
+				board.paint(g, moveableLocations, new Point(mouseX, mouseY));
+			
 			for(Player p: game.getPlayers())
 				p.paint(g);
 			
 			dice.paint(g);
-			boardButtonss.paint(g);
+			boardButtons.paint(g);
 			g.setColor(Color.white);
 			Player p = game.getCurrentPlayer();
-			p.paintHand(g);
 			g.drawImage(p.getImage(), 590, 6,null);
 			g.drawString(p.getName().toString(), 800, 20);
 			g.drawString("It is your Turn", 800, 40);
 			for(Room r: game.getRooms())
 				r.paint(g, null, null);
+			if(showCard != null){
+				p.paintHand(g, new Point(0,0));
+				g.drawImage(BLACK_OPACITY, 0, 0, 990, 590, null);
+				g.drawImage(showCard.getImage(0),315, 33, null);
+			}else{
+				p.paintHand(g, new Point(mouseX, mouseY));
+			}
+			for(Player player: game.getPlayers()){
+				Rectangle r = new Rectangle(player.getXPos(), player.getYPos(),19, 19);
+				if(r.contains(mouseX, mouseY)){
+					player.paintTag(g);
+					}
+			}
+			for(Weapon weapon: game.getWeapons()){
+				Rectangle r = new Rectangle(weapon.getXPos(), weapon.getYPos(),19, 19);
+				if(r.contains(mouseX, mouseY)){
+					weapon.paintTag(g);
+					}
+			}
+			
+		
+		
+		
 		}
 		
 		
@@ -118,6 +147,15 @@ public class CluedoCanvas extends JPanel implements MouseListener, MouseMotionLi
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		
+		if(showCard != null){
+			Rectangle r = new Rectangle(315, 33, 360, 524);
+			if(!r.contains(mouseX, mouseY)){
+				showCard = null;
+			}
+			
+			
+		}else{
+		
 		Player player = game.getCurrentPlayer();
 	
 			if(dice.contains(new Point(getMouseX(), getMouseY()))){
@@ -135,31 +173,34 @@ public class CluedoCanvas extends JPanel implements MouseListener, MouseMotionLi
 						}
 					}	
 				}
+			}else if(player.getSelectedCard() != null){
+				Card c = player.getSelectedCard();
+				showCard = c;
 			}else{
-				String button = boardButtonss.contains(new Point(getMouseX(), getMouseY()));
+				String button = boardButtons.contains(new Point(getMouseX(), getMouseY()));
 				if(button != null){
-					boardButtonss.buttonClicked(button);
+					boardButtons.buttonClicked(button);
 				}
 				
 			}
-			
+		}
 		
 		repaint();
 	}
 
 	@Override
 	public void mousePressed(MouseEvent e) {
-		String button = boardButtonss.contains(new Point(getMouseX(), getMouseY()));
+		String button = boardButtons.contains(new Point(getMouseX(), getMouseY()));
 		if(button != null)
-			boardButtonss.buttonPressed(button);
+			boardButtons.buttonPressed(button);
 		
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
-		String button = boardButtonss.contains(new Point(getMouseX(), getMouseY()));
+		String button = boardButtons.contains(new Point(getMouseX(), getMouseY()));
 		if(button != null)
-			boardButtonss.buttonReleased(button);
+			boardButtons.buttonReleased(button);
 		
 	}
 
@@ -189,12 +230,11 @@ public class CluedoCanvas extends JPanel implements MouseListener, MouseMotionLi
 		for(Tile t: game.getTiles()){
 			if(t != null)
 				if(t.contains(new Point(mouseX, mouseY)))
-					selectedTile = t;
-				
+					selectedTile = t;	
 		}
 					
 		//System.out.println(mouseX + ", "  + mouseY);
-		repaint();	
+		repaint();
 	}
 
 	public void resetDice(){
@@ -213,7 +253,6 @@ public class CluedoCanvas extends JPanel implements MouseListener, MouseMotionLi
 		return dice;
 	}
 	
-	
 	public List<Tile> getMoveableLocations(){
 		return moveableLocations;
 	}
@@ -222,7 +261,9 @@ public class CluedoCanvas extends JPanel implements MouseListener, MouseMotionLi
 		return selectedTile;
 	}
 
-	
+	public Card getShowCard(){
+		return showCard;
+	}
 
 
 }

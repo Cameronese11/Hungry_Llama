@@ -97,7 +97,7 @@ public class Game{
 		weapons.add(new Weapon(this, "Lead Pipe"));
 		weapons.add(new Weapon(this, "Revolver"));
 		weapons.add(new Weapon(this, "Rope"));
-		weapons.add(new Weapon(this, "Spanner"));
+		weapons.add(new Weapon(this, "Wrench"));
 	}
 
 	private void initialiseRooms() {
@@ -108,7 +108,7 @@ public class Game{
 		rooms.add(new Room("Hall", "", 236, 490));
 		rooms.add(new Room("Study", "Kitchen", 445, 518));
 		rooms.add(new Room("Library", "", 445, 370));
-		rooms.add(new Room("Billard Room", "", 445, 238));
+		rooms.add(new Room("Billiard Room", "", 445, 238));
 		rooms.add(new Room("Conservatory", "Lounge", 445, 53));
 		Collections.shuffle(weapons);
 		Collections.shuffle(rooms);
@@ -170,6 +170,7 @@ public class Game{
 		Collections.shuffle(suspectCards);
 		Collections.shuffle(weaponCards);
 		Collections.shuffle(cards);
+		Collections.shuffle(deck);
 
 		// Select a card of the top of each pile to put towards the 'solution'
 		Room murderRoom = roomCards.get(0).getRoom();
@@ -260,17 +261,25 @@ public class Game{
 			p.move((Location) tile);
 		}
 	}
-
 	
 	/**
-	 * Clear the console
+	 * Returns the Letter to represent the  tiles starting character
+	 * 
+	 * @return letter
 	 */
-	public void clearConsole() {
-
-		for (int clear = 0; clear < 100000; clear++)
-			System.out.print("\b");
-
+	public static String getCharacterName(Character character){
+		switch(character){
+			case MISS_SCARLETT: return"Miss Scarlett";
+			case COLONEL_MUSTARD: return "Colonel Mustard";
+			case MRS_WHITE: return "Mrs White";
+			case THE_REVERAND_GREEN: return "The Reverand Green";
+			case MRS_PEACOCK: return "Mrs Peacock";
+			case PROFESSOR_PLUM: return "Professor Plum";
+		}return " ";		
 	}
+
+	
+	
 
 
 	/**
@@ -402,7 +411,7 @@ public class Game{
 	 */
 	public void dealCards() {
 		boolean done = false;
-
+		
 		while (!done) {
 
 			// only deal out cards if theres at least one for each player
@@ -610,6 +619,9 @@ public class Game{
 		currentPlayer = player;
 	}
 	
+	public List<Weapon> getWeapons(){
+		return weapons;
+	}
 	
 
 	public List<Tile> getTiles() {

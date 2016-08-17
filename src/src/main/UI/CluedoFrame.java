@@ -71,8 +71,6 @@ public class CluedoFrame extends javax.swing.JFrame implements java.awt.event.Ke
 		//setupMenu.setVisible(false);
 		setLayout(new BorderLayout());
 		add(canvas,BorderLayout.CENTER,0);
-		//boardButtons = new BoardButtons(game, canvas);
-		//add(boardButtons, BorderLayout.SOUTH);
 		pack();
 		revalidate();
 		repaint();

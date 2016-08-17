@@ -1,6 +1,10 @@
 package src.main.Cards;
 
 import src.main.Location.Room;
+import static src.main.UI.CluedoCanvas.loadImage;
+
+import java.awt.Graphics;
+import java.awt.Image;
 
 /**
  * Represents a Room Card in the Game. 
@@ -20,6 +24,7 @@ import src.main.Location.Room;
 public class RoomCard implements Card{
 
 	private Room room;
+	private Image imgs[] = new Image[3];
 	
 	/**
 	 * Constucts a new roomCard object
@@ -28,6 +33,7 @@ public class RoomCard implements Card{
 	 */
 	public RoomCard(Room room){
 		this.room = room;
+		setImages();
 	}
 	
 	/**
@@ -43,5 +49,16 @@ public class RoomCard implements Card{
 		return room;
 	}
 	
+	public Image getImage(int i){
+		return imgs[i];
+	}
+	public void setImages(){
+		imgs[0] = loadImage(room.getName() +".jpg");
+		imgs[1] = imgs[0].getScaledInstance(100, 146, 16);
+		imgs[2] = imgs[0].getScaledInstance(80, 116, 16);
+	}
 	
+	public void paint(Graphics g){
+		
+	}
 }

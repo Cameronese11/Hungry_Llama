@@ -1,10 +1,14 @@
 package src.main.UI;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.Polygon;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
 
 import src.main.Cluedo.Game;
 
@@ -13,17 +17,16 @@ import static src.main.UI.CluedoCanvas.loadImage;
 public class BoardButtons {
 
 	
-	private static final Image ACCUSATION1 = loadImage("Picture1.png").getScaledInstance(117, 40, 0);
-	private static final Image SUGGESTION1 = loadImage("Picture2.png").getScaledInstance(136, 47, 0);
-	private static final Image FINISH_TURN1 =loadImage("Picture3.png").getScaledInstance(108, 37, 0);
-	private static final Image ACCUSATION2 = loadImage("Picture4.png").getScaledInstance(117, 40, 0);
-	private static final Image SUGGESTION2 = loadImage("Picture5.png").getScaledInstance(136, 47, 0);
-	private static final Image FINISH_TURN2 = loadImage("Picture6.png").getScaledInstance(108, 37, 0);
+	private static final Image ACCUSATION1 = loadImage("accusation1.png");
+	private static final Image SUGGESTION1 = loadImage("suggestion1.png");
+	private static final Image FINISH_TURN1 =loadImage("finishTurn1.png");
+	private static final Image ACCUSATION2 = loadImage("accusation2.png");
+	private static final Image SUGGESTION2 = loadImage("suggestion2.png");
+	private static final Image FINISH_TURN2 = loadImage("finishTurn2.png");
 	
-	
-	private int accX = 600, accY = 540;
-	private int sugX = 720, sugY = 536;
-	private int finX = 860, finY = 540;
+	private int accX = 609, accY = 540;
+	private int sugX = 736, sugY = 540;
+	private int finX = 863, finY = 540;
 	
 	private boolean accPressed = false;
 	private boolean sugPressed = false;
@@ -35,37 +38,52 @@ public class BoardButtons {
 	private int[] sugYS = {544,544,577,577};
 	private int[] finXS = {864,961,961,864};
 	private int[] finYS = {544,544,577,577};
+	
 	Polygon acc = new Polygon(accXS, accYS, accXS.length);
 	Polygon sug = new Polygon(sugXS, sugYS, sugXS.length);
 	Polygon fin = new Polygon(finXS, finYS, finXS.length);
 	
 	private CluedoCanvas canvas;
 	private Game game;
+	private JFrame frame;
 	
-	public BoardButtons(Game game, CluedoCanvas canvas){
+	public BoardButtons(Game game, CluedoCanvas canvas, JFrame frame){
 		this.canvas = canvas;
 		this.game = game;
+		this.frame = frame;
 	}
 
 	
 	public void paint(Graphics g){
-		if(accPressed)
+		if(accPressed && canvas.getShowCard() == null)
 			g.drawImage(ACCUSATION2, accX, accY, null);
 		else
 			g.drawImage(ACCUSATION1, accX, accY, null);
-		if(sugPressed)
+		if(sugPressed && canvas.getShowCard() == null)
 			g.drawImage(SUGGESTION2, sugX, sugY, null);
 		else
 			g.drawImage(SUGGESTION1, sugX, sugY, null);
-		if(finPressed)
+		if(finPressed && canvas.getShowCard() == null)
 			g.drawImage(FINISH_TURN2, finX, finY, null);
 		else
 			g.drawImage(FINISH_TURN1, finX, finY, null);
 	}
 	
 	public void buttonClicked(String button){
-		if(button.equals("acc"))
-			System.out.println("make an accusation");
+		JPanel panel = null;
+		if(button.equals("acc")){
+			panel = new JPanel();
+			panel.setVisible(true);
+			panel.setPreferredSize(new Dimension(500, 500));
+			panel.setLocation(200, 200);
+			panel.revalidate();
+			frame.add(panel);
+			frame.pack();
+			frame.revalidate();
+			frame.repaint();
+		}
+		
+			
 		if(button.equals("sug"))
 			System.out.println("make an suggestion");
 		if(button.equals("fin")){

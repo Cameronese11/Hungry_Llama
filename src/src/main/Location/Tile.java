@@ -3,6 +3,7 @@ package src.main.Location;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
@@ -47,7 +48,7 @@ public class Tile implements Location{
 	/**
 	 * prints the tile
 	 */
-	public void paint(Graphics g, List<Tile> moveableLocations, Tile selectedTile){
+	public void paint(Graphics g, List<Tile> moveableLocations, Point p){
 		Graphics2D g2D = (Graphics2D) g;
 		if(moveableLocations.contains(this)){
 			g.setColor(Color.green);
@@ -60,8 +61,9 @@ public class Tile implements Location{
 			g.setColor(Color.black);
 			g.drawRect(xPos, yPos, SIZE, SIZE);
 		}
-		if(selectedTile != null){
-			if(selectedTile.equals(this)){
+		Rectangle r = new Rectangle(xPos, yPos, SIZE, SIZE);
+		if(p != null){
+			if(r.contains(p)){
 				g2D.setStroke(new BasicStroke(2));
 				g2D.setColor(Color.red);
 				g2D.drawRect(xPos+2, yPos+2, SIZE-3, SIZE-3);

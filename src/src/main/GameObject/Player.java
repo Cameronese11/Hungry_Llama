@@ -7,6 +7,7 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,7 +32,8 @@ public class Player {
 	
 	private int xPos;
 	private int yPos;
-	private int size;
+	
+	private Card selectedCard;
 	
 	private Character character;
 	private String name;
@@ -121,7 +123,6 @@ public class Player {
 	 * @return - true if the move was successful
 	 */
 	public boolean move(Location newLocation){
-	
 		
 		// if the player is moving from a tile
 		if(location instanceof Tile)
@@ -134,15 +135,14 @@ public class Player {
 		// if the player is moving to a tile
 		if(newLocation instanceof Tile){
 			Tile tile = (Tile) newLocation;
-			
 			if(tile instanceof DoorTile){
 				Room room = game.getRoom(((DoorTile) tile).getRoom());
 				room.addPlayer(this);
 				location = room;
-				xPos = room.getX();
-				yPos = room.getY();
+				xPos = 0;
+				yPos = 0;
 			
-			}else if(tile instanceof Tile){
+			}else{
 				((Tile) tile).setPlayer(this);
 				location = (Tile) tile;
 				xPos = tile.getX() * tile.getSize() + 22;
@@ -160,8 +160,6 @@ public class Player {
 	}
 	
 	public void paint(Graphics g){	
-		if(col.equals(Color.yellow))
-			col = col.darker();
 		g.setColor(col);
 		if(location instanceof Tile){
 			Tile t = (Tile) location;
@@ -169,6 +167,19 @@ public class Player {
 			g.setColor(Color.black);
 			g.drawOval(xPos, yPos, t.getSize() - 4, t.getSize() - 4 );
 		}			
+	}
+	
+	public void paintTag(Graphics g){
+		Graphics2D g2d = (Graphics2D) g; 
+		String s = Game.getCharacterName(getCharacter());
+		Font font = new Font("Calibri", Font.PLAIN, 15);
+		g2d.setFont(font);
+		Rectangle2D r = font.getStringBounds(s, g2d.getFontRenderContext());
+		g.setColor(Color.lightGray);
+		g.fillRect(xPos + 10, yPos - 20,(int) r.getWidth() + 10, (int )r.getHeight());
+		g.setColor(Color.black);
+		g.drawRect(xPos + 10, yPos - 20,(int) r.getWidth() + 10, (int )r.getHeight());
+		g2d.drawString(s, xPos + 15, yPos - 6);
 	}
 	
 	// Getters and Setters
@@ -200,12 +211,29 @@ public class Player {
 		return name;
 	}
 	
-	public void print(){
-		System.out.print("[" + getLetter() + "]");
+	public Card getSelectedCard(){
+		return selectedCard;
+	}
+	
+	public int getXPos(){
+		return xPos;
+	}
+	
+	public int getYPos(){
+		return yPos;
+	}
+	
+	public void setXPos(int x){
+		xPos = x;
+	}
+	
+	public void setYPos(int y){
+		yPos = y;
 	}
 	
 	// For Tests
 	public void setLocation(Location location){
+		System.out.println("setLocation");
 		this.location = location;
 		if(location instanceof Room){
 			Room r = (Room) location;
@@ -219,72 +247,70 @@ public class Player {
 		}
 	}
 	
-	/**
-	 * Returns the Letter to represent the  tiles starting character
-	 * 
-	 * @return letter
-	 */
-	public String getLetter(){
-		switch(character){
-			case MISS_SCARLETT: return"S";
-			case COLONEL_MUSTARD: return "M";
-			case MRS_WHITE: return "W";
-			case THE_REVERAND_GREEN: return "G";
-			case MRS_PEACOCK: return "P";
-			case PROFESSOR_PLUM: return "p";
-		}return " ";		
-	}
+	
 	
 	public void setColorAndPicture(Character character){
-		if(character.equals(Player.Character.COLONEL_MUSTARD)){
-			col = Color.yellow;
-			img = loadImage("ColonelMustard.png").getScaledInstance(200, 200,0);
-		}
-		if(character.equals(Player.Character.MISS_SCARLETT)){
+		if(character.equals(Player.Character.COLONEL_MUSTARD))
+			col = Color.yellow.darker();
+		if(character.equals(Player.Character.MISS_SCARLETT))
 			col = Color.red;
-			img = loadImage("MissScarlett.png").getScaledInstance(200, 200,0);
-		}
-		if(character.equals(Player.Character.MRS_PEACOCK)){
+		if(character.equals(Player.Character.MRS_PEACOCK))
 			col = Color.blue;
-			img = loadImage("MrsPeacock.png").getScaledInstance(200, 200,0);
-		}
-		if(character.equals(Player.Character.MRS_WHITE)){
+		if(character.equals(Player.Character.MRS_WHITE))
 			col = Color.white;
-			img = loadImage("MrsWhite.png").getScaledInstance(200, 200,0);
-		}
-		if(character.equals(Player.Character.PROFESSOR_PLUM)){
-			col = new Color(74,74,213);
-			img = loadImage("ProfessorPlum.png").getScaledInstance(200, 200,0);
-		}
-		if(character.equals(Player.Character.THE_REVERAND_GREEN)){
+		if(character.equals(Player.Character.THE_REVERAND_GREEN))
 			col = Color.green;
-			img = loadImage("TheReveranGreen.png").getScaledInstance(200, 200,0);
-		}
+		if(character.equals(Player.Character.PROFESSOR_PLUM))
+			col = Color.magenta.darker();
+		img = loadImage(Game.getCharacterName(character) + ".png").getScaledInstance(200, 200,16);
+		
 		
 		
 							
 	}
 
-	public void paintHand(Graphics g) {
+	public void paintHand(Graphics g, Point p) {
+		boolean selected = false;
+		List<Card> hand = getHand();
 		for(int i = 0; i < 3; i++){
-			g.setColor(Color.white);
-			g.fillRect(660 + i*90, 254, 80, 112);
-			g.setColor(Color.BLACK);
-			g.drawRect(660 + i*90, 254, 80, 112);
-			Graphics2D g2d = (Graphics2D) g;
-			g2d.setFont(new Font("Calibri", Font.PLAIN, 10));
-			g2d.drawString(getHand().get(i).toString(), 660 + i*90, 300);
+			Rectangle r = new Rectangle(654 + i*92, 254, 80, 116);
+			Card c = hand.get(i);
+			if(r.contains(p)){
+				selected = true;
+				selectedCard = c;
+				g.drawImage(c.getImage(1),640 + i*100, 230, null);
+				g.setColor(Color.BLACK);
+				g.drawRect(640 + i*100, 230, 100, 146);
+			}else{
+				g.drawImage(c.getImage(2),650 + i*100, 254, null);
+				g.setColor(Color.BLACK);
+				g.drawRect(650 + i*100, 254, 80, 116);
+			}
 		}
 		int j = 0;
 		for(int i = 3; i < hand.size(); i++){
-			g.setColor(Color.white);
-			g.fillRect(660 + j*90, 380, 80, 112);
-			g.setColor(Color.black);
-			g.drawRect(660 + j*90, 380, 80, 112);
-			Graphics2D g2d = (Graphics2D) g;
-			g2d.setFont(new Font("Calibri", Font.PLAIN, 10));
-			g2d.drawString(getHand().get(i).toString(), 660 + j*90, 430);
-			j++;
+			Rectangle r = new Rectangle(654 + j*92, 380, 80, 116);
+			Card c = hand.get(i);
+			if(r.contains(p)){
+				selected = true;
+				selectedCard = c;
+				g.drawImage(c.getImage(1),640 + j*100, 376, null);
+				g.setColor(Color.black);
+				g.drawRect(640 + j*100, 376, 100, 146);
+				j++;
+			}else{
+				g.drawImage(c.getImage(2),650 + j*100, 390, null);
+				g.setColor(Color.black);
+				g.drawRect(650 + j*100, 390, 80, 116);
+				j++;
+			}
+			
+			
+			if(!selected)
+				selectedCard = null;
+			
+			
+			
 		}
 		
 	}

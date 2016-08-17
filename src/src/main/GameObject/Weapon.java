@@ -2,7 +2,12 @@ package src.main.GameObject;
 
 import static src.main.UI.CluedoCanvas.loadImage;
 
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.geom.Rectangle2D;
 
 import src.main.Cluedo.Game;
 import src.main.Location.Room;
@@ -16,6 +21,8 @@ public class Weapon {
 	private String name;
 	private String room;
 	private Image img;
+	private int xPos;
+	private int yPos;
 	
 	/**
 	 * Constructs a new weapon object
@@ -53,7 +60,7 @@ public class Weapon {
 	}
 	
 	public void setImg(){
-		this.img = loadImage("Dagger.png").getScaledInstance(200, 200,0);
+	this.img = loadImage("Weapon" + name + ".png");
 	}
 	
 	public Image getImage(){
@@ -71,6 +78,32 @@ public class Weapon {
 
 	public void setRoom(String room){
 		this.room = room;
+	}
+	
+	public int getXPos(){
+		return xPos;
+	}
+	public int getYPos(){
+		return yPos;
+	}
+	
+	public void setXPos(int x){
+		xPos = x;
+	}
+	public void setYPos(int y){
+		yPos = y;
+	}
+	public void paintTag(Graphics g){
+		Graphics2D g2d = (Graphics2D) g; 
+		String s = name;
+		Font font = new Font("Calibri", Font.PLAIN, 15);
+		g2d.setFont(font);
+		Rectangle2D r = font.getStringBounds(s, g2d.getFontRenderContext());
+		g.setColor(Color.lightGray);
+		g.fillRect(xPos + 10, yPos - 20,(int) r.getWidth() + 10, (int )r.getHeight());
+		g.setColor(Color.black);
+		g.drawRect(xPos + 10, yPos - 20,(int) r.getWidth() + 10, (int )r.getHeight());
+		g2d.drawString(s, xPos + 15, yPos - 6);
 	}
 
 	

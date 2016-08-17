@@ -1,5 +1,9 @@
 package src.main.Cards;
 
+import static src.main.UI.CluedoCanvas.loadImage;
+
+import java.awt.Image;
+
 import src.main.GameObject.Weapon;
 
 /**
@@ -17,6 +21,7 @@ import src.main.GameObject.Weapon;
 public class WeaponCard implements Card{
 
 	private Weapon weapon;
+	private Image[] imgs = new Image[3];
 	
 	/**
 	 * Constructs a new WeaponCard Object
@@ -25,6 +30,7 @@ public class WeaponCard implements Card{
 	 */
 	public WeaponCard(Weapon weapon){
 		this.weapon = weapon;
+		setImages();
 	}
 	
 	/**
@@ -40,5 +46,15 @@ public class WeaponCard implements Card{
 		return weapon;
 	}
 	
+	public Image getImage(int i){
+		return imgs[i];
+	}
+
+	public void setImages(){
+		imgs[0] = loadImage(weapon.getName() + ".jpg");
+		imgs[1] = imgs[0].getScaledInstance(100, 146, 16);
+		imgs[2] = imgs[0].getScaledInstance(80, 116, 16);
+		
+	}
 	
 }

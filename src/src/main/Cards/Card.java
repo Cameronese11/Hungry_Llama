@@ -1,5 +1,7 @@
 package src.main.Cards;
 
+import java.awt.Image;
+
 /**
  * Represents a card in the game
  * 
@@ -18,5 +20,7 @@ public interface Card {
 	 * @return - String
 	 */
 	public String toString();
+	
+	public Image getImage(int i);
 }
 
