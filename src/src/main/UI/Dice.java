@@ -53,7 +53,7 @@ public class Dice {
 	
 	public void paint(Graphics g){
 		if(state.equals(state.TO_ROLL)){
-			if(dicePolygon.contains(new Point(canvas.getMouseX(), canvas.getMouseY())) && canvas.getShowCard() == null){
+			if(dicePolygon.contains(new Point(canvas.getMouseX(), canvas.getMouseY())) && canvas.getShowCard() == null && canvas.getAccOrSugg() == 0){
 				
 					g.drawImage(SELECTED_DICE, x, y, null);
 			

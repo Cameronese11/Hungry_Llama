@@ -55,15 +55,15 @@ public class BoardButtons {
 
 	
 	public void paint(Graphics g){
-		if(accPressed && canvas.getShowCard() == null)
+		if(accPressed && canvas.getShowCard() == null && canvas.getAccOrSugg() == 0)
 			g.drawImage(ACCUSATION2, accX, accY, null);
 		else
-			g.drawImage(ACCUSATION1, accX, accY, null);
-		if(sugPressed && canvas.getShowCard() == null)
+			g.drawImage(ACCUSATION1, accX, accY, null );
+		if(sugPressed && canvas.getShowCard() == null && canvas.getAccOrSugg() == 0)
 			g.drawImage(SUGGESTION2, sugX, sugY, null);
 		else
 			g.drawImage(SUGGESTION1, sugX, sugY, null);
-		if(finPressed && canvas.getShowCard() == null)
+		if(finPressed && canvas.getShowCard() == null && canvas.getAccOrSugg() == 0)
 			g.drawImage(FINISH_TURN2, finX, finY, null);
 		else
 			g.drawImage(FINISH_TURN1, finX, finY, null);

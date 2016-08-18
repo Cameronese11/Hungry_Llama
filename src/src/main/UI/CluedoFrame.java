@@ -36,7 +36,6 @@ public class CluedoFrame extends javax.swing.JFrame implements java.awt.event.Ke
 	private Board board;
 	private SetupMenu setupMenu;
 	private JPanel panelCont;
-	private JPanel accusation;
 	private JMenuBar menuBar;
 	
 	
@@ -54,10 +53,9 @@ public class CluedoFrame extends javax.swing.JFrame implements java.awt.event.Ke
 		
 		
 		setSize(getPreferredSize());
+		setLocation(225,125);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		canvas = new CluedoCanvas(game, board, this); // create canvas
-		accusation = new AccusationOrSuggestion(game, this, canvas);
-		
 		panelCont.add(canvas);
 		//add(canvas, BorderLayout.CENTER); // add canvas
 		setResizable(false); // prevent us from being resizeable

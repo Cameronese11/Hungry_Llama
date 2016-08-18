@@ -93,12 +93,12 @@ public class SetupMenu extends javax.swing.JPanel implements ActionListener{
 	
 	public void addCharacterButtons(){
 		
-		characterButtons[0] = new JRadioButton("Miss Scarlett");
-		characterButtons[1] = new JRadioButton("Colonel Mustard");
-		characterButtons[2] = new JRadioButton("Mrs White");
-		characterButtons[3] = new JRadioButton("The Reverand Green");
-		characterButtons[4] = new JRadioButton("Mrs Peacock");
-		characterButtons[5] = new JRadioButton("Professor Plum");
+		for(int i = 0; i < 6; i++){
+			JRadioButton rb = new JRadioButton(Game.getCharacterName(game.getCharacters().get(i)));
+			rb.setActionCommand("" + i);
+			rb.addActionListener(this);
+			characterButtons[i] = rb;
+		}
 		
 		GridBagConstraints c = new GridBagConstraints();
 		c.gridy = 6;
@@ -157,6 +157,15 @@ public class SetupMenu extends javax.swing.JPanel implements ActionListener{
 					nextButton2();
 				else
 					warning = true;
+			}
+		}
+		for(int i = 0; i < 6; i++){
+			if(e.getActionCommand().equals(characterButtons[i].getActionCommand())){
+				for(int j = 0; j < 6; j++){
+					if(!e.getActionCommand().equals(characterButtons[j].getActionCommand())){
+						characterButtons[j].setSelected(false);
+					}
+				}
 			}
 		}
 		repaint();

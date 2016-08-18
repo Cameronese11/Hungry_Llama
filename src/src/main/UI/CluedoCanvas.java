@@ -6,6 +6,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridLayout;
@@ -15,6 +16,8 @@ import java.util.List;
 import java.awt.Point;
 import java.awt.Polygon;
 import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -32,7 +35,7 @@ import src.main.Location.*;
 import src.main.Cards.Card;
 import src.main.Cluedo.Board;
 import src.main.Cluedo.Game;
-
+import src.main.GameObject.Basement;
 import src.main.GameObject.Player;
 import src.main.GameObject.Weapon;
 
@@ -52,8 +55,8 @@ public class CluedoCanvas extends JPanel implements MouseListener, MouseMotionLi
 	
 	private Dice dice;
 	private Card showCard;
+	private int accOrSugg;
 	private BoardButtons boardButtons;
-	private AccusationOrSuggestion accOrSug;
 	
 	private List<Tile> moveableLocations;
 	private Tile selectedTile;
@@ -62,7 +65,6 @@ public class CluedoCanvas extends JPanel implements MouseListener, MouseMotionLi
 		this.game = game;
 		this.board = board;
 		this.frame = frame;
-		accOrSug = new AccusationOrSuggestion(game, frame, null);
 		moveableLocations = new ArrayList<>();
 		addMouseListener(this);
 		addMouseMotionListener(this);
@@ -82,28 +84,25 @@ public class CluedoCanvas extends JPanel implements MouseListener, MouseMotionLi
 		
 		}
 	public void accusation(){
-		Graphics g = getGraphics();
-		g.drawImage(BLACK_OPACITY, 0, 0, 990, 590, null);
-		repaint();
-		GridLayout gl = new GridLayout(9,5);
-		setLayout(gl);
-		GridBagConstraints c = new GridBagConstraints();
-		
-		c.gridx = 1;
-		for(int i = 0; i < 9; i++){
-			JButton b = new JButton("Button");
-			b.setAlignmentX(100);
-			add(b);
-			}
-		
-		
-		
-		
-	
-		
+		setLayout(null);
+		accOrSugg = 1;
+		AccusationOrSuggestion AOS = new AccusationOrSuggestion(game, this);
+		JPanel room = AOS.askMurderRoom();
+		JPanel weapon = AOS.askMurderWeapon();
+		JPanel character = AOS.askMurderCharacter();
+		JPanel done = AOS.done();
+		add(room);
+		add(weapon);
+		add(character);
+		add(done);
 		revalidate();
 		repaint();
 	}
+	
+	public void suggestion(){
+		
+	}
+	
 	
 	@Override
 	public void paint(Graphics g){
@@ -113,7 +112,7 @@ public class CluedoCanvas extends JPanel implements MouseListener, MouseMotionLi
 			g.drawImage(PAGE, 0, 0, null);
 			
 		}else if(Game.gameState == Game.State.RUNNING){
-			if(showCard != null)
+			if(showCard != null || accOrSugg == 1)
 				board.paint(g, moveableLocations, null);
 			else
 				board.paint(g, moveableLocations, new Point(mouseX, mouseY));
@@ -130,24 +129,42 @@ public class CluedoCanvas extends JPanel implements MouseListener, MouseMotionLi
 			g.drawString("It is your Turn", 800, 40);
 			for(Room r: game.getRooms())
 				r.paint(g, null, null);
-			if(showCard != null){
+			if(showCard != null || accOrSugg == 1){
 				p.paintHand(g, new Point(0,0));
-				g.drawImage(BLACK_OPACITY, 0, 0, 990, 590, null);
-				g.drawImage(showCard.getImage(0),315, 33, null);
 			}else{
 				p.paintHand(g, new Point(mouseX, mouseY));
 			}
-			for(Player player: game.getPlayers()){
-				Rectangle r = new Rectangle(player.getXPos(), player.getYPos(),19, 19);
-				if(r.contains(mouseX, mouseY)){
-					player.paintTag(g);
-					}
+			if(showCard != null){
+				g.drawImage(BLACK_OPACITY, 0, 0, 990, 590, null);
+				g.drawImage(showCard.getImage(0),315, 33, null);
 			}
-			for(Weapon weapon: game.getWeapons()){
-				Rectangle r = new Rectangle(weapon.getXPos(), weapon.getYPos(),19, 19);
-				if(r.contains(mouseX, mouseY)){
-					weapon.paintTag(g);
+			if(showCard == null && accOrSugg == 0){
+					for(Player player: game.getPlayers()){
+			
+						Rectangle r = new Rectangle(player.getXPos(), player.getYPos(),19, 19);
+						if(r.contains(mouseX, mouseY)){
+							player.paintTag(g);
+						}
 					}
+				for(Weapon weapon: game.getWeapons()){
+					Rectangle r = new Rectangle(weapon.getXPos(), weapon.getYPos(),19, 19);
+					if(r.contains(mouseX, mouseY)){
+						weapon.paintTag(g);
+					}
+				}
+			}
+			if(accOrSugg == 1){
+				g.drawImage(BLACK_OPACITY, 0, 0, 990, 590, null);
+				g.setColor(Color.white);
+				g.setFont(new Font("Calibri", Font.PLAIN, 30));
+				g.drawString("Choose a Room", 95, 180);
+				g.drawString("Choose a Weapon", 390, 180);
+				g.drawString("Choose a Suspect", 690, 180);
+				g.setFont(new Font("Calibri", Font.PLAIN, 10));
+				g.setColor(Color.black);
+			}
+			if(accOrSugg == 2){
+				g.drawImage(BLACK_OPACITY, 0, 0, 990, 590, null);
 			}
 			super.paint(g);
 		
@@ -178,6 +195,28 @@ public class CluedoCanvas extends JPanel implements MouseListener, MouseMotionLi
 			// can actually do at this point, except to abort the game.
 			throw new RuntimeException("Unable to load image: " + filename);
 		}
+	}
+	
+	public void afterAccusation(Boolean won){
+	accOrSugg = 2;
+	repaint();
+	Graphics g = getGraphics();	
+	Basement b = game.getBasement();
+	if(!won){	
+		g.setColor(Color.white);
+		g.setFont(new Font("Calibri", Font.PLAIN, 40));
+		g.drawString("You Lose", 95, 180);
+		g.setFont(new Font("Calibri", Font.PLAIN, 30));
+		g.drawString("Correct Solution Was " + b.getMurderCharacter() + " with the " + b.getMurderWeapon().getName() + " in the " + b.getMurderRoom().getName(), 50, 220);
+		g.setFont(new Font("Calibri", Font.PLAIN, 10));
+		g.setColor(Color.black);
+	}
+	try {
+		Thread.sleep(5000);
+	} catch (InterruptedException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
 	}
 
 	@Override
@@ -299,6 +338,10 @@ public class CluedoCanvas extends JPanel implements MouseListener, MouseMotionLi
 
 	public Card getShowCard(){
 		return showCard;
+	}
+
+	public int getAccOrSugg() {
+		return accOrSugg;		
 	}
 
 
