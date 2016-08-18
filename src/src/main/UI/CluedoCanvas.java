@@ -7,7 +7,10 @@ import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.GridBagConstraints;
+import java.awt.GridLayout;
 import java.awt.Image;
+import java.awt.Insets;
 import java.util.List;
 import java.awt.Point;
 import java.awt.Polygon;
@@ -22,6 +25,8 @@ import javax.imageio.ImageIO;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.JTextField;
 
 import src.main.Location.*;
 import src.main.Cards.Card;
@@ -48,6 +53,7 @@ public class CluedoCanvas extends JPanel implements MouseListener, MouseMotionLi
 	private Dice dice;
 	private Card showCard;
 	private BoardButtons boardButtons;
+	private AccusationOrSuggestion accOrSug;
 	
 	private List<Tile> moveableLocations;
 	private Tile selectedTile;
@@ -56,11 +62,13 @@ public class CluedoCanvas extends JPanel implements MouseListener, MouseMotionLi
 		this.game = game;
 		this.board = board;
 		this.frame = frame;
+		accOrSug = new AccusationOrSuggestion(game, frame, null);
 		moveableLocations = new ArrayList<>();
 		addMouseListener(this);
 		addMouseMotionListener(this);
 		dice = new Dice(game, this);
 		boardButtons = new BoardButtons(game, this, frame);
+		setOpaque(false);
 	}
 	
 	@Override
@@ -74,11 +82,32 @@ public class CluedoCanvas extends JPanel implements MouseListener, MouseMotionLi
 		
 		}
 	public void accusation(){
+		Graphics g = getGraphics();
+		g.drawImage(BLACK_OPACITY, 0, 0, 990, 590, null);
+		repaint();
+		GridLayout gl = new GridLayout(9,5);
+		setLayout(gl);
+		GridBagConstraints c = new GridBagConstraints();
 		
+		c.gridx = 1;
+		for(int i = 0; i < 9; i++){
+			JButton b = new JButton("Button");
+			b.setAlignmentX(100);
+			add(b);
+			}
+		
+		
+		
+		
+	
+		
+		revalidate();
+		repaint();
 	}
 	
 	@Override
 	public void paint(Graphics g){
+		
 		if(Game.gameState == Game.State.SETUP_MENU
 				|| Game.gameState == Game.State.SETUP_PLAYER){
 			g.drawImage(PAGE, 0, 0, null);
@@ -120,7 +149,7 @@ public class CluedoCanvas extends JPanel implements MouseListener, MouseMotionLi
 					weapon.paintTag(g);
 					}
 			}
-			
+			super.paint(g);
 		
 		
 		

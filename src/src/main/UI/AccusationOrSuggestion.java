@@ -9,6 +9,8 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 import static src.main.UI.CluedoCanvas.loadImage;
+
+import javax.swing.JButton;
 import javax.swing.JFrame;
 
 import src.main.Cluedo.Game;
@@ -25,15 +27,25 @@ public class AccusationOrSuggestion extends javax.swing.JPanel implements Action
 		this.game = game;
 		this.frame = frame;
 		this.canvas = canvas;
-		setBackground(new Color(0,0,0,0));
 		this.setLayout(null);
+		setOpaque(false);
 	}
 	
 	
+	public void askMurderRoom(){
+		
+		
+	}
+	
+	public void askMurderWeapon(){
+		
+	}
+	
+	public void askMurderCharacter(){}
 	
 	@Override
-	public void paintComponents(Graphics g){
-		g.drawRect(10, 10, 100, 100);
+	public void paintComponent(Graphics g){
+		super.paintComponent(g);
 	}
 	
 	@Override
