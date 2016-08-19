@@ -23,23 +23,31 @@ import javax.swing.JRadioButton;
 import src.main.Cluedo.Game;
 import src.main.GameObject.Player;
 import src.main.GameObject.Weapon;
+import src.main.Location.Location;
 import src.main.Location.Room;
 
 public class AccusationOrSuggestion implements ActionListener{
 
 	private Game game;
-	private JFrame frame;
 	private CluedoCanvas canvas;
+	
+	// JButtons from accusations/Suggestions
 	private JRadioButton[] murderRooms;
 	private JRadioButton[] murderWeapons;
 	private JRadioButton[] murderCharacters;
+	
+	// Selected Accusation or Suggestion
 	private Room room;
 	private Weapon weapon;
 	private Player.Character character;
+	
+	// JPanels to hold JRadioButtons and done JButton
 	private JPanel roomPanel;
 	private JPanel weaponPanel;
 	private JPanel characterPanel;
 	private JPanel donePanel;
+	
+	private String refute; // Refute string from suggestion, null if successful
 	
 	
 	public AccusationOrSuggestion(Game game, CluedoCanvas canvas) {
@@ -53,7 +61,7 @@ public class AccusationOrSuggestion implements ActionListener{
 	
 	
 	
-	public JPanel askMurderRoom(){
+	public JPanel askMurderRoom(Boolean acc){
 		roomPanel = new JPanel();
 		roomPanel.setSize(new Dimension(330,210));
 		roomPanel.setLocation(0, 190);
@@ -63,14 +71,26 @@ public class AccusationOrSuggestion implements ActionListener{
 		gbc.gridx = 0;
 		gbc.gridy = GridBagConstraints.RELATIVE;
 		gbc.anchor = GridBagConstraints.WEST;
+		Location loc = game.getCurrentPlayer().getLocation();
+		Room r = null;
+		if(loc instanceof Room)
+			r = (Room) loc;
+			
 		for(int i = 0; i < murderRooms.length; i++){
 			JRadioButton button = new JRadioButton(game.getRooms().get(i).getName());
+			if(r != null && !acc){
+				if(r.equals(game.getRooms().get(i)))
+					button.setSelected(true);
+			button.setEnabled(false);
+			room = r;
+			}
 			button.setForeground(Color.white);
 			button.addActionListener(this);
 			button.setActionCommand("r" + game.getRooms().get(i).getName());
 			murderRooms[i] = button;
 			roomPanel.add(button,gbc);
 		}
+		
 		return roomPanel;
 	}
 	
@@ -118,7 +138,7 @@ public class AccusationOrSuggestion implements ActionListener{
 	
 	public JPanel done(){
 		donePanel = new JPanel();
-		JButton button = new JButton("done");
+		JButton button = new JButton("Done");
 		button.addActionListener(this);
 		button.setActionCommand("done");
 		donePanel.setSize(button.getPreferredSize());
@@ -160,24 +180,75 @@ public class AccusationOrSuggestion implements ActionListener{
 				}
 			}
 		}else if(e.getActionCommand().equals("done")){
-			System.out.println("Made an accusation(" + character + ", " + weapon.getName() + ", " + room.getName() + ")");
-			System.out.println("Correct Solution(" + game.getBasement().getMurderCharacter() + ", " + game.getBasement().getMurderWeapon().getName() + ", " + game.getBasement().getMurderRoom().getName() + ")");
-			boolean accusation = game.accusation(character, weapon, room);
-			if(!accusation){
+			if(canvas.getAccOrSugg() == 1){
+				boolean accusation = false;
+				if(character != null && weapon != null && room!= null)
+					 accusation = game.accusation(character, weapon, room); 
+				else{
+					canvas.remove(weaponPanel);
+					canvas.remove(roomPanel);
+					canvas.remove(characterPanel);
+					canvas.revalidate();
+					canvas.remove(donePanel);
+					canvas.setAccOrSugg(0);
+					canvas.repaint();
+				}
+					
+				
+				
+				if(!accusation && canvas.getAccOrSugg() != 0){
+					canvas.remove(weaponPanel);
+					canvas.remove(roomPanel);
+					canvas.remove(characterPanel);
+					canvas.revalidate();
+					canvas.setAccOrSugg(2);
+					canvas.repaint();
+				}else if(accusation && canvas.getAccOrSugg() != 0){
+					canvas.remove(weaponPanel);
+					canvas.remove(roomPanel);
+					canvas.remove(characterPanel);
+					canvas.revalidate();
+					canvas.setAccOrSugg(5);
+					canvas.repaint();
+				}
+			}else if(canvas.getAccOrSugg() == 2){
+				canvas.setAccOrSugg(0);
+				canvas.remove(donePanel);
+				canvas.revalidate();
+				canvas.repaint();
+			}else if(canvas.getAccOrSugg() == 3){
+				String refuted = null;
+				if(character != null && weapon != null && room!= null)
+					 refuted = game.suggestion(character, weapon, room);
+				else{
+					canvas.remove(donePanel);
+					canvas.setAccOrSugg(0);
+				}
+				
+				if(refuted == null){
+					refute = null;
+				}else{
+					refute = refuted;
+				}
+				if(canvas.getAccOrSugg() != 0)
+					canvas.setAccOrSugg(4);
 				canvas.remove(weaponPanel);
 				canvas.remove(roomPanel);
 				canvas.remove(characterPanel);
+				canvas.revalidate();
+				
+				canvas.repaint();
+			}else if(canvas.getAccOrSugg() == 4){
+				canvas.setAccOrSugg(0);
 				canvas.remove(donePanel);
 				canvas.revalidate();
-				canvas.afterAccusation(accusation);
-				
+				canvas.repaint();
 			}
-					
-		}	
-		
-		
+		}
 	}
 	
-	
+	public String getRefuteMessage(){
+		return refute;
+	}
 
 }

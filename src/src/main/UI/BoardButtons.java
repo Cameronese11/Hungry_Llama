@@ -59,7 +59,7 @@ public class BoardButtons {
 			g.drawImage(ACCUSATION2, accX, accY, null);
 		else
 			g.drawImage(ACCUSATION1, accX, accY, null );
-		if(sugPressed && canvas.getShowCard() == null && canvas.getAccOrSugg() == 0)
+		if(sugPressed && canvas.getShowCard() == null && canvas.getAccOrSugg()== 0)
 			g.drawImage(SUGGESTION2, sugX, sugY, null);
 		else
 			g.drawImage(SUGGESTION1, sugX, sugY, null);
@@ -70,17 +70,17 @@ public class BoardButtons {
 	}
 	
 	public void buttonClicked(String button){
-		if(button.equals("acc")){
-			canvas.accusation();
+		if(canvas.getShowCard() == null && canvas.getAccOrSugg() == 0){
+			if(button.equals("acc"))
+				canvas.accusation(true);
+			if(button.equals("sug"))
+				canvas.accusation(false);
+			if(button.equals("fin")){
+				game.setCurrentPlayer(game.nextTurn());
+				canvas.resetDice();
+			}
+			canvas.repaint();
 		}
-			
-		if(button.equals("sug"))
-			System.out.println("make an suggestion");
-		if(button.equals("fin")){
-			game.setCurrentPlayer(game.nextTurn());
-			canvas.resetDice();
-		}
-		canvas.repaint();
 	}
 	
 	public void buttonPressed(String button){
@@ -117,4 +117,3 @@ public class BoardButtons {
 	}
 	
 }
-	

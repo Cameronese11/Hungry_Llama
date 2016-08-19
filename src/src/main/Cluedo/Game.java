@@ -310,17 +310,30 @@ public class Game{
 	
 	
 	/**
-	 * Determines the player who's turn it is next
+	 * Sets up the next Turn
 	 * 
 	 * @return - player
 	 */
 	public Player nextTurn() {
-		int playerNum = currentPlayer.getNum();
-		if (playerNum == numPlayers)
-			playerNum = 1;
+		if(playersOut.contains(currentPlayer))
+			removePlayer(currentPlayer);
+		
+		if(numPlayers == 1){
+			Game.gameState = Game.State.OVER;
+		}
+		
+		int index = 0;
+		for(int i = 0; i < players.size(); i++){
+			if(players.get(i).equals(currentPlayer))
+				index = i;
+		}
+		if (index == numPlayers-1)
+			index = 0;
 		else
-			playerNum++;
-		return getPlayer(playerNum);
+			index++;
+		
+		
+		return players.get(index);
 	}
 
 	/**
@@ -368,6 +381,14 @@ public class Game{
 				}
 			}
 		}
+		
+		for(Player p: getPlayers())
+			if(p.getLocation() instanceof Tile)
+				moveableTiles.remove(p.getLocation());
+		
+		for(Player p: getPlayersOut())
+			if(p.getLocation() instanceof Tile)
+				moveableTiles.remove(p.getLocation());
 		return moveableTiles;
 	}
 
@@ -471,11 +492,11 @@ public class Game{
 		for (Player p : allPlayers) {
 			List<Card> hand = p.getHand();
 			if (hand.contains(getCard(suspect)))
-				return "Suggestion Refuted, " + p.getCharacter() + " has " + suspect + " in his/her hand";
+				return "Suggestion Refuted, " + p.getName() + " has " + Game.getCharacterName(suspect) + " in his/her hand";
 			else if (hand.contains(getCard(weapon)))
-				return "Suggestion Refuted, " + p.getCharacter() + " has " + weapon.getName() + " in his/her hand";
+				return "Suggestion Refuted, " + p.getName() + " has the " + weapon.getName() + " in his/her hand";
 			else if (hand.contains(getCard(room)))
-				return "Suggestion Refuted, " + p.getCharacter() + " has " + room.getName() + " in his/her hand";
+				return "Suggestion Refuted, " + p.getName() + " has the " + room.getName() + " in his/her hand";
 		}
 		return "";
 	}
@@ -507,7 +528,7 @@ public class Game{
 				&& room.equals(basement.getMurderRoom())) {
 			return true;
 		}
-		removePlayer(getCurrentPlayer());
+		playersOut.add(getCurrentPlayer()); // add player to removed later
 		return false;
 	}
 
@@ -523,8 +544,8 @@ public class Game{
 			String newRoom = ((DoorTile) location).getRoom();
 			player.move(getRoom(newRoom));
 		}
+		
 		players.remove(player);
-		playersOut.add(player);
 		numPlayers--;
 	}
 

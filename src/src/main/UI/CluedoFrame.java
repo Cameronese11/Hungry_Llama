@@ -79,8 +79,6 @@ public class CluedoFrame extends javax.swing.JFrame implements java.awt.event.Ke
 	}
 	
 	public void gameBoardUI(){
-		//setupMenu.setVisible(false);
-		
 		panelCont.removeAll();
 		panelCont.setLayout(new BorderLayout());
 		panelCont.add(canvas);
@@ -112,8 +110,9 @@ public class CluedoFrame extends javax.swing.JFrame implements java.awt.event.Ke
 	
 	@Override
 	public void repaint(){
-		super.repaint();
 		canvas.repaint();
+		super.repaint();
+		
 	}
 	
 	
@@ -128,5 +127,4 @@ public class CluedoFrame extends javax.swing.JFrame implements java.awt.event.Ke
 	
 	
 	
-}
-		
+}		
