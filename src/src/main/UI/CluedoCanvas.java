@@ -74,9 +74,10 @@ public class CluedoCanvas extends JPanel implements MouseListener, MouseMotionLi
 		addMouseListener(this);
 		addMouseMotionListener(this);
 		dice = new Dice(game, this);
-		boardButtons = new BoardButtons(game, this, frame);
-		//BoardButtons2 b2 = new BoardButtons2(this);
-		//boardButtons2 = b2.createPanel();
+	//	boardButtons = new BoardButtons(game, this, frame);
+		BoardButtons2 b2 = new BoardButtons2(game, this);
+		boardButtons2 = b2.createPanel();
+		add(boardButtons2);
 		setVisible(true);
 		setOpaque(false);
 	}
@@ -135,7 +136,7 @@ public class CluedoCanvas extends JPanel implements MouseListener, MouseMotionLi
 				p.paint(g);
 			
 			dice.paint(g);
-			boardButtons.paint(g);
+//			boardButtons.paint(g);
 //			boardButtons2.paint(g);
 			g.setColor(Color.white);
 			Player p = game.getCurrentPlayer();
@@ -305,10 +306,10 @@ public class CluedoCanvas extends JPanel implements MouseListener, MouseMotionLi
 				Card c = player.getSelectedCard();
 				showCard = c;
 			}else{
-				String button = boardButtons.contains(new Point(getMouseX(), getMouseY()));
-				if(button != null){
-					boardButtons.buttonClicked(button);
-				}
+				//String button = boardButtons.contains(new Point(getMouseX(), getMouseY()));
+				//if(button != null){
+				//	boardButtons.buttonClicked(button);
+			//	}
 				
 			}
 		}
@@ -318,17 +319,17 @@ public class CluedoCanvas extends JPanel implements MouseListener, MouseMotionLi
 
 	@Override
 	public void mousePressed(MouseEvent e) {
-		String button = boardButtons.contains(new Point(getMouseX(), getMouseY()));
-		if(button != null)
-			boardButtons.buttonPressed(button);
+		//String button = boardButtons.contains(new Point(getMouseX(), getMouseY()));
+		//if(button != null)
+		//	boardButtons.buttonPressed(button);
 		
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
-		String button = boardButtons.contains(new Point(getMouseX(), getMouseY()));
-		if(button != null)
-			boardButtons.buttonReleased(button);
+		//String button = boardButtons.contains(new Point(getMouseX(), getMouseY()));
+		//if(button != null)
+		//	boardButtons.buttonReleased(button);
 		
 	}
 
@@ -387,6 +388,10 @@ public class CluedoCanvas extends JPanel implements MouseListener, MouseMotionLi
 	
 	public Tile getSelectedTile(){
 		return selectedTile;
+	}
+	
+	public JPanel getBoardButtons(){
+		return boardButtons2;
 	}
 
 	public Card getShowCard(){
