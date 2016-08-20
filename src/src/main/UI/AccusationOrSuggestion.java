@@ -147,6 +147,8 @@ public class AccusationOrSuggestion implements ActionListener{
 		donePanel.add(button);
 		return donePanel;
 	}
+	
+	
 
 	@Override
 	public void actionPerformed(ActionEvent e) {

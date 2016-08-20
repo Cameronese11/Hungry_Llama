@@ -59,6 +59,7 @@ public class CluedoCanvas extends JPanel implements MouseListener, MouseMotionLi
 	private Card showCard;
 	private int accOrSugg;
 	private BoardButtons boardButtons;
+	private JPanel boardButtons2;
 	
 	private List<Tile> moveableLocations;
 	private Tile selectedTile;
@@ -67,12 +68,15 @@ public class CluedoCanvas extends JPanel implements MouseListener, MouseMotionLi
 		this.game = game;
 		this.board = board;
 		this.frame = frame;
+		setLayout(null);
 		setLocation(0,0);
 		moveableLocations = new ArrayList<>();
 		addMouseListener(this);
 		addMouseMotionListener(this);
 		dice = new Dice(game, this);
 		boardButtons = new BoardButtons(game, this, frame);
+		//BoardButtons2 b2 = new BoardButtons2(this);
+		//boardButtons2 = b2.createPanel();
 		setVisible(true);
 		setOpaque(false);
 	}
@@ -132,6 +136,7 @@ public class CluedoCanvas extends JPanel implements MouseListener, MouseMotionLi
 			
 			dice.paint(g);
 			boardButtons.paint(g);
+//			boardButtons2.paint(g);
 			g.setColor(Color.white);
 			Player p = game.getCurrentPlayer();
 			if(p == null){

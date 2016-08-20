@@ -1,31 +1,16 @@
 package src.main.UI;
 
 import java.awt.BorderLayout;
-import java.awt.Canvas;
-import java.awt.CardLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Container;
 import java.awt.Dimension;
 
 import java.awt.GridLayout;
-import java.awt.Point;
 import java.awt.event.KeyEvent;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.swing.JFrame;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
 import javax.swing.JPanel;
 
 import src.main.Cluedo.Board;
 import src.main.Cluedo.Game;
-import src.main.GameObject.Player;
-import src.main.Location.Tile;
 
 public class CluedoFrame extends javax.swing.JFrame implements java.awt.event.KeyListener{
 
@@ -36,7 +21,7 @@ public class CluedoFrame extends javax.swing.JFrame implements java.awt.event.Ke
 	private Board board;
 	private SetupMenu setupMenu;
 	private JPanel panelCont;
-	private JMenuBar menuBar;
+	private MenuBar menuBar;
 	
 	
 	
@@ -62,7 +47,7 @@ public class CluedoFrame extends javax.swing.JFrame implements java.awt.event.Ke
 		setVisible(true); // make sure we are visible!
 		addKeyListener(this);
 		Game.gameState = Game.State.SETUP_MENU;
-		menuBar = new JMenuBar();
+		menuBar = new MenuBar();
 		add(panelCont);
 		gameSetupUI();
 		//Game.gameState = Game.State.RUNNING;
@@ -73,7 +58,7 @@ public class CluedoFrame extends javax.swing.JFrame implements java.awt.event.Ke
 		panelCont.setLayout(new GridLayout(2,1)); // use border layout
 		setupMenu = new SetupMenu(game, this);
 		panelCont.add(setupMenu);	
-		setJMenuBar(menuBar);
+		setJMenuBar(menuBar.createMenuBar());
 		pack();
 		repaint();
 	}
@@ -89,9 +74,11 @@ public class CluedoFrame extends javax.swing.JFrame implements java.awt.event.Ke
 		repaint();
 	}
 	
+	
+	
 	@Override
 	public Dimension getPreferredSize(){
-		return new Dimension(board.getWidth(),board.getHeight());
+		return new Dimension(board.getWidth(),board.getHeight() + 25);
 	}
 	
 	

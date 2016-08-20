@@ -1,12 +1,13 @@
 package src.main.UI;
 
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
-public class BoardButtons2 extends JPanel implements ActionListener {
+public class BoardButtons2 implements ActionListener {
 
 	private JButton suggestion;
 	private JButton accusation;
@@ -16,14 +17,16 @@ public class BoardButtons2 extends JPanel implements ActionListener {
 	private CluedoCanvas canvas;
 	
 	public BoardButtons2(CluedoCanvas canvas){
-		setSize(400,10);
-		setLocation(590, 570);
-		canvas.add(this);
-		canvas.revalidate();
-		canvas.repaint();
 		
 	}
 	
+	public JPanel createPanel(){
+		JPanel panel = new JPanel();
+		panel.setSize(100, 100);
+		panel.setLocation(100, 100);
+		panel.setBackground(Color.blue);
+		return panel;
+	}
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
