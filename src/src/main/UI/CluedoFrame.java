@@ -36,7 +36,7 @@ public class CluedoFrame extends javax.swing.JFrame implements java.awt.event.Ke
 	private Board board;
 	private SetupMenu setupMenu;
 	private JPanel panelCont;
-	private JMenuBar menuBar;
+	private MenuBar menuBar;
 	
 	
 	
@@ -62,7 +62,7 @@ public class CluedoFrame extends javax.swing.JFrame implements java.awt.event.Ke
 		setVisible(true); // make sure we are visible!
 		addKeyListener(this);
 		Game.gameState = Game.State.SETUP_MENU;
-		menuBar = new JMenuBar();
+		menuBar = new MenuBar();
 		add(panelCont);
 		gameSetupUI();
 		//Game.gameState = Game.State.RUNNING;
