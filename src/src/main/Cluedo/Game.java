@@ -644,6 +644,19 @@ public class Game{
 		return weapons;
 	}
 	
+	public Player getNextPlayer(){
+		int index = 0;
+		for(int i = 0; i < players.size(); i++){
+			if(players.get(i).equals(currentPlayer)){
+				index = i;
+			}
+		index++;
+		if (index == players.size());
+				index = 0;
+		}
+		return players.get(index);
+			
+	}
 
 	public List<Tile> getTiles() {
 		List<Tile> tiles = new ArrayList<>();

@@ -1,119 +1,120 @@
 package src.main.UI;
 
 import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Image;
-import java.awt.Point;
-import java.awt.Polygon;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
-import javax.swing.JFrame;
+import javax.swing.ButtonGroup;
+import javax.swing.JButton;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import src.main.Cluedo.Game;
+import src.main.Location.Location;
+import src.main.Location.Room;
 
-import static src.main.UI.CluedoCanvas.loadImage;
+public class BoardButtons implements ActionListener {
 
-public class BoardButtons {
-
-	
-	private static final Image ACCUSATION1 = loadImage("accusation1.png");
-	private static final Image SUGGESTION1 = loadImage("suggestion1.png");
-	private static final Image FINISH_TURN1 =loadImage("finishTurn1.png");
-	private static final Image ACCUSATION2 = loadImage("accusation2.png");
-	private static final Image SUGGESTION2 = loadImage("suggestion2.png");
-	private static final Image FINISH_TURN2 = loadImage("finishTurn2.png");
-	
-	private int accX = 609, accY = 540;
-	private int sugX = 736, sugY = 540;
-	private int finX = 863, finY = 540;
-	
-	private boolean accPressed = false;
-	private boolean sugPressed = false;
-	private boolean finPressed = false;
-	
-	private int[] accXS = {605,708,708,605};
-	private int[] accYS = {544,544,577,577};
-	private int[] sugXS = {729,849,849,729};
-	private int[] sugYS = {544,544,577,577};
-	private int[] finXS = {864,961,961,864};
-	private int[] finYS = {544,544,577,577};
-	
-	Polygon acc = new Polygon(accXS, accYS, accXS.length);
-	Polygon sug = new Polygon(sugXS, sugYS, sugXS.length);
-	Polygon fin = new Polygon(finXS, finYS, finXS.length);
-	
+	private JButton[] buttons;
 	private CluedoCanvas canvas;
 	private Game game;
-	private JFrame frame;
+	private boolean stairwayUsed;
+	private boolean suggestionMade;
 	
-	public BoardButtons(Game game, CluedoCanvas canvas, JFrame frame){
-		this.canvas = canvas;
+	public BoardButtons(Game game, CluedoCanvas canvas){
 		this.game = game;
-		this.frame = frame;
-	}
+		this.canvas = canvas;
+		buttons = new JButton[4];
 
-	
-	public void paint(Graphics g){
-		if(accPressed && canvas.getShowCard() == null && canvas.getAccOrSugg() == 0)
-			g.drawImage(ACCUSATION2, accX, accY, null);
-		else
-			g.drawImage(ACCUSATION1, accX, accY, null );
-		if(sugPressed && canvas.getShowCard() == null && canvas.getAccOrSugg()== 0)
-			g.drawImage(SUGGESTION2, sugX, sugY, null);
-		else
-			g.drawImage(SUGGESTION1, sugX, sugY, null);
-		if(finPressed && canvas.getShowCard() == null && canvas.getAccOrSugg() == 0)
-			g.drawImage(FINISH_TURN2, finX, finY, null);
-		else
-			g.drawImage(FINISH_TURN1, finX, finY, null);
+		buttons[0] = new JButton("Accusation");
+		buttons[1] = new JButton("Suggestion");
+		buttons[2] = new JButton("Stairway");
+		buttons[3] = new JButton("Finish Turn");
 	}
 	
-	public void buttonClicked(String button){
-		if(canvas.getShowCard() == null && canvas.getAccOrSugg() == 0){
-			if(button.equals("acc"))
+	public JPanel createPanel(){
+		JPanel panel = new JPanel(new GridLayout(2,3,5,0));
+	
+		for(int i = 0; i < buttons.length; i++){
+			buttons[i].setActionCommand(buttons[i].getText());
+			buttons[i].addActionListener(this);
+			buttons[i].setSelected(false);
+			panel.add(buttons[i]);
+		}
+		
+		panel.setSize(380, 60);
+		panel.setLocation(595, 525);
+		panel.setOpaque(false);
+		return panel;
+	}
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		String button = e.getActionCommand();
+			if(button.equals("Accusation")){
 				canvas.accusation(true);
-			if(button.equals("sug"))
-				canvas.accusation(false);
-			if(button.equals("fin")){
+			}else if(button.equals("Suggestion")){
+				if(suggestionMade){
+					JOptionPane.showMessageDialog(canvas, "Can only make once suggestion per turn");
+				}else{
+					if(game.getCurrentPlayer().getLocation() instanceof Room)
+						canvas.accusation(false);
+					else{
+						JOptionPane.showMessageDialog(canvas, "Must be in a room to make a suggestion");
+					}
+				}
+					
+			}else if(button.equals("Stairway")){
+				if(stairwayUsed){
+					JOptionPane.showMessageDialog(canvas, "Can only use the stairway once per turn");
+				}else{
+				
+				
+					Location loc = game.getCurrentPlayer().getLocation();
+					if(loc instanceof Room){
+						if(!((Room) loc).getStairwayTo().equals("")){
+							int n = JOptionPane.showConfirmDialog(
+									canvas,
+									"Are you sure you want to use the stairway to the " + ((Room) loc).getStairwayTo() + "\n" 
+											+ "This will count as your Move","Are you sure?",
+											JOptionPane.YES_NO_OPTION);
+							System.out.println(n);
+							if(n == 0){
+								game.movePlayer(game.getCurrentPlayer(), game.getRoom(((Room) loc).getStairwayTo()), 0);
+								stairwayUsed = true;
+							}
+					}else{
+						JOptionPane.showMessageDialog(canvas, "Must be in a room with a stairway to use a stairway");
+					}
+				}else{
+					JOptionPane.showMessageDialog(canvas, "Must be in a room with a stairway to use a stairway");
+				}
+			}
+			}else if(button.equals("Finish Turn")){
+				canvas.setHideHand(true);
+				canvas.repaint();
+				JOptionPane.showMessageDialog(
+						canvas,
+						game.getNextPlayer().getName() + ", your turn is next\n"
+														+ " Are you ready?");
+				canvas.setHideHand(false);
 				game.setCurrentPlayer(game.nextTurn());
 				canvas.resetDice();
+				stairwayUsed = false;
+				suggestionMade = false;
+				
+			
 			}
 			canvas.repaint();
-		}
+		
+		
+	}
+	public JButton getButton(int i){
+		return buttons[i];
+	}
+	public void setSuggestionMade(Boolean b){
+		suggestionMade = b;
 	}
 	
-	public void buttonPressed(String button){
-		if(button.equals("acc"))
-			accPressed = true;
-		if(button.equals("sug"))
-			sugPressed = true;
-		if(button.equals("fin")){
-			finPressed = true;
-		}
-		canvas.repaint();
-	}
-	
-	public void buttonReleased(String button){
-		if(button.equals("acc"))
-			accPressed = false;
-		if(button.equals("sug"))
-			sugPressed = false;
-		if(button.equals("fin")){
-			finPressed = false;
-		}
-		canvas.repaint();
-	}
-	
-	
-	public String contains(Point p){
-		if(acc.contains(p))
-			return "acc";
-		if(sug.contains(p))
-			return "sug";
-		if(fin.contains(p))
-			return "fin";
-		return null;
-	}
-	
+
 }

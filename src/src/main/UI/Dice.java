@@ -35,9 +35,9 @@ public class Dice {
 	private CluedoCanvas canvas;
 	private Game game;
 	
-	private state state;
+	private static state state;
 	
-	public enum state{
+	public static enum state{
 		TO_ROLL,
 		ROLLING,
 		ROLLED
@@ -46,13 +46,13 @@ public class Dice {
 	public Dice(Game game, CluedoCanvas canvas){
 		this.canvas = canvas;
 		this.game = game;
-		this.state = state.TO_ROLL;
+		this.state = Dice.state.TO_ROLL;
 		this.roll = 0;
 	}
 
 	
 	public void paint(Graphics g){
-		if(state.equals(state.TO_ROLL)){
+		if(state.equals(Dice.state.TO_ROLL)){
 			if(dicePolygon.contains(new Point(canvas.getMouseX(), canvas.getMouseY())) && canvas.getShowCard() == null && canvas.getAccOrSugg() == 0){
 				
 					g.drawImage(SELECTED_DICE, x, y, null);
@@ -112,5 +112,8 @@ public class Dice {
 		return dicePolygon.contains(p);
 	}
 	
+	public state getState(){
+		return state;
+	}
 
 }

@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import javax.imageio.ImageIO;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
@@ -46,6 +47,7 @@ public class CluedoCanvas extends JPanel implements MouseListener, MouseMotionLi
 	private static final String IMAGE_PATH = "images/";
 	private static final Image PAGE = loadImage("setupPageHome.png");
 	private static final Image BLACK_OPACITY = loadImage("blackOpacity.png");
+	private static final Image table = loadImage("tablePattern.png");
 	
 	private Game game;
 	private Board board;
@@ -59,10 +61,12 @@ public class CluedoCanvas extends JPanel implements MouseListener, MouseMotionLi
 	private Card showCard;
 	private int accOrSugg;
 	private BoardButtons boardButtons;
-	private JPanel boardButtons2;
+	private JPanel boardButtonsPanel;
 	
 	private List<Tile> moveableLocations;
 	private Tile selectedTile;
+	
+	private boolean hideHand;
 	
 	public CluedoCanvas(Game game, Board board, JFrame frame){
 		this.game = game;
@@ -74,10 +78,9 @@ public class CluedoCanvas extends JPanel implements MouseListener, MouseMotionLi
 		addMouseListener(this);
 		addMouseMotionListener(this);
 		dice = new Dice(game, this);
-	//	boardButtons = new BoardButtons(game, this, frame);
-		BoardButtons2 b2 = new BoardButtons2(game, this);
-		boardButtons2 = b2.createPanel();
-		add(boardButtons2);
+		boardButtons = new BoardButtons(game, this);
+		boardButtonsPanel = boardButtons.createPanel();
+		add(boardButtonsPanel);
 		setVisible(true);
 		setOpaque(false);
 	}
@@ -94,6 +97,7 @@ public class CluedoCanvas extends JPanel implements MouseListener, MouseMotionLi
 		
 		}
 	public void accusation(Boolean acc){
+		remove(boardButtonsPanel);
 		setLayout(null);
 		if(acc)
 			accOrSugg = 1;
@@ -211,7 +215,7 @@ public class CluedoCanvas extends JPanel implements MouseListener, MouseMotionLi
 				g.drawImage(BLACK_OPACITY, 0, 0, 990, 590, null);
 				g.setColor(Color.white);
 				g.setFont(new Font("Calibri", Font.PLAIN, 40));
-				String s = null; //AOS.getRefuteMessage();
+				String s = AOS.getRefuteMessage();
 				if(s != null)
 					g.drawString("Suggestion Refuted", 360, 180);
 				else
@@ -240,6 +244,8 @@ public class CluedoCanvas extends JPanel implements MouseListener, MouseMotionLi
 				g.setColor(Color.black);
 				Game.gameState = Game.State.OVER;
 			}
+			if(hideHand)
+				g.drawImage(table, 595, 250, null);
 			super.paint(g);
 		
 		
@@ -280,31 +286,36 @@ public class CluedoCanvas extends JPanel implements MouseListener, MouseMotionLi
 			Rectangle r = new Rectangle(315, 33, 360, 524);
 			if(!r.contains(mouseX, mouseY)){
 				showCard = null;
+				add(boardButtonsPanel);
 			}
-			
-			
 		}else{
+			
+			
+		
 		
 		Player player = game.getCurrentPlayer();
 	
-			if(dice.contains(new Point(getMouseX(), getMouseY()))){
+			if(dice.contains(new Point(getMouseX(), getMouseY())) && dice.getState() == Dice.state.TO_ROLL){
 				
 				int roll = dice.diceClicked();
 				moveableLocations = game.determineMoveLocations(player, roll);
+					
+			
 			}else if(!moveableLocations.isEmpty()){
 				for(Tile t: game.getTiles()){
 					if(t != null){
-						if(t.contains(getMousePosition())){
+						if(t.contains(new Point(getMouseX(), getMouseY()))){
 							if(moveableLocations.contains(t)){
-								player.move(selectedTile);
-								moveableLocations.clear();;
+								 player.move(selectedTile);
+								 moveableLocations.clear();
 							}
 						}
 					}	
 				}
-			}else if(player.getSelectedCard() != null){
+			} if(player.getSelectedCard() != null){
 				Card c = player.getSelectedCard();
 				showCard = c;
+				remove(boardButtonsPanel);
 			}else{
 				//String button = boardButtons.contains(new Point(getMouseX(), getMouseY()));
 				//if(button != null){
@@ -390,8 +401,12 @@ public class CluedoCanvas extends JPanel implements MouseListener, MouseMotionLi
 		return selectedTile;
 	}
 	
-	public JPanel getBoardButtons(){
-		return boardButtons2;
+	public JPanel getBoardButtonPanel(){
+		return boardButtonsPanel;
+	}
+	
+	public BoardButtons getBoardButtons(){
+		return boardButtons;
 	}
 
 	public Card getShowCard(){
@@ -406,5 +421,8 @@ public class CluedoCanvas extends JPanel implements MouseListener, MouseMotionLi
 		accOrSugg = i;
 	}
 
+		public void setHideHand(Boolean b){
+			hideHand = b;
+		}
 
 }

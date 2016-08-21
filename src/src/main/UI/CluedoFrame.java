@@ -12,51 +12,64 @@ import javax.swing.JPanel;
 import src.main.Cluedo.Board;
 import src.main.Cluedo.Game;
 
-public class CluedoFrame extends javax.swing.JFrame implements java.awt.event.KeyListener{
+/**
+ * 
+ * Class to structure the GUI and create the window 
+ *
+ */
+public class CluedoFrame extends JFrame{
 
 	
-
-	private CluedoCanvas canvas;
+	private CluedoCanvas canvas; // Canvas to draw game on
+	private JPanel panelCont; // Panel to place all panels inside
+	private SetupMenu setupMenu; // setup Menu to setup a game
+	private String gameArgs;	// game arguments for a new instance of the game
+	private MenuBar menuBar;
 	private Game game;
 	private Board board;
-	private SetupMenu setupMenu;
-	private JPanel panelCont;
-	private MenuBar menuBar;
 	
-	
-	
-	public CluedoFrame(Game game, Board board){
-	
+	/**
+	 * Constructs a new CluedoFrame object and window
+	 * 
+	 * @param game 
+	 * @param board
+	 * @param gameArgs - board.txt location for creating a new board
+	 */
+	public CluedoFrame(Game game, Board board, String gameArgs){
 		super("Cluedo Game");
+		
+		// initialise fields
 		this.game = game;
 		this.board = board;
+		this.gameArgs = gameArgs;
 		
+		// setup Jframe
+		setSize(getPreferredSize());
+		setLocation(225,125);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setResizable(false);
+		setVisible(true); 
 		
+		//
+		canvas = new CluedoCanvas(game, board, this); 
 		panelCont = new JPanel();
 		
 		
 		
 		
-		setSize(getPreferredSize());
-		setLocation(225,125);
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		canvas = new CluedoCanvas(game, board, this); // create canvas
+		menuBar = new MenuBar(this);
 		panelCont.add(canvas);
-		//add(canvas, BorderLayout.CENTER); // add canvas
-		setResizable(false); // prevent us from being resizeable
-		setVisible(true); // make sure we are visible!
-		addKeyListener(this);
-		Game.gameState = Game.State.SETUP_MENU;
-		menuBar = new MenuBar();
 		add(panelCont);
+		
+		Game.gameState = Game.State.SETUP_MENU;
+		
+		setupMenu = new SetupMenu(game, this);
 		gameSetupUI();
-		//Game.gameState = Game.State.RUNNING;
-		//gameBoardUI();
+		
 	}
 	
 	public void gameSetupUI(){
 		panelCont.setLayout(new GridLayout(2,1)); // use border layout
-		setupMenu = new SetupMenu(game, this);
 		panelCont.add(setupMenu);	
 		setJMenuBar(menuBar.createMenuBar());
 		pack();
@@ -82,19 +95,6 @@ public class CluedoFrame extends javax.swing.JFrame implements java.awt.event.Ke
 	}
 	
 	
-	public void keyPressed(KeyEvent e) {
-		
-	}
-	public void keyReleased(KeyEvent e) {
-			
-	}
-	
-
-	@Override
-	public void keyTyped(KeyEvent e) {
-		// TODO Auto-generated method stub
-	}
-	
 	@Override
 	public void repaint(){
 		canvas.repaint();
@@ -102,13 +102,18 @@ public class CluedoFrame extends javax.swing.JFrame implements java.awt.event.Ke
 		
 	}
 	
-	
+	public void newCluedoGame(){
+		Board board = new Board(gameArgs);
+		Game game = new Game(board);
+		CluedoFrame frame = new CluedoFrame(game, board, gameArgs);
+	}
 	
 	
 	public static void main(String[] args){
+		
 		Board board = new Board(args[0]);
 		Game game = new Game(board);
-		CluedoFrame frame = new CluedoFrame(game, board);
+		CluedoFrame frame = new CluedoFrame(game, board, args[0]);
 	}
 	
 	

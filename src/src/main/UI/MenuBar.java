@@ -1,22 +1,30 @@
 package src.main.UI;
 
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 import javax.swing.ButtonGroup;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JRadioButtonMenuItem;
 
-public class MenuBar extends JMenuBar {
+public class MenuBar extends JMenuBar implements ActionListener{
 
-	 JMenuBar menuBar;
-     JMenu menu, submenu;
-     JMenuItem menuItem;
-     JRadioButtonMenuItem rbMenuItem;
-     JCheckBoxMenuItem cbMenuItem;
+	private CluedoFrame frame;
+	private JMenuBar menuBar;
+    private JMenu menu;
+    private JMenuItem menuItem1;
+    private JMenuItem menuItem2;
+    
 	
-	public MenuBar(){
-		
+	public MenuBar(CluedoFrame frame){
+		this.frame = frame;
 	 
 	}
 	
@@ -27,65 +35,44 @@ public class MenuBar extends JMenuBar {
         menuBar = new JMenuBar();
  
         //Build the first menu.
-        menu = new JMenu("A Menu");
-        menu.getAccessibleContext().setAccessibleDescription(
-                "The only menu in this program that has menu items");
+        menu = new JMenu("Cluedo");
         menuBar.add(menu);
  
         //a group of JMenuItems
-        menuItem = new JMenuItem("A text-only menu item");
-      
-        menuItem.getAccessibleContext().setAccessibleDescription(
-                "This doesn't really do anything");
-        menu.add(menuItem);
- 
-        
-        menuItem = new JMenuItem("Both text and icon");
-        menu.add(menuItem);
- 
-        menuItem = new JMenuItem("another item");
-        menu.add(menuItem);
- 
-        //a group of radio button menu items
-        menu.addSeparator();
-        ButtonGroup group = new ButtonGroup();
- 
-        rbMenuItem = new JRadioButtonMenuItem("A radio button menu item");
-        rbMenuItem.setSelected(true);
-        group.add(rbMenuItem);
-        menu.add(rbMenuItem);
- 
-        rbMenuItem = new JRadioButtonMenuItem("Another one");
-        group.add(rbMenuItem);
-        menu.add(rbMenuItem);
- 
-        //a group of check box menu items
-        menu.addSeparator();
-        cbMenuItem = new JCheckBoxMenuItem("A check box menu item");
-        menu.add(cbMenuItem);
- 
-        cbMenuItem = new JCheckBoxMenuItem("Another one");
-        menu.add(cbMenuItem);
- 
-        //a submenu
-        menu.addSeparator();
-        submenu = new JMenu("A submenu");
- 
-        menuItem = new JMenuItem("An item in the submenu");
-        submenu.add(menuItem);
- 
-        menuItem = new JMenuItem("Another item");
-        submenu.add(menuItem);
-        menu.add(submenu);
- 
-        //Build second menu in the menu bar.
-        menu = new JMenu("Another Menu");
-        menu.getAccessibleContext().setAccessibleDescription(
-                "This menu does nothing");
-        menuBar.add(menu);
- 
+        menuItem1 = new JMenuItem("New Game");
+        menuItem2 = new JMenuItem("Quit Game");
+        menuItem1.addActionListener(this);
+        menuItem2.addActionListener(this);
+        menu.add(menuItem1);
+        menu.add(menuItem2);
+
         return menuBar;
     }
+	
+	
+	
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		if(e.getSource().equals(menuItem1)){
+			int n = JOptionPane.showConfirmDialog(
+					frame,
+					"Are you sure you want to start a new game?\n"
+					+ "All progress will be lost", "Are you sure?"
+					,JOptionPane.YES_NO_OPTION);
+			if(n == 0)
+				frame.newCluedoGame();
+		}else if(e.getSource().equals(menuItem2)){
+			int n = JOptionPane.showConfirmDialog(
+					frame,
+					"Are you sure you want to quit?\n"
+					+ "All progress will be lost", "Are you sure?"
+					,JOptionPane.YES_NO_OPTION);
+			if(n == 0)
+				System.exit(0);
+		}
+		
+		
+	}
  
     
 }

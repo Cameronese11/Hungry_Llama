@@ -41,7 +41,7 @@ public class AccusationOrSuggestion implements ActionListener{
 	private Weapon weapon;
 	private Player.Character character;
 	
-	// JPanels to hold JRadioButtons and done JButton
+	// JPanels to store JRadioButtons and done JButton
 	private JPanel roomPanel;
 	private JPanel weaponPanel;
 	private JPanel characterPanel;
@@ -57,8 +57,8 @@ public class AccusationOrSuggestion implements ActionListener{
 		this.murderRooms = new JRadioButton[9];
 		this.murderWeapons = new JRadioButton[6];
 		this.murderCharacters = new JRadioButton[6];
+		
 	}
-	
 	
 	
 	public JPanel askMurderRoom(Boolean acc){
@@ -182,11 +182,13 @@ public class AccusationOrSuggestion implements ActionListener{
 				}
 			}
 		}else if(e.getActionCommand().equals("done")){
+			
 			if(canvas.getAccOrSugg() == 1){
 				boolean accusation = false;
 				if(character != null && weapon != null && room!= null)
 					 accusation = game.accusation(character, weapon, room); 
 				else{
+					canvas.add(canvas.getBoardButtonPanel());
 					canvas.remove(weaponPanel);
 					canvas.remove(roomPanel);
 					canvas.remove(characterPanel);
@@ -214,15 +216,18 @@ public class AccusationOrSuggestion implements ActionListener{
 					canvas.repaint();
 				}
 			}else if(canvas.getAccOrSugg() == 2){
+				canvas.add(canvas.getBoardButtonPanel());
 				canvas.setAccOrSugg(0);
 				canvas.remove(donePanel);
+				canvas.getBoardButtons().getButton(3).doClick();
 				canvas.revalidate();
 				canvas.repaint();
 			}else if(canvas.getAccOrSugg() == 3){
 				String refuted = null;
-				if(character != null && weapon != null && room!= null)
-					 refuted = game.suggestion(character, weapon, room);
-				else{
+				if(character != null && weapon != null && room!= null){
+					refuted = game.suggestion(character, weapon, room);
+					canvas.getBoardButtons().setSuggestionMade(true);
+				}else{
 					canvas.remove(donePanel);
 					canvas.setAccOrSugg(0);
 				}
@@ -241,8 +246,10 @@ public class AccusationOrSuggestion implements ActionListener{
 				
 				canvas.repaint();
 			}else if(canvas.getAccOrSugg() == 4){
+				canvas.add(canvas.getBoardButtonPanel());
 				canvas.setAccOrSugg(0);
 				canvas.remove(donePanel);
+				
 				canvas.revalidate();
 				canvas.repaint();
 			}
