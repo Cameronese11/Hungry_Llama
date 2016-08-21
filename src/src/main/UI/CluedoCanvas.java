@@ -373,7 +373,7 @@ public class CluedoCanvas extends JPanel implements MouseListener, MouseMotionLi
 					selectedTile = t;	
 		}
 					
-		//System.out.println(mouseX + ", "  + mouseY);
+		
 		repaint();
 	}
 

@@ -50,40 +50,48 @@ public class CluedoFrame extends JFrame{
 		setResizable(false);
 		setVisible(true); 
 		
-		//
+		Game.gameState = Game.State.SETUP_MENU;
+		
+		// create components
 		canvas = new CluedoCanvas(game, board, this); 
 		panelCont = new JPanel();
-		
-		
-		
-		
 		menuBar = new MenuBar(this);
+		setupMenu = new SetupMenu(game, this);
+		
+		// add components
 		panelCont.add(canvas);
 		add(panelCont);
 		
-		Game.gameState = Game.State.SETUP_MENU;
-		
-		setupMenu = new SetupMenu(game, this);
-		gameSetupUI();
+		// procced to Setup Menu
+		setupMenuUI();
 		
 	}
 	
-	public void gameSetupUI(){
-		panelCont.setLayout(new GridLayout(2,1)); // use border layout
-		panelCont.add(setupMenu);	
+	/**
+	 * adds and displays the setupMenu 
+	 */
+	public void setupMenuUI(){
+		panelCont.setLayout(new GridLayout(2,1)); // split container panel in half
+		panelCont.add(setupMenu);					
 		setJMenuBar(menuBar.createMenuBar());
-		pack();
+		pack(); // pack together components
 		repaint();
 	}
 	
+	/**
+	 * adds and displays the game board
+	 */
 	public void gameBoardUI(){
-		panelCont.removeAll();
-		panelCont.setLayout(new BorderLayout());
+		panelCont.removeAll(); // clear the container panel
+		panelCont.setLayout(new BorderLayout()); // change layout
 		panelCont.add(canvas);
-		pack();
-		revalidate();
+		pack(); // pack together components
+		revalidate(); // revalidate the new JFrame
+		
+		// get game ready to start
 		game.setupPlayers();
 		game.dealCards();
+		
 		repaint();
 	}
 	
@@ -102,18 +110,24 @@ public class CluedoFrame extends JFrame{
 		
 	}
 	
+	/**
+	 * Creates a new Cluedo frame and CluedoGame
+	 * Called when user makes a new game from the menubar
+	 */
 	public void newCluedoGame(){
 		Board board = new Board(gameArgs);
 		Game game = new Game(board);
 		CluedoFrame frame = new CluedoFrame(game, board, gameArgs);
 	}
 	
-	
+	/**
+	 * 
+	 * @param args - board.txt file location
+	 */
 	public static void main(String[] args){
-		
 		Board board = new Board(args[0]);
 		Game game = new Game(board);
-		CluedoFrame frame = new CluedoFrame(game, board, args[0]);
+		new CluedoFrame(game, board, args[0]);
 	}
 	
 	

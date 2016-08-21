@@ -76,7 +76,7 @@ public class Board {
 		    			case "H": tile = new DoorTile(x,y, "Hall"); break;
 		    			case "s": tile = new DoorTile(x,y, "Study"); break;
 		    			case "l": tile = new DoorTile(x,y, "Library"); break;
-		    			case "B": tile = new DoorTile(x,y, "Billard Room"); break;
+		    			case "B": tile = new DoorTile(x,y, "Billiard Room"); break;
 		    			case "C": tile = new DoorTile(x,y, "Conservatory"); break;
 		    			case "b": tile = new DoorTile(x,y, "Ball Room"); break;
 		    		

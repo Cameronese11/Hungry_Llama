@@ -233,7 +233,6 @@ public class Player {
 	
 	// For Tests
 	public void setLocation(Location location){
-		System.out.println("setLocation");
 		this.location = location;
 		if(location instanceof Room){
 			Room r = (Room) location;

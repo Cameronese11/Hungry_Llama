@@ -9,13 +9,18 @@ import src.main.Cluedo.Game;
 
 import static src.main.UI.CluedoCanvas.loadImage;
 
+/**
+ * Represents the dice for the game
+ * 
+ *
+ */
 public class Dice {
 
-	//private static final Image DICE = loadImage("rollingDice2.png").getScaledInstance(146, 94, 0);
-	//private static final Image SELECTED_DICE = loadImage("selectedDice2.png").getScaledInstance(146, 94, 0);
+	// dice selected and unselected images
 	private static final Image DICE = loadImage("rollingDie.png").getScaledInstance(94, 94, 0);
 	private static final Image SELECTED_DICE = loadImage("selectedDie.png").getScaledInstance(94, 94, 0);
 	
+	// each Dice face image
 	private static final Image FACE1 = loadImage("diceface1.png").getScaledInstance(94, 94, 0);
 	private static final Image FACE2 = loadImage("diceface2.png").getScaledInstance(94, 94, 0);
 	private static final Image FACE3 = loadImage("diceface3.png").getScaledInstance(94, 94, 0);
@@ -23,11 +28,13 @@ public class Dice {
 	private static final Image FACE5 = loadImage("diceface5.png").getScaledInstance(94, 94, 0);
 	private static final Image FACE6 = loadImage("diceface6g.png").getScaledInstance(94, 94, 0);
 	
-	private int roll;
+	private int roll; // current dice roll
 	
+	// position
 	private int x = 840;
 	private int y = 60;
 	
+	// dice polygon to determine when its been clicked/hovered
 	private int[] diceXS = {x+4,x+20,x+50,x+66,x+70,x+07,x+138,x+130,x+94,x+78,x+72,x+39};
 	private int[] diceYS = {y+71,y+30,y+25,y+34,y+15,y+5,y+29,y+68,y+81,y+71,y+85,y+89};
 	private Polygon dicePolygon = new Polygon(diceXS, diceYS, diceXS.length);
@@ -35,14 +42,20 @@ public class Dice {
 	private CluedoCanvas canvas;
 	private Game game;
 	
-	private static state state;
+	private static state state; // current state of the dice
 	
+	// different states the dice can be in
 	public static enum state{
 		TO_ROLL,
 		ROLLING,
 		ROLLED
 	}
 	
+	/**
+	 * Creates a new dice object
+	 * @param game
+	 * @param canvas
+	 */
 	public Dice(Game game, CluedoCanvas canvas){
 		this.canvas = canvas;
 		this.game = game;

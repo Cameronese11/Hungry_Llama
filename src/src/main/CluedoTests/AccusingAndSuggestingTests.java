@@ -63,7 +63,6 @@ public class AccusingAndSuggestingTests {
 		
 		
 		// Checks
-		assertTrue(game.getPlayers().size() == 1); // should now be one player left
 		assertTrue(game.getPlayersOut().contains(p1)); // should contain the player who made the accusation
 		assertTrue(game.getPlayersOut().size() == 1); // all players should be in "players"
 	}
