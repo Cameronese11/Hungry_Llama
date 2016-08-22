@@ -21,6 +21,12 @@ public interface Card {
 	 */
 	public String toString();
 	
+	/**
+	 * Returns a image for this card
+	 * 
+	 * @param i - image index
+	 * @return - image
+	 */
 	public Image getImage(int i);
 }
 

@@ -2,25 +2,18 @@ package src.main.Cluedo;
 
 import static src.main.UI.CluedoCanvas.loadImage;
 
-import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Scanner;
-
-import javax.swing.ImageIcon;
-
 import src.main.GameObject.Player;
 import src.main.Location.DoorTile;
-import src.main.Location.Room;
 import src.main.Location.Tile;
 import src.main.Location.StartingTile;
-import src.main.Location.Tile;
 
 /**
  * Board Class to represent the board of a Game of Cluedo
@@ -30,7 +23,7 @@ public class Board {
 	private Tile[][] board2D;
 	
 
-	private static final Image BOARD = loadImage("scaledGameBoard2j.png");
+	private static final Image BOARD = loadImage("scaledGameBoard.png");
 	public static final int WIDTH = BOARD.getWidth(null);
 	public static final int HEIGHT = BOARD.getHeight(null) + 19;
 	/**
@@ -115,24 +108,39 @@ public class Board {
 		}	
 	}
 
+	/**
+	 * Paints the board on the canvas
+	 * 
+	 * @param g - canvas graphics
+	 * @param moveableLocations - tiles the player can move to
+	 * @param p - mouse point
+	 */
 	public void paint(Graphics g, List<Tile> moveableLocations, Point p){
+		// board image
 		g.drawImage(BOARD, 0, 0, BOARD.getWidth(null), BOARD.getHeight(null), null);
+		
+		// paint rooms
 		paintRooms(g);
 		
-		
-		for(int x = 0; x < 24; x++)
+		// paint tiles
+		for(int x = 0; x < 24; x++){
 			for(int y = 0; y < 25; y++){
 				Tile t = getTile(x,y);
 				if(t != null)
 					t.paint(g, moveableLocations, p);
-			
-			
 			}
+		}
 		
 	}
 	
-	
+	/**
+	 * Paints over all the rooms of the board image
+	 * 
+	 * @param g - canvas graphics
+	 */
 	public void paintRooms(Graphics g){
+		
+		// Creat polygons for each room
 		int[] KitchenXS = {23,46,46,85,85,94,94,131,131,153,153,45,45,23,23,20,20,23,23,20,20,23};
 		int[] KitchenYS = {31,31,28,28,31,31,28,28,31,31,159,159,138,138,118,118,92,92,81,81,54,54};
 		int[] BallRoomXS = {211,211,256,256,274,275,291,291,301,301,319,319,336,336,382,382};
@@ -154,6 +162,7 @@ public class Board {
 		
 		g.setColor(new Color(224,232,185));
 		
+		// fill in the polygons for each room
 		g.fillPolygon(KitchenXS, KitchenYS, KitchenXS.length);
 		g.fillPolygon(BallRoomXS, BallRoomYS, BallRoomXS.length);
 		g.fillPolygon(ConservatoryXS, ConservatoryYS, ConservatoryXS.length);
@@ -164,6 +173,7 @@ public class Board {
 		g.fillPolygon(LoungeXS, LoungeYS, LoungeXS.length);
 		g.fillPolygon(DiningRoomXS, DiningRoomYS, DiningRoomXS.length);
 		
+		// draw the names for each room
 		g.setColor(Color.black);
 		g.drawString("Kitchen", 65, 45);
 		g.drawString("Ball Room", 265, 45);

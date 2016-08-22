@@ -10,12 +10,10 @@ import java.awt.Rectangle;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.List;
-
 import static src.main.UI.CluedoCanvas.loadImage;
 import src.main.Cards.Card;
 import src.main.Cluedo.Board;
 import src.main.Cluedo.Game;
-import src.main.GameObject.Player.Character;
 import src.main.Location.DoorTile;
 import src.main.Location.Location;
 import src.main.Location.Tile;
@@ -169,6 +167,11 @@ public class Player {
 		}			
 	}
 	
+	/**
+	 * Paints the player tag
+	 * 
+	 * @param g - graphics
+	 */
 	public void paintTag(Graphics g){
 		Graphics2D g2d = (Graphics2D) g; 
 		String s = Game.getCharacterName(getCharacter());

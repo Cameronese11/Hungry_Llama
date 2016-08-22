@@ -3,17 +3,12 @@ package src.main.Location;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
-import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.List;
-import java.util.Scanner;
-
-import src.main.Cluedo.Board;
 import src.main.GameObject.Player;
-import src.main.GameObject.Player.Character;
 
 /**
  * Represents a Tile on the board
@@ -46,15 +41,23 @@ public class Tile implements Location{
 	}
 	
 	/**
-	 * prints the tile
+	 * Paints a reqular tile on the board
+	 * 
+	 * @param Graphics - canvas graphics
+	 * @param List<Tiles> - list of players possible move locations
+	 * @param Point - the mouse curser position
 	 */
 	public void paint(Graphics g, List<Tile> moveableLocations, Point p){
 		Graphics2D g2D = (Graphics2D) g;
+		
+		// is currently a moveable location
 		if(moveableLocations.contains(this)){
 			g.setColor(Color.green);
 			g.fillRect(xPos, yPos, SIZE, SIZE);
 			g.setColor(Color.black);
 			g.drawRect(xPos, yPos, SIZE, SIZE);
+		
+		// paint tile normally
 		}else{
 			g.setColor(Color.yellow);
 			g.fillRect(xPos, yPos, SIZE, SIZE);
@@ -63,6 +66,7 @@ public class Tile implements Location{
 		}
 		Rectangle r = new Rectangle(xPos, yPos, SIZE, SIZE);
 		if(p != null){
+			// tile is currently selected
 			if(r.contains(p)){
 				g2D.setStroke(new BasicStroke(2));
 				g2D.setColor(Color.red);

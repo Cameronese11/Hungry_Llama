@@ -1,8 +1,5 @@
 package src.main.GameObject;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import src.main.Location.Room;
 
 /**

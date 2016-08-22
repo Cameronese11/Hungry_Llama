@@ -1,26 +1,25 @@
 package src.main.UI;
 
-import java.awt.BorderLayout;
-import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
+import java.awt.geom.Rectangle2D;
 
 import static src.main.UI.CluedoCanvas.loadImage;
 
-import javax.swing.AbstractButton;
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 
 import src.main.Cluedo.Game;
+import src.main.GameObject.Basement;
 import src.main.GameObject.Player;
 import src.main.GameObject.Weapon;
 import src.main.Location.Location;
@@ -32,6 +31,8 @@ import src.main.Location.Room;
  */
 public class AccusationOrSuggestion implements ActionListener{
 
+	private static final Image BLACK_OPACITY = loadImage("blackOpacity.png"); // for dark background effect
+	
 	private Game game;
 	private CluedoCanvas canvas;
 	
@@ -51,6 +52,7 @@ public class AccusationOrSuggestion implements ActionListener{
 	private JPanel characterPanel;
 	private JPanel donePanel;
 	
+	private int page;
 	private String refute; // Refute string from suggestion, null if successful
 	
 	/**
@@ -275,7 +277,7 @@ public class AccusationOrSuggestion implements ActionListener{
 		}else if(e.getActionCommand().equals("done")){
 			
 			// player is making an accusation
-			if(canvas.getAccOrSugg() == 1){
+			if(page == 1){
 				boolean accusation = false;
 				// if accusation is valid
 				if(character != null && weapon != null && room!= null)
@@ -283,47 +285,123 @@ public class AccusationOrSuggestion implements ActionListener{
 				else{ // invalid accusation return to main screen
 					canvas.add(canvas.getBoardButtonPanel());
 					canvas.remove(donePanel);
-					canvas.setAccOrSugg(0);
+					page = 0;
 				}
-				if(!accusation && canvas.getAccOrSugg() != 0)
-					canvas.setAccOrSugg(2);
-				else if(accusation && canvas.getAccOrSugg() != 0)
-					canvas.setAccOrSugg(5);
+				if(!accusation && page > 0)
+					page = 2;
+				else if(accusation && page > 0)
+					page = 5;
 				removePanels();	
 			
 			// player has made a false accusation
-			}else if(canvas.getAccOrSugg() == 2){
+			}else if(page == 2){
 				canvas.add(canvas.getBoardButtonPanel());
-				canvas.setAccOrSugg(0);
+				page = 0;
 				canvas.remove(donePanel);
 				canvas.getBoardButtons().getButton(3).doClick();
 		
 			// player is making a suggestion
-			}else if(canvas.getAccOrSugg() == 3){
+			}else if(page == 3){
 				String refuted = null;
 				// if suggestion is valid
 				if(character != null && weapon != null && room!= null){
 					refuted = game.suggestion(character, weapon, room);
 					canvas.getBoardButtons().setSuggestionMade(true);
-					canvas.setAccOrSugg(4);
+					page = 4;
 				}else{  // invalid accusation return to main screen
 					canvas.add(canvas.getBoardButtonPanel());
 					canvas.remove(donePanel);
-					canvas.setAccOrSugg(0);
+					page = 0;
 				}
 				refute = refuted;	
 				removePanels();
 			
 			// player has made finished there suggestion
-			}else if(canvas.getAccOrSugg() == 4){
+			}else if(page == 4){
 				canvas.add(canvas.getBoardButtonPanel());
-				canvas.setAccOrSugg(0);
+				page = 0;
 				canvas.remove(donePanel);
 			}
 		}
 		canvas.revalidate();
 		canvas.repaint();
 	}
+	
+	public void drawPanelStrings(Graphics g){
+		g.setFont(new Font("Calibri", Font.PLAIN, 30));
+		g.drawString("Choose a Room", 95, 180);
+		g.drawString("Choose a Weapon", 390, 180);
+		g.drawString("Choose a Suspect", 690, 180);
+	}
+	
+	public void Paint(Graphics g){
+		Basement b = game.getBasement();
+		Graphics2D g2d = (Graphics2D) g;
+		if(page > 0){
+			g.drawImage(BLACK_OPACITY, 0, 0, 990, 590, null);
+			g.setColor(Color.white);
+			g.setFont(new Font("Calibri", Font.PLAIN, 40));
+		}
+		
+		if(page == 1){ // making Accusation pages
+			g.drawString("Make an Accusation", 335, 100);
+			drawPanelStrings(g);
+		
+		}else if(page == 2){ // incorrect accusation page
+			g.drawString("You Lose", 440, 180);
+			Font font = new Font("Calibri", Font.PLAIN, 20);
+			g2d.setFont(font);
+			String s = "Correct Solution Was " +Game.getCharacterName(b.getMurderCharacter()) + ", with the " + b.getMurderWeapon().getName() + ", in the " + b.getMurderRoom().getName();
+			Rectangle2D r = font.getStringBounds(s, g2d.getFontRenderContext());
+			g.drawString(s, 495 - (int) r.getWidth()/2, 220);
+		
+		}else if(page == 3){ // making a suggestion page
+			g.drawString("Make an Suggestion", 335, 100);
+			drawPanelStrings(g);
+		
+		}else if(page == 4){ // second suggestion page
+			String s = getRefuteMessage();
+			if(s != null)
+				g.drawString("Suggestion Refuted", 360, 180);
+			else
+				g.drawString("Congratulations, Suggestion was not Refuted", 300, 180);
+			Font font = new Font("Calibri", Font.PLAIN, 20);
+			g2d.setFont(font);
+			Rectangle2D r = font.getStringBounds(s, g2d.getFontRenderContext()); 
+			g.drawString(s, 495 - (int) r.getWidth()/2, 220); // center string on page
+		
+		}else if(page == 5){ // correct accusation page
+			g.drawString("Congratulations, You Win", 315, 180);
+			Font font = new Font("Calibri", Font.PLAIN, 20);
+			g2d.setFont(font);
+			String s = "Correct Solution Was " +Game.getCharacterName(b.getMurderCharacter()) + ", with the " + b.getMurderWeapon().getName() + ", in the " + b.getMurderRoom().getName();
+			Rectangle2D r = font.getStringBounds(s, g2d.getFontRenderContext());
+			g.drawString(s, 495 - (int) r.getWidth()/2, 220); // center string on page
+			Game.gameState = Game.State.OVER; // the game is now over
+		}
+		// reset font size and color to default
+		g.setFont(new Font("Calibri", Font.PLAIN, 10));
+		g.setColor(Color.black);
+	}
+	
+	
+	
+	public int getPage() {
+		return page;		
+	}
+	
+	public void setPage(int i){
+		page = i;
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	// Getters and Setters
 	public String getRefuteMessage(){

@@ -3,10 +3,6 @@ package src.main.CluedoTests;
 import static org.junit.Assert.*;
 
 import org.junit.Test;
-
-import src.main.Cards.Card;
-import src.main.Cards.RoomCard;
-import src.main.Cards.WeaponCard;
 import src.main.Cluedo.Board;
 import src.main.Cluedo.Game;
 import src.main.GameObject.Basement;

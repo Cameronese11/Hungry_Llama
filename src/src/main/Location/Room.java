@@ -2,13 +2,9 @@ package src.main.Location;
 
 import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.Point;
-import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.List;
-
-import src.main.Cluedo.Game;
 import src.main.GameObject.Player;
 import src.main.GameObject.Weapon;
 
@@ -91,6 +87,32 @@ public class Room implements Location{
 		return (((Room) room).getName().equals(getName()));
 	}
 	
+	@Override
+	public void paint(Graphics g, List<Tile> moveableLocations, Point p) {
+		// for every room
+		for(int i = 0; i < 6; i++){	
+			
+			// paint every player in the room
+			if(i < players.size()){
+				Player player = players.get(i);
+				player.setXPos(x + i*20 + 1);
+				player.setYPos(y + 1);
+				g.setColor(player.getColor());
+				g.fillOval(x + i*20 + 1, y + 1, 18, 18);
+				g.setColor(Color.BLACK);
+				g.drawOval(x + i*20 + 1, y + 1, 18, 18);
+			}
+			
+			// paint every weapon in the room
+			if(i < weapons.size()){
+				Weapon weapon = weapons.get(i);
+				weapon.setXPos(x + i*20 + 1);
+				weapon.setYPos(y + 21);
+				g.drawImage(weapons.get(i).getImage(), x + i*20 + 1, y + 21, null);
+			
+			}
+		}
+	}
 	
 	// Getters and Setters
 		
@@ -118,29 +140,7 @@ public class Room implements Location{
 		return stairwayTo;
 	}
 
-	@Override
-	public void paint(Graphics g, List<Tile> moveableLocations, Point p) {
-		for(int i = 0; i < 6; i++){
-			
-			if(i < players.size()){
-				Player player = players.get(i);
-				player.setXPos(x + i*20 + 1);
-				player.setYPos(y + 1);
-				g.setColor(player.getColor());
-				g.fillOval(x + i*20 + 1, y + 1, 18, 18);
-				g.setColor(Color.BLACK);
-				g.drawOval(x + i*20 + 1, y + 1, 18, 18);
-			}
-			
-			if(i < weapons.size()){
-				Weapon weapon = weapons.get(i);
-				weapon.setXPos(x + i*20 + 1);
-				weapon.setYPos(y + 21);
-				g.drawImage(weapons.get(i).getImage(), x + i*20 + 1, y + 21, null);
-			
-			}
-		}
-	}
+	
 	
 	
 }

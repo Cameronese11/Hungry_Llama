@@ -26,7 +26,7 @@ public class Dice {
 	private static final Image FACE3 = loadImage("diceface3.png").getScaledInstance(94, 94, 0);
 	private static final Image FACE4 = loadImage("diceface4.png").getScaledInstance(94, 94, 0);
 	private static final Image FACE5 = loadImage("diceface5.png").getScaledInstance(94, 94, 0);
-	private static final Image FACE6 = loadImage("diceface6g.png").getScaledInstance(94, 94, 0);
+	private static final Image FACE6 = loadImage("diceface6.png").getScaledInstance(94, 94, 0);
 	
 	private int roll; // current dice roll
 	
@@ -53,6 +53,7 @@ public class Dice {
 	
 	/**
 	 * Creates a new dice object
+	 * 
 	 * @param game
 	 * @param canvas
 	 */
@@ -63,53 +64,85 @@ public class Dice {
 		this.roll = 0;
 	}
 
-	
+	/**
+	 * paints the dice with the given graphics object
+	 * @param g - paint object
+	 */
 	public void paint(Graphics g){
+		// Dice hasn't been rolled this turn
 		if(state.equals(Dice.state.TO_ROLL)){
-			if(dicePolygon.contains(new Point(canvas.getMouseX(), canvas.getMouseY())) && canvas.getShowCard() == null && canvas.getAccOrSugg() == 0){
-				
+			
+			// if mouse is hovering over the dice, draw the selected dice image
+			if(dicePolygon.contains(new Point(canvas.getMouseX(), canvas.getMouseY())) 
+					&& canvas.getShowCard() == null && canvas.getAOS().getPage() == 0){
 					g.drawImage(SELECTED_DICE, x, y, null);
 			
-			}else{
+			// if mouse is hovering over the dice, draw the selected dice image
+			}else
 				g.drawImage(DICE, x, y, null);
-			}
-		}else{	
+		
+		// Dice has been rolled or is rolling
+		}else	
 			g.drawImage(getDiceFace(roll), x, y, null);
-		}
 	}
 	
+	/**
+	 * Dice has been clicked on
+	 * so roll the dice if neccessary
+	 * 
+	 * @return - the new dice roll
+	 */
 	public int diceClicked(){
+		// Dice hasn't been rolled this turn
 		if(state.equals(state.TO_ROLL)){
-			roll = game.rollDice();
+			// Roll the dice and change the roll and image accordingly
+			roll = game.rollDice(); 
 			state = state.ROLLING;
-			animateDice();
+			animateDice(); 
 			state = state.ROLLED;
 			return roll;
 		}
+		// Dice has already been rolled this turn
 		return 0;
 	}
 	
+	/**
+	 * reset the dice back to 0
+	 */
 	public void resetDice(){
 		state = state.TO_ROLL;
 		roll = 0;
 	}
 
+	/**
+	 * Flicks through random dice faces to 
+	 * animate the dice roll
+	 */
 	public void animateDice(){
 		int actualRoll = roll;
+		
+		// flick through 10 diceface images
 		for(int i = 0; i < 10; i++){
 			roll = game.rollDice();
 			paint(canvas.getGraphics());
+			
+			// wait 0.2 seconds between images
 			try {
 				Thread.sleep(200);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
 		}
-		roll = actualRoll;
+		roll = actualRoll; // set roll to what was actually rolled
 	}
 	
+	/**
+	 * Get the corresponding dice face image for a particular dice value
+	 * 
+	 * @param i - dice value
+	 * @return image - the image for that dice value
+	 */
 	public Image getDiceFace(int i){
 		switch(i){
 			case 1: return FACE1;
@@ -121,10 +154,18 @@ public class Dice {
 		}
 		return null;
 	}
+	
+	/**
+	 * Checks if the point is contained within the dice polygon
+	 * 
+	 * @param p - the given point
+	 * @return - true if point is within the polygon
+	 */
 	public boolean contains(Point p){
 		return dicePolygon.contains(p);
 	}
 	
+	// Getters and Setters
 	public state getState(){
 		return state;
 	}

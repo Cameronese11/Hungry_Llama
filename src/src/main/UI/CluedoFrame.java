@@ -4,7 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 
 import java.awt.GridLayout;
-import java.awt.event.KeyEvent;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -43,7 +42,7 @@ public class CluedoFrame extends JFrame{
 		this.board = board;
 		this.gameArgs = gameArgs;
 		
-		// setup Jframe
+		// setup JFrame
 		setSize(getPreferredSize());
 		setLocation(225,125);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -53,7 +52,7 @@ public class CluedoFrame extends JFrame{
 		Game.gameState = Game.State.SETUP_MENU;
 		
 		// create components
-		canvas = new CluedoCanvas(game, board, this); 
+		canvas = new CluedoCanvas(game, board); 
 		panelCont = new JPanel();
 		menuBar = new MenuBar(this);
 		setupMenu = new SetupMenu(game, this);

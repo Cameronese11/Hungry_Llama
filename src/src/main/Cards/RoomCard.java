@@ -58,7 +58,4 @@ public class RoomCard implements Card{
 		imgs[2] = imgs[0].getScaledInstance(80, 116, 16);
 	}
 	
-	public void paint(Graphics g){
-		
-	}
 }

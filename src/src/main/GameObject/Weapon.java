@@ -59,15 +59,35 @@ public class Weapon {
 		room.addWeapon(this);					
 	}
 	
-	public void setImg(){
-	this.img = loadImage("Weapon" + name + ".png");
+	/**
+	 * Paints the weapon tag
+	 * 
+	 * @param g - graphics
+	 */
+	public void paintTag(Graphics g){
+		Graphics2D g2d = (Graphics2D) g; 
+		String s = name;
+		Font font = new Font("Calibri", Font.PLAIN, 15);
+		g2d.setFont(font);
+		Rectangle2D r = font.getStringBounds(s, g2d.getFontRenderContext());
+		g.setColor(Color.lightGray);
+		g.fillRect(xPos + 10, yPos - 20,(int) r.getWidth() + 10, (int )r.getHeight());
+		g.setColor(Color.black);
+		g.drawRect(xPos + 10, yPos - 20,(int) r.getWidth() + 10, (int )r.getHeight());
+		g2d.drawString(s, xPos + 15, yPos - 6);
 	}
+
 	
+	// Getters and Setters
+	
+	public void setImg(){
+		this.img = loadImage("Weapon" + name + ".png");
+	}
+		
 	public Image getImage(){
 		return img;
 	}
-	// Getters and Setters
-	
+		
 	public String getName(){
 		return name;
 	}
@@ -93,18 +113,6 @@ public class Weapon {
 	public void setYPos(int y){
 		yPos = y;
 	}
-	public void paintTag(Graphics g){
-		Graphics2D g2d = (Graphics2D) g; 
-		String s = name;
-		Font font = new Font("Calibri", Font.PLAIN, 15);
-		g2d.setFont(font);
-		Rectangle2D r = font.getStringBounds(s, g2d.getFontRenderContext());
-		g.setColor(Color.lightGray);
-		g.fillRect(xPos + 10, yPos - 20,(int) r.getWidth() + 10, (int )r.getHeight());
-		g.setColor(Color.black);
-		g.drawRect(xPos + 10, yPos - 20,(int) r.getWidth() + 10, (int )r.getHeight());
-		g2d.drawString(s, xPos + 15, yPos - 6);
-	}
-
+	
 	
 }

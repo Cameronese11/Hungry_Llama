@@ -2,87 +2,85 @@ package src.main.UI;
 
 
 
-import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Container;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.GridBagConstraints;
-import java.awt.GridLayout;
 import java.awt.Image;
-import java.awt.Insets;
 import java.util.List;
 import java.awt.Point;
-import java.awt.Polygon;
 import java.awt.Rectangle;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import java.awt.geom.Rectangle2D;
 import java.io.IOException;
 import java.util.ArrayList;
-
 import javax.imageio.ImageIO;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JRadioButton;
-import javax.swing.JTextField;
-
 import src.main.Location.*;
 import src.main.Cards.Card;
 import src.main.Cluedo.Board;
 import src.main.Cluedo.Game;
-import src.main.GameObject.Basement;
 import src.main.GameObject.Player;
 import src.main.GameObject.Weapon;
 
+/**
+ * Represents the canvas for the cluedo 
+ * game where the main elemnts are drawn
+ *
+ */
 public class CluedoCanvas extends JPanel implements MouseListener, MouseMotionListener{
 
-	private static final String IMAGE_PATH = "images/";
-	private static final Image PAGE = loadImage("setupPageHome.png");
-	private static final Image BLACK_OPACITY = loadImage("blackOpacity.png");
-	private static final Image table = loadImage("tablePattern.png");
+	// package location for all images
+	private static final String IMAGE_PATH = "images/"; 
+	
+	// images the canvas requires
+	private static final Image PAGE = loadImage("setupPageHome.png"); // setup menu image
+	private static final Image BLACK_OPACITY = loadImage("blackOpacity.png"); // for dark background effect
+	private static final Image table = loadImage("tablePattern.png"); // table pattern next to board
 	
 	private Game game;
 	private Board board;
-	private JFrame frame;
 	
+	// Mouse X and Y position
 	private int mouseX;
 	private int mouseY;
 	
+	// Component classes
 	private AccusationOrSuggestion AOS;
 	private Dice dice;
 	private Card showCard;
-	private int accOrSugg;
 	private BoardButtons boardButtons;
 	private JPanel boardButtonsPanel;
-	
+		
+	// Tiles to remember
 	private List<Tile> moveableLocations;
 	private Tile selectedTile;
 	
+	// Hides the currently displayed hand if true
 	private boolean hideHand;
 	
-	public CluedoCanvas(Game game, Board board, JFrame frame){
+	public CluedoCanvas(Game game, Board board){
 		this.game = game;
 		this.board = board;
-		this.frame = frame;
+		
+		// Setup Canvas JPanel
 		setLayout(null);
 		setLocation(0,0);
-		moveableLocations = new ArrayList<>();
 		addMouseListener(this);
 		addMouseMotionListener(this);
-		dice = new Dice(game, this);
-		boardButtons = new BoardButtons(game, this);
-		boardButtonsPanel = boardButtons.createPanel();
-		add(boardButtonsPanel);
 		setVisible(true);
 		setOpaque(false);
+		
+		// initilise components
+		dice = new Dice(game, this);
+		moveableLocations = new ArrayList<>();
+		boardButtons = new BoardButtons(game, this);
+		AOS = new AccusationOrSuggestion(game, this);
+		boardButtonsPanel = boardButtons.createPanel();
+		
+		// add to canvas panel
+		add(boardButtonsPanel);
+		
 	}
 	
 	@Override
@@ -96,22 +94,38 @@ public class CluedoCanvas extends JPanel implements MouseListener, MouseMotionLi
 		super.paintComponent(g);
 		
 		}
+	
+	/**
+	 * Creates a AccusationOrSuggestion object for a accusation 
+	 * or a suggestin from the user
+	 * 
+	 * @param acc - true if user is making an accusatio
+	 * 			  - false if the user is making a suggestion
+	 */
 	public void accusation(Boolean acc){
-		remove(boardButtonsPanel);
-		setLayout(null);
+		
+		remove(boardButtonsPanel);// remove current components so a accisation/suggestion can be made
+
+		// change to appropriate page
 		if(acc)
-			accOrSugg = 1;
+			AOS.setPage(1);
 		else
-			accOrSugg = 3;
-		AOS = new AccusationOrSuggestion(game, this);
+			AOS.setPage(3);
+		
+		// create and setup AOS JPrames
 		JPanel room = AOS.askMurderRoom(acc);
 		JPanel weapon = AOS.askMurderWeapon();
 		JPanel character = AOS.askMurderCharacter();
 		JPanel done = AOS.done();
+		
+		
+				
+		// add JPanels to canvas
 		add(room);
 		add(weapon);
 		add(character);
 		add(done);
+		
 		revalidate();
 		repaint();
 	}
@@ -124,128 +138,70 @@ public class CluedoCanvas extends JPanel implements MouseListener, MouseMotionLi
 	@Override
 	public void paint(Graphics g){
 		
+		// Game is currently in the setupMenu
 		if(Game.gameState == Game.State.SETUP_MENU
 				|| Game.gameState == Game.State.SETUP_PLAYER){
 			g.drawImage(PAGE, 0, 0, null);
 			
+		// Game is currently running
 		}else if(Game.gameState == Game.State.RUNNING){
-			if(showCard != null || accOrSugg > 0)
+			// dont draw board hovers if on suggestion page
+			if(showCard != null || AOS.getPage() > 0)
 				board.paint(g, moveableLocations, null);
 			else
 				board.paint(g, moveableLocations, new Point(mouseX, mouseY));
 			
 			for(Player p: game.getPlayers())
-				p.paint(g);
-			for(Player p: game.getPlayersOut())
-				p.paint(g);
+				p.paint(g);	// Paint all the players on their tiles
 			
-			dice.paint(g);
-//			boardButtons.paint(g);
-//			boardButtons2.paint(g);
-			g.setColor(Color.white);
+			for(Player p: game.getPlayersOut())    // Paint players who have been 
+				p.paint(g);						   // eliminated from the game on their tile
+			
+			paintHeading(g); // Paint title in topLeft
+			dice.paint(g);	// paint the dice
+			
 			Player p = game.getCurrentPlayer();
-			if(p == null){
-				int i = 1;
-			}
-			g.drawImage(p.getImage(), 590, 6,null);
-			g.drawString(p.getName().toString(), 800, 20);
-			g.drawString("It is your Turn", 800, 40);
+			
 			for(Room r: game.getRooms())
-				r.paint(g, null, null);
-			if(showCard != null || accOrSugg > 0){
+				r.paint(g, null, null); // Paint all the players and weapons in the rooms
+
+			// Paint hand without enlargement when appropriate
+			if(showCard != null || AOS.getPage() > 0){
 				p.paintHand(g, new Point(0,0));
 			}else{
 				p.paintHand(g, new Point(mouseX, mouseY));
 			}
+			
+			// player has clicked on a card
 			if(showCard != null){
 				g.drawImage(BLACK_OPACITY, 0, 0, 990, 590, null);
 				g.drawImage(showCard.getImage(0),315, 33, null);
 			}
-			if(showCard == null && accOrSugg == 0){
-					for(Player player: game.getPlayers()){
 			
+			// Paint the player and weapon tags
+			if(showCard == null && AOS.getPage() == 0){
+
+				for(Player player: game.getPlayers()){
 						Rectangle r = new Rectangle(player.getXPos(), player.getYPos(),19, 19);
-						if(r.contains(mouseX, mouseY)){
-							player.paintTag(g);
-						}
-					}
+						if(r.contains(mouseX, mouseY))
+							player.paintTag(g); // If mouse is hovering over paint tag
+				}
 				for(Weapon weapon: game.getWeapons()){
 					Rectangle r = new Rectangle(weapon.getXPos(), weapon.getYPos(),19, 19);
-					if(r.contains(mouseX, mouseY)){
-						weapon.paintTag(g);
-					}
+					if(r.contains(mouseX, mouseY))
+						weapon.paintTag(g); // If mouse is hovering over paint tag
 				}
 			}
-			if(accOrSugg == 1){
-				g.drawImage(BLACK_OPACITY, 0, 0, 990, 590, null);
-				g.setColor(Color.white);
-				g.setFont(new Font("Calibri", Font.PLAIN, 30));
-				g.drawString("Choose a Room", 95, 180);
-				g.drawString("Choose a Weapon", 390, 180);
-				g.drawString("Choose a Suspect", 690, 180);
-				g.setFont(new Font("Calibri", Font.PLAIN, 10));
-				g.setColor(Color.black);
-			}
-			if(accOrSugg == 2){
-				Basement b = game.getBasement();
-				g.drawImage(BLACK_OPACITY, 0, 0, 990, 590, null);
-				g.setColor(Color.white);
-				g.setFont(new Font("Calibri", Font.PLAIN, 40));
-				g.drawString("You Lose", 440, 180);
-				Font font = new Font("Calibri", Font.PLAIN, 20);
-				Graphics2D g2d = (Graphics2D) g;
-				g2d.setFont(font);
-				String s = "Correct Solution Was " +Game.getCharacterName(b.getMurderCharacter()) + ", with the " + b.getMurderWeapon().getName() + ", in the " + b.getMurderRoom().getName();
-				Rectangle2D r = font.getStringBounds(s, g2d.getFontRenderContext());
-				g.drawString(s, 495 - (int) r.getWidth()/2, 220);
-				g.setFont(new Font("Calibri", Font.PLAIN, 10));
-				g.setColor(Color.black);
-			}
-			if(accOrSugg == 3){
-				g.drawImage(BLACK_OPACITY, 0, 0, 990, 590, null);
-				g.setColor(Color.white);
-				g.setFont(new Font("Calibri", Font.PLAIN, 30));
-				g.drawString("Choose a Room", 95, 180);
-				g.drawString("Choose a Weapon", 390, 180);
-				g.drawString("Choose a Suspect", 690, 180);
-				g.setFont(new Font("Calibri", Font.PLAIN, 10));
-				g.setColor(Color.black);
-			}
-			if(accOrSugg == 4){
-				g.drawImage(BLACK_OPACITY, 0, 0, 990, 590, null);
-				g.setColor(Color.white);
-				g.setFont(new Font("Calibri", Font.PLAIN, 40));
-				String s = AOS.getRefuteMessage();
-				if(s != null)
-					g.drawString("Suggestion Refuted", 360, 180);
-				else
-					g.drawString("Congratulations, Suggestion was not Refuted", 300, 180);
-				Font font = new Font("Calibri", Font.PLAIN, 20);
-				Graphics2D g2d = (Graphics2D) g;
-				g2d.setFont(font);
-				Rectangle2D r = font.getStringBounds(s, g2d.getFontRenderContext());
-				g.drawString(s, 495 - (int) r.getWidth()/2, 220);
-				g.setFont(new Font("Calibri", Font.PLAIN, 10));
-				g.setColor(Color.black);
-			}
-			if(accOrSugg == 5){
-				Basement b = game.getBasement();
-				g.drawImage(BLACK_OPACITY, 0, 0, 990, 590, null);
-				g.setColor(Color.white);
-				g.setFont(new Font("Calibri", Font.PLAIN, 40));
-				g.drawString("Congratulations, You Win", 315, 180);
-				Font font = new Font("Calibri", Font.PLAIN, 20);
-				Graphics2D g2d = (Graphics2D) g;
-				g2d.setFont(font);
-				String s = "Correct Solution Was " +Game.getCharacterName(b.getMurderCharacter()) + ", with the " + b.getMurderWeapon().getName() + ", in the " + b.getMurderRoom().getName();
-				Rectangle2D r = font.getStringBounds(s, g2d.getFontRenderContext());
-				g.drawString(s, 495 - (int) r.getWidth()/2, 220);
-				g.setFont(new Font("Calibri", Font.PLAIN, 10));
-				g.setColor(Color.black);
-				Game.gameState = Game.State.OVER;
-			}
+			
+			// Paint the AOS page
+			if(AOS != null)
+				AOS.Paint(g);
+			
+			// Hide hand if necessary
 			if(hideHand)
-				g.drawImage(table, 595, 250, null);
+				g.drawImage(table, 600, 250, null);
+			
+			// paint components
 			super.paint(g);
 		
 		
@@ -277,51 +233,58 @@ public class CluedoCanvas extends JPanel implements MouseListener, MouseMotionLi
 		}
 	}
 	
-	
+	/**
+	 * Paints the heading on the top left of the canvas,
+	 * as well as their corresponding picture
+	 * 
+	 * @param g - canvas graphics object
+	 */
+	public void paintHeading(Graphics g){
+		Player p = game.getCurrentPlayer();
+		g.setColor(Color.white);
+		g.drawImage(p.getImage(), 590, 6,null);
+		g.drawString(p.getName().toString(), 800, 20);
+		g.drawString("It is your Turn", 800, 40);
+	}
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		
+		// A card is currently displayed on screen
 		if(showCard != null){
 			Rectangle r = new Rectangle(315, 33, 360, 524);
-			if(!r.contains(mouseX, mouseY)){
-				showCard = null;
-				add(boardButtonsPanel);
+			if(!r.contains(mouseX, mouseY)){ 
+				showCard = null;		// if the player clicks outside the card
+				add(boardButtonsPanel); // go back to the main screen
 			}
+		
+		// Currently at the main game screen
 		}else{
-			
-			
-		
-		
-		Player player = game.getCurrentPlayer();
+			Player player = game.getCurrentPlayer();
 	
-			if(dice.contains(new Point(getMouseX(), getMouseY())) && dice.getState() == Dice.state.TO_ROLL){
-				
+			// if player clicks on the dice and its ready to roll
+			if(dice.contains(new Point(getMouseX(), getMouseY())) 
+					&& dice.getState() == Dice.state.TO_ROLL){
 				int roll = dice.diceClicked();
 				moveableLocations = game.determineMoveLocations(player, roll);
 					
-			
+			// check if a tile was clicked
 			}else if(!moveableLocations.isEmpty()){
 				for(Tile t: game.getTiles()){
 					if(t != null){
-						if(t.contains(new Point(getMouseX(), getMouseY()))){
-							if(moveableLocations.contains(t)){
+						if(t.contains(new Point(getMouseX(), getMouseY()))){ // tile must have been clicked
+							if(moveableLocations.contains(t)){ 
 								 player.move(selectedTile);
-								 moveableLocations.clear();
+								 moveableLocations.clear(); // empty until dice is rolled again
 							}
 						}
 					}	
 				}
-			} if(player.getSelectedCard() != null){
-				Card c = player.getSelectedCard();
+			
+			// check if a card was clicked
+			}if(player.getSelectedCard() != null){ // if player was hovering over a card
+				Card c = player.getSelectedCard(); // then make that the selected card
 				showCard = c;
 				remove(boardButtonsPanel);
-			}else{
-				//String button = boardButtons.contains(new Point(getMouseX(), getMouseY()));
-				//if(button != null){
-				//	boardButtons.buttonClicked(button);
-			//	}
-				
 			}
 		}
 		
@@ -329,38 +292,19 @@ public class CluedoCanvas extends JPanel implements MouseListener, MouseMotionLi
 	}
 
 	@Override
-	public void mousePressed(MouseEvent e) {
-		//String button = boardButtons.contains(new Point(getMouseX(), getMouseY()));
-		//if(button != null)
-		//	boardButtons.buttonPressed(button);
-		
-	}
+	public void mousePressed(MouseEvent e){}
 
 	@Override
-	public void mouseReleased(MouseEvent e) {
-		//String button = boardButtons.contains(new Point(getMouseX(), getMouseY()));
-		//if(button != null)
-		//	boardButtons.buttonReleased(button);
-		
-	}
+	public void mouseReleased(MouseEvent e){}
 
 	@Override
-	public void mouseEntered(MouseEvent e) {
-		
-		
-	}
+	public void mouseEntered(MouseEvent e){}
 
 	@Override
-	public void mouseExited(MouseEvent e) {
-		
-		
-	}
+	public void mouseExited(MouseEvent e){}
 
 	@Override
-	public void mouseDragged(MouseEvent e) {
-		
-		
-	}
+	public void mouseDragged(MouseEvent e){}
 
 	@Override
 	public void mouseMoved(MouseEvent e) {
@@ -370,16 +314,19 @@ public class CluedoCanvas extends JPanel implements MouseListener, MouseMotionLi
 		for(Tile t: game.getTiles()){
 			if(t != null)
 				if(t.contains(new Point(mouseX, mouseY)))
-					selectedTile = t;	
+					selectedTile = t; // if hovering over a tile remember it
 		}
-					
-		
 		repaint();
 	}
 
+	/**
+	 * resets the dice back to 0
+	 */
 	public void resetDice(){
 		dice.resetDice();
 	}
+	
+	// Getters and Setters
 	
 	public int getMouseX(){
 		return mouseX;
@@ -412,17 +359,11 @@ public class CluedoCanvas extends JPanel implements MouseListener, MouseMotionLi
 	public Card getShowCard(){
 		return showCard;
 	}
-
-	public int getAccOrSugg() {
-		return accOrSugg;		
+	public AccusationOrSuggestion getAOS(){
+		return AOS;
 	}
-	
-	public void setAccOrSugg(int i){
-		accOrSugg = i;
+	public void setHideHand(Boolean b){
+		hideHand = b;
 	}
-
-		public void setHideHand(Boolean b){
-			hideHand = b;
-		}
 
 }

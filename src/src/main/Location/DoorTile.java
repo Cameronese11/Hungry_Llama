@@ -28,25 +28,35 @@ public class DoorTile extends Tile{
 		this.room = room;
 	}
 
-	/**
-	 * prints the tile
-	 */
 	
+	/**
+	 * Paints a door tile on the board
+	 * 
+	 * @param Graphics - canvas graphics
+	 * @param List<Tiles> - list of players possible move locations
+	 * @param Point - the mouse curser position
+	 */
 	public void paint(Graphics g, List<Tile> moveableLocations, Point p){
 		Graphics2D g2D = (Graphics2D) g;
+		
+		// is currently a moveable location
 		if(moveableLocations.contains(this)){
 			g.setColor(Color.green);
 			g.fillRect(xPos, yPos, SIZE, SIZE);
 			g.setColor(Color.black);
 			g.drawRect(xPos, yPos, SIZE, SIZE);
+		
+		// paint tile normally
 		}else{
 			g.setColor(new Color(224,232,185));
 			g.fillRect(xPos, yPos, SIZE, SIZE);
 			g.setColor(Color.black);
 			g.drawRect(xPos, yPos, SIZE, SIZE);
 		}
+		
 		Rectangle r = new Rectangle(xPos, yPos, SIZE, SIZE);
 		if(p != null){
+			// tile is currently selected
 			if(r.contains(p)){
 				g2D.setStroke(new BasicStroke(2));
 				g2D.setColor(Color.red);
