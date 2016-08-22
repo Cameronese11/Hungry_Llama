@@ -9,6 +9,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import src.main.Cluedo.Game;
+import src.main.GameObject.Player;
 import src.main.Location.Location;
 import src.main.Location.Room;
 
@@ -119,6 +120,7 @@ public class BoardButtons implements ActionListener {
 		
 		// Finish Turn button has been pressed	
 		}else if(button.equals("Finish Turn")){
+			canvas.resetMoveableLocations();
 			canvas.setHideHand(true); // hide hand until next player is ready
 			canvas.repaint();
 			JOptionPane.showMessageDialog(canvas,

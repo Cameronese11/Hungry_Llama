@@ -2,7 +2,7 @@ package src.main.UI;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-
+import java.awt.Graphics;
 import java.awt.GridLayout;
 
 import javax.swing.JFrame;
@@ -98,14 +98,15 @@ public class CluedoFrame extends JFrame{
 	
 	@Override
 	public Dimension getPreferredSize(){
-		return new Dimension(board.getWidth(),board.getHeight() + 25);
+		return new Dimension(board.getWidth(),640);
 	}
 	
 	
 	@Override
 	public void repaint(){
-		canvas.repaint();
 		super.repaint();
+		canvas.repaint();
+		
 		
 	}
 	

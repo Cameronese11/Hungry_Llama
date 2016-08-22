@@ -34,6 +34,8 @@ public class Game{
 	private List<Room> rooms;
 	private List<Weapon> weapons;
 	
+	private Player winner;
+	
 	private List<Player.Character> characters; // all possible characters
 	private List<Player.Character> charactersLeft; // characters not yet
 													// assigned to a player
@@ -305,25 +307,20 @@ public class Game{
 	 * @return - player
 	 */
 	public Player nextTurn() {
-		if(playersOut.contains(currentPlayer))
-			removePlayer(currentPlayer);
+		Player nextPlayer = getNextPlayer();
+		
+		if(playersOut.contains(currentPlayer)){
+			players.remove(currentPlayer);
+			numPlayers--;
+		}
 		
 		if(numPlayers == 1){
+			winner = players.get(0);
 			Game.gameState = Game.State.OVER;
 		}
 		
-		int index = 0;
-		for(int i = 0; i < players.size(); i++){
-			if(players.get(i).equals(currentPlayer))
-				index = i;
-		}
-		if (index == numPlayers-1)
-			index = 0;
-		else
-			index++;
+		return nextPlayer;
 		
-		
-		return players.get(index);
 	}
 
 	/**
@@ -522,23 +519,6 @@ public class Game{
 		return false;
 	}
 
-	/**
-	 * Removes a player from the game called after an incorrectS accusation
-	 * 
-	 * @param player
-	 *            - player to remove
-	 */
-	public void removePlayer(Player player) {
-		Location location = player.getLocation();
-		if (location instanceof DoorTile) {
-			String newRoom = ((DoorTile) location).getRoom();
-			player.move(getRoom(newRoom));
-		}
-		
-		players.remove(player);
-		numPlayers--;
-	}
-
 	// getters and Setters
 
 	public List<Player> getPlayers() {
@@ -637,13 +617,13 @@ public class Game{
 	public Player getNextPlayer(){
 		int index = 0;
 		for(int i = 0; i < players.size(); i++){
-			if(players.get(i).equals(currentPlayer)){
+			if(players.get(i).equals(currentPlayer))
 				index = i;
-			}
-		index++;
-		if (index == players.size());
-				index = 0;
 		}
+		index++;
+		if(index == players.size())
+				index = 0;
+		
 		return players.get(index);
 			
 	}
@@ -658,6 +638,15 @@ public class Game{
 		return tiles;
 	}
 
+	public Player getWinner(){
+		return winner;
+	}
+	
+	public void setWinner(Player winner){
+		this.winner = winner;
+	}
+	
+	
 	public void setNumPlayers(int num) {
 		this.numPlayers = num;
 	}

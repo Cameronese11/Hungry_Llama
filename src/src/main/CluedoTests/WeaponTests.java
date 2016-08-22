@@ -20,7 +20,7 @@ public class WeaponTests {
 	// Moves a weapon from between rooms
 	{
 		// Setup
-		Board board = new Board("resources/board.txt");
+		Board board = new Board("src/resources/board.txt");
 		Game game = new Game(board);
 		Weapon w = game.getWeapon("Candlestick");
 		Room newRoom = game.getRoom("Study");

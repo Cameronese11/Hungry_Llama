@@ -26,7 +26,7 @@ public class PlayerTests {
 	// Should result in the player being on the new Tile, and nothing on the old tile
 	{
 		// Setup
-		Board board = new Board("resources/board.txt");
+		Board board = new Board("src/resources/board.txt");
 		Game game = new Game(board);
 		Location oldLocation = (Location) board.getTile(7, 8); // 8,9
 		Location newLocation = (Location) board.getTile(9, 8); // 10,9
@@ -50,7 +50,7 @@ public class PlayerTests {
 	// Should result in the player staying on the original tile and not moving
 	{
 		// Setup
-		Board board = new Board("resources/board.txt");
+		Board board = new Board("src/resources/board.txt");
 		Game game = new Game(board);
 		Location oldLocation = (Location) board.getTile(7, 8); // 8,9
 		Location newLocation = (Location) board.getTile(16, 24); // 17,25
@@ -75,7 +75,7 @@ public class PlayerTests {
 	// original tiles and not moving
 	{
 		// Setup
-		Board board = new Board("resources/board.txt");
+		Board board = new Board("src/resources/board.txt");
 		Game game = new Game(board);
 		Location oldLocation = (Location) board.getTile(7, 8); // 8,9
 		Location newLocation = (Location) board.getTile(9, 8); // 10,9
@@ -101,7 +101,7 @@ public class PlayerTests {
 	// Should result in the player moving into the room
 	{
 		// Setup
-		Board board = new Board("resources/board.txt");
+		Board board = new Board("src/resources/board.txt");
 		Game game = new Game(board);
 		Location oldLocation = (Location) board.getTile(7, 8); // 8,9
 		Location newLocation = game.getRoom("Ball Room");
@@ -126,7 +126,7 @@ public class PlayerTests {
 	// Should result in the player not moving
 	{
 		// Setup
-		Board board = new Board("resources/board.txt");
+		Board board = new Board("src/resources/board.txt");
 		Game game = new Game(board);
 		Location oldLocation = (Location) board.getTile(7, 8); // 8,9
 		Location newLocation = game.getRoom("Hall");
@@ -151,7 +151,7 @@ public class PlayerTests {
 	// Should result in the player moving out of the room
 	{
 		// Setup
-		Board board = new Board("resources/board.txt");
+		Board board = new Board("src/resources/board.txt");
 		Game game = new Game(board);
 		Location oldLocation = game.getRoom("Ball Room");
 		Location newLocation = (Location) board.getTile(7, 8); // 8,9
@@ -176,7 +176,7 @@ public class PlayerTests {
 	// Should result in the staying in the room
 	{
 		// Setup
-		Board board = new Board("resources/board.txt");
+		Board board = new Board("src/resources/board.txt");
 		Game game = new Game(board);
 		Location oldLocation = game.getRoom("Study");
 		Location newLocation = (Location) board.getTile(7, 8); // 8,9
@@ -204,7 +204,7 @@ public class PlayerTests {
 	// room
 	{
 		// Setup
-		Board board = new Board("resources/board.txt");
+		Board board = new Board("src/resources/board.txt");
 		Game game = new Game(board);
 		Location oldLocation = game.getRoom("Study");
 		Location newLocation = game.getRoom("Hall");
@@ -230,7 +230,7 @@ public class PlayerTests {
 	// Should result in the player not moving
 	{
 		// Setup
-		Board board = new Board("resources/board.txt");
+		Board board = new Board("src/resources/board.txt");
 		Game game = new Game(board);
 		Location oldLocation = game.getRoom("Study");
 		Location newLocation = game.getRoom("Dining Room");
@@ -256,7 +256,7 @@ public class PlayerTests {
 	// room
 	{
 		// Setup
-		Board board = new Board("resources/board.txt");
+		Board board = new Board("src/resources/board.txt");
 		Game game = new Game(board);
 		Location oldLocation = game.getRoom("Lounge");
 		Location newLocation = game.getRoom("Conservatory");
@@ -284,7 +284,7 @@ public class PlayerTests {
 	// room
 	{
 		// Setup
-		Board board = new Board("resources/board.txt");
+		Board board = new Board("src/resources/board.txt");
 		Game game = new Game(board);
 		Location oldLocation = (Location) board.getTile(7, 8); // 8,9
 		Location newLocation = game.getRoom("Ball Room");

@@ -105,6 +105,7 @@ public class AccusationOrSuggestion implements ActionListener{
 			}
 		
 			// setup button
+			button.setOpaque(false);
 			button.setForeground(Color.white);
 			button.addActionListener(this);
 			button.setActionCommand("r" + game.getRooms().get(i).getName());
@@ -136,6 +137,7 @@ public class AccusationOrSuggestion implements ActionListener{
 			
 			// create and setup radio button
 			JRadioButton button = new JRadioButton(game.getWeapons().get(i).getName());
+			button.setOpaque(false);
 			button.setForeground(Color.white);
 			button.addActionListener(this);
 			button.setActionCommand("w" + game.getWeapons().get(i).getName());
@@ -166,6 +168,7 @@ public class AccusationOrSuggestion implements ActionListener{
 			
 			// create and setup radio button
 			JRadioButton button = new JRadioButton(Game.getCharacterName(game.getCharacters().get(i)));
+			button.setOpaque(false);
 			button.setForeground(Color.white);
 			button.addActionListener(this);
 			button.setActionCommand("c" + Game.getCharacterName(game.getCharacters().get(i)));
@@ -289,8 +292,10 @@ public class AccusationOrSuggestion implements ActionListener{
 				}
 				if(!accusation && page > 0)
 					page = 2;
-				else if(accusation && page > 0)
-					page = 5;
+				else if(accusation && page > 0){
+					game.setWinner(game.getCurrentPlayer());
+					Game.gameState = Game.State.OVER;
+				}
 				removePanels();	
 			
 			// player has made a false accusation
@@ -316,7 +321,7 @@ public class AccusationOrSuggestion implements ActionListener{
 				refute = refuted;	
 				removePanels();
 			
-			// player has made finished there suggestion
+			// player has finished there suggestion
 			}else if(page == 4){
 				canvas.add(canvas.getBoardButtonPanel());
 				page = 0;
@@ -369,15 +374,6 @@ public class AccusationOrSuggestion implements ActionListener{
 			g2d.setFont(font);
 			Rectangle2D r = font.getStringBounds(s, g2d.getFontRenderContext()); 
 			g.drawString(s, 495 - (int) r.getWidth()/2, 220); // center string on page
-		
-		}else if(page == 5){ // correct accusation page
-			g.drawString("Congratulations, You Win", 315, 180);
-			Font font = new Font("Calibri", Font.PLAIN, 20);
-			g2d.setFont(font);
-			String s = "Correct Solution Was " +Game.getCharacterName(b.getMurderCharacter()) + ", with the " + b.getMurderWeapon().getName() + ", in the " + b.getMurderRoom().getName();
-			Rectangle2D r = font.getStringBounds(s, g2d.getFontRenderContext());
-			g.drawString(s, 495 - (int) r.getWidth()/2, 220); // center string on page
-			Game.gameState = Game.State.OVER; // the game is now over
 		}
 		// reset font size and color to default
 		g.setFont(new Font("Calibri", Font.PLAIN, 10));

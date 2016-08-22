@@ -57,6 +57,8 @@ public class MenuBar extends JMenuBar implements ActionListener{
         menuItem2.addActionListener(this);
         menu.add(menuItem1);
         menu.add(menuItem2);
+        
+        menuBar.setOpaque(false);
 
         return menuBar;
     }

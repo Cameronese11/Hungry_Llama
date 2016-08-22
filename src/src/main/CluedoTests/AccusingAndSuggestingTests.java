@@ -22,7 +22,7 @@ public class AccusingAndSuggestingTests {
 	// checks that a valid accusation returns true 
 	{
 		//Setup
-		Board board = new Board("resources/board.txt");
+		Board board = new Board("src/resources/board.txt");
 		Game game = new Game(board);
 		Player p1 = setupMockPlayer(game, board.getTile(7, 8), 1);
 		Player p2 = setupMockPlayer(game, board.getTile(17, 7), 2);
@@ -43,7 +43,7 @@ public class AccusingAndSuggestingTests {
 	// and removes the player from the game
 	{
 		//Setup
-		Board board = new Board("resources/board.txt");
+		Board board = new Board("src/resources/board.txt");
 		Game game = new Game(board);
 		Player p1 = setupMockPlayer(game, board.getTile(7, 8), 1);
 		Player p2 = setupMockPlayer(game, board.getTile(17, 7), 2);
@@ -72,7 +72,7 @@ public class AccusingAndSuggestingTests {
 	// Should be refuted
 	{
 		//Setup
-		Board board = new Board("resources/board.txt");
+		Board board = new Board("src/resources/board.txt");
 		Game game = new Game(board);
 		Room location = game.getRoom("Lounge");
 		Player p1 = setupMockPlayer(game, location, 1,Player.Character.MISS_SCARLETT);
@@ -104,7 +104,7 @@ public class AccusingAndSuggestingTests {
 	// Should be unrefuted
 	{
 		// Setup
-		Board board = new Board("resources/board.txt");
+		Board board = new Board("src/resources/board.txt");
 		Game game = new Game(board);
 		Location location = game.getRoom("Hall");
 		Player p1 = setupMockPlayer(game, location, 1,Player.Character.MRS_PEACOCK);
@@ -128,7 +128,7 @@ public class AccusingAndSuggestingTests {
 	// Invalid in that it is not done within a room
 	{
 		//Setup 
-		Board board = new Board("resources/board.txt");
+		Board board = new Board("src/resources/board.txt");
 		Game game = new Game(board);
 		Player p1 = setupMockPlayer(game, board.getTile(7, 8), 1);
 		Player p2 = setupMockPlayer(game, board.getTile(17, 7), 2);
@@ -150,7 +150,7 @@ public class AccusingAndSuggestingTests {
 	// the room the player is in
 	{
 		// Setup
-		Board board = new Board("resources/board.txt");
+		Board board = new Board("src/resources/board.txt");
 		Game game = new Game(board);
 		Room location = game.getRoom("Lounge");
 		Player p1 = setupMockPlayer(game, location, 1);

@@ -4,7 +4,9 @@ package src.main.UI;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Image;
 import java.util.List;
 import java.awt.Point;
@@ -12,6 +14,7 @@ import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.awt.geom.Rectangle2D;
 import java.io.IOException;
 import java.util.ArrayList;
 import javax.imageio.ImageIO;
@@ -20,6 +23,7 @@ import src.main.Location.*;
 import src.main.Cards.Card;
 import src.main.Cluedo.Board;
 import src.main.Cluedo.Game;
+import src.main.GameObject.Basement;
 import src.main.GameObject.Player;
 import src.main.GameObject.Weapon;
 
@@ -204,10 +208,10 @@ public class CluedoCanvas extends JPanel implements MouseListener, MouseMotionLi
 			// paint components
 			super.paint(g);
 		
-		
-		
+		// Game is over, declare winner
+		}else if(Game.gameState == Game.State.OVER){
+			gameOverScreen(g);
 		}
-		
 		
 	}
 	
@@ -234,6 +238,27 @@ public class CluedoCanvas extends JPanel implements MouseListener, MouseMotionLi
 	}
 	
 	/**
+	 * Screen to declare the winner once the game is over
+	 * 
+	 * @param g
+	 */
+	public void gameOverScreen(Graphics g){
+		g.drawImage(PAGE, 0, 0, null);
+		Graphics2D g2d = (Graphics2D) g;
+		Basement b = game.getBasement();
+		Font font = new Font("Calibri", Font.PLAIN, 40);
+		g2d.setFont(font);
+		String s = "Congratulations, " + game.getWinner().getName() + " you are the Winner!";
+		Rectangle2D r = font.getStringBounds(s, g2d.getFontRenderContext());
+		g2d.drawString(s, 495 - (int) r.getWidth()/2, 320); // center string on page
+		font = new Font("Calibri", Font.PLAIN, 20);
+		g2d.setFont(font);
+		s = "Correct Solution Was " +Game.getCharacterName(b.getMurderCharacter()) + ", with the " + b.getMurderWeapon().getName() + ", in the " + b.getMurderRoom().getName();
+		r = font.getStringBounds(s, g2d.getFontRenderContext());
+		g2d.drawString(s, 495 - (int) r.getWidth()/2, 400); // center string on page
+	}
+	
+	/**
 	 * Paints the heading on the top left of the canvas,
 	 * as well as their corresponding picture
 	 * 
@@ -249,6 +274,12 @@ public class CluedoCanvas extends JPanel implements MouseListener, MouseMotionLi
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
+		
+		if(Game.gameState != Game.State.RUNNING){
+			return;
+		}
+		
+		
 		// A card is currently displayed on screen
 		if(showCard != null){
 			Rectangle r = new Rectangle(315, 33, 360, 524);
@@ -342,6 +373,10 @@ public class CluedoCanvas extends JPanel implements MouseListener, MouseMotionLi
 	
 	public List<Tile> getMoveableLocations(){
 		return moveableLocations;
+	}
+	
+	public void resetMoveableLocations(){
+		moveableLocations.clear();
 	}
 	
 	public Tile getSelectedTile(){

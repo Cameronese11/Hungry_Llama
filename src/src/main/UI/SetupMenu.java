@@ -121,6 +121,7 @@ public class SetupMenu extends javax.swing.JPanel implements ActionListener{
 		// create and setup the radio buttons
 		for(int i = 0; i < 6; i++){
 			JRadioButton rb = new JRadioButton(Game.getCharacterName(game.getCharacters().get(i)));
+			rb.setOpaque(false);
 			rb.setActionCommand("" + i);
 			rb.addActionListener(this);
 			characterButtons[i] = rb; // add to the array
@@ -246,6 +247,10 @@ public class SetupMenu extends javax.swing.JPanel implements ActionListener{
 			}	
 		}
 		
+		// set players name to the character name if they leave it blank
+		if(name.equals(""))
+			name = Game.getCharacterName(character);
+			
 		game.addPlayer(page, character, name); // add player to game
 		playersLeft--; // reduce the number of player left to assign by 1
 	

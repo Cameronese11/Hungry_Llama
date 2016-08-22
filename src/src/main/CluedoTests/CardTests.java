@@ -24,7 +24,7 @@ public class CardTests {
 	// the correct amount are left over
 	{
 		// Setup
-		Board board = new Board("resources/board.txt");
+		Board board = new Board("src/resources/board.txt");
 		Game game = new Game(board);
 		Player p1 = setupMockPlayer(game, board.getTile(7, 8), 1);
 		Player p2 = setupMockPlayer(game, board.getTile(17, 7), 2);
@@ -53,7 +53,7 @@ public class CardTests {
 	// in the basement
 	{
 		// Setup
-		Board board = new Board("resources/board.txt");
+		Board board = new Board("src/resources/board.txt");
 		Game game = new Game(board);
 		Player p1 = setupMockPlayer(game, board.getTile(7, 8), 1);
 		Player p2 = setupMockPlayer(game, board.getTile(17, 7), 2);
@@ -78,7 +78,7 @@ public class CardTests {
 	// seperate from the players hands
 	{
 		// Setup
-		Board board = new Board("resources/board.txt");
+		Board board = new Board("src/resources/board.txt");
 		Game game = new Game(board);
 		Player p1 = setupMockPlayer(game, board.getTile(7, 8), 1);
 		Player p2 = setupMockPlayer(game, board.getTile(17, 7), 2);
